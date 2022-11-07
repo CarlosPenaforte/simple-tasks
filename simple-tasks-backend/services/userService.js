@@ -21,7 +21,7 @@ const getUserById = (request, response) => {
       throw error;
     }
 
-    response.status(200).json(results.rows);
+    response.status(200).json(results.rows[0]);
   });
 };
 
@@ -34,7 +34,33 @@ const createUser = (request, response) => {
     if (error) {
       throw error
     }
-    response.status(201).send('created');
+    response.status(201);
+  });
+};
+
+const updateUser = (request, response) => {
+  const id = parseInt(request.params.id);
+  const { username, user_password, full_name, email, sex, birthday } = request.body;
+
+  queries.pool.query(
+    'UPDATE users SET (username,user_password,full_name,email,sex,birthday) = ($1,$2,$3,$4,$5,$6) WHERE user_id = $7',
+    [username, user_password, full_name, email, sex, birthday, id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(204);
+  });
+};
+
+const deleteUserById = (request, response) => {
+  const id = parseInt(request.params.id);
+  
+  queries.pool.query('DELETE FROM users WHERE user_id = $1', [id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+
+    response.status(202);
   });
 };
 
@@ -42,4 +68,6 @@ module.exports = {
   getUsers,
   getUserById,
   createUser,
+  updateUser,
+  deleteUserById
 };
