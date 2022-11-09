@@ -1,11 +1,10 @@
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
+require('dotenv').config();
 const port = process.env.PORT;
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+
 const userRoutes = require('./routes/userRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const planRoutes = require('./routes/planRoutes');
@@ -15,7 +14,7 @@ app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
     extended: true,
-  })
+  }),
 );
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
