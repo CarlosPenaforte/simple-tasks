@@ -4,7 +4,7 @@
   "description": "server for simple tasks",
   "main": "index.js",
   "scripts": {
-    "dev": "node index.js"
+    "dev": "nodemon index.js"
   },
   "author": "Carlos Penaforte",
   "license": "ISC",
@@ -15,5 +15,9 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.27.0",
+    "nodemon": "^2.0.20"
   }
 }
