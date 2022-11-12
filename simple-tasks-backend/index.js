@@ -6,9 +6,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const userRoutes = require('./routes/userRoutes');
-const taskRoutes = require('./routes/taskRoutes');
-const planRoutes = require('./routes/planRoutes');
-
+const loginRoutes = require('./routes/loginRoutes');
 
 app.use(bodyParser.json());
 app.use(
@@ -16,6 +14,7 @@ app.use(
     extended: true,
   }),
 );
+
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
 });
@@ -25,5 +24,4 @@ app.get('/', (request, response) => {
 });
 
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/tasks', taskRoutes);
-app.use('/api/v1/plans', planRoutes);
+app.use('/login', loginRoutes);

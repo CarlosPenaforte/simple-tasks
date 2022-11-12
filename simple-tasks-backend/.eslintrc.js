@@ -50,6 +50,5 @@ module.exports = {
     ],
     'curly': 'error',
     'arrow-body-style': [ 'error', 'as-needed' ],
-    'capitalized-comments': ['error'],
   },
 };

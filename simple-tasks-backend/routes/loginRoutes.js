@@ -1,12 +1,6 @@
 const app = require('express');
 const router = app.Router();
-const {
-  getUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUserById,
-} = require('../controllers/userController');
+const { login } = require('../controllers/userController');
 
 router.use((req, res, next) => {
   console.log(
@@ -19,10 +13,6 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/', getUsers);
-router.get('/:id', getUserById);
-router.post('/', createUser);
-router.put('/:id', updateUser);
-router.delete('/:id', deleteUserById);
+router.post('/', login);
 
 module.exports = router;

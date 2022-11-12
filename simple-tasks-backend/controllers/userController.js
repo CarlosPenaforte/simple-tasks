@@ -1,92 +1,107 @@
 /* eslint-disable no-unused-vars */
-const queries = require('../config/queries');
+const { request } = require('express');
+const {
+  fetchUsers,
+  fetchUserById,
+  fetchUserByUsername,
+  fetchUserByEmail,
+  insertUser,
+  patchUser,
+  removeUserById,
+  authenticateUser,
+} = require('../services/userService');
 
 
 const getUsers = (request, response) => {
-  const queryString = 'SELECT * FROM users ORDER BY username ASC';
-
-  queries.pool.query(queryString, (error, results) => {
-    if (error) {
-      console.log(error);
-      response.status(403).send(error.message);
-      return;
-    }
-
-    response.status(200).json(results.rows);
-  });
+  fetchUsers(
+    (rows) => response.status(200).json(rows),
+    (message) => response.status(403).send(message),
+  );
 };
 
 const getUserById = (request, response) => {
   const id = parseInt(request.params.id);
 
-  queries.pool.query('SELECT * FROM users WHERE user_id = $1', [id], (error, results) => {
-    if (error) {
-      console.log(error);
-      response.status(403).send(error.message);
-      return;
-    }
+  fetchUserById(
+    id,
+    (user) => response.status(200).json(user),
+    (message) => response.status(403).send(message),
+  );
+};
 
-    response.status(200).json(results.rows[0]);
-  });
+const getUserByUsername = (request, response) => {
+  const username = parseInt(request.params.username);
+
+  fetchUserByUsername(
+    username,
+    (user) => response.status(200).json(user),
+    (message) => response.status(403).send(message),
+  );
+};
+
+const getUserByEmail = (request, response) => {
+  const email = parseInt(request.params.email);
+
+  fetchUserByEmail(
+    email,
+    (user) => response.status(200).json(user),
+    (message) => response.status(403).send(message),
+  );
 };
 
 const createUser = (request, response) => {
-  const {
-    username, user_password, full_name, email, sex, birthday,
-  } = request.body;
+  const user = request.body;
 
-  queries.pool.query(
-    'INSERT INTO users (username,user_password,full_name,email,sex,birthday) VALUES ($1,$2,$3,$4,$5,$6)',
-    [
-      username, user_password, full_name, email, sex, birthday,
-    ], (error, results) => {
-      if (error) {
-        console.log(error);
-        response.status(403).send(error.message);
-        return;
-      }
-      response.status(201).send('ok');
-    });
+  insertUser(
+    user,
+    (answer) => response.status(201).send(answer),
+    (message) => response.status(403).send(message),
+  );
 };
 
 const updateUser = (request, response) => {
   const id = parseInt(request.params.id);
-  const {
-    username, user_password, full_name, email, sex, birthday,
-  } = request.body;
+  const user = request.body;
 
-  queries.pool.query(
-    'UPDATE users SET (username,user_password,full_name,email,sex,birthday) = ($1,$2,$3,$4,$5,$6) WHERE user_id = $7',
-    [
-      username, user_password, full_name, email, sex, birthday, id,
-    ], (error, results) => {
-      if (error) {
-        console.log(error);
-        response.status(403).send(error.message);
-        return;
-      }
-      response.status(204).send('ok');
-    });
+  patchUser(
+    id,
+    user,
+    (answer) => response.status(204).send(answer),
+    (message) => response.status(403).send(message),
+  );
 };
 
 const deleteUserById = (request, response) => {
   const id = parseInt(request.params.id);
 
-  queries.pool.query('DELETE FROM users WHERE user_id = $1', [id], (error, results) => {
-    if (error) {
-      console.log(error);
-      response.status(403).send(error.message);
-      return;
-    }
+  removeUserById(
+    id,
+    (answer) => response.status(202).send(answer),
+    (message) => response.status(403).send(message),
+  );
+};
 
-    response.status(202).send('ok');
+const login = (request, response) => {
+  const {
+    email, password,
+  } = request.body;
+
+  authenticateUser(email, password, (user) => {
+    console.log(user);
+    response.status(200).json(user);
+  }, (message) => {
+    console.log(message);
+    response.status(403).send(message);
   });
 };
 
 module.exports = {
   getUsers,
   getUserById,
+  getUserByUsername,
+  getUserByEmail,
   createUser,
   updateUser,
   deleteUserById,
+  login,
 };
