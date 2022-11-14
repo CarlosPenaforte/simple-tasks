@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const queries = require('../config/queries');
+const { pool } = require('../config/queries');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -13,7 +13,7 @@ const fetchUsers = (token, onSuccess, onError) => {
       return;
     }
 
-    queries.pool.query('SELECT * FROM users ORDER BY username ASC', (error, results) => {
+    pool.query('SELECT * FROM users ORDER BY username ASC', (error, results) => {
       if (error) {
         console.log(error);
         if (onError) {
@@ -35,7 +35,7 @@ const fetchUserById = (token, id, onSuccess, onError) => {
       });
       return;
     }
-    queries.pool.query('SELECT * FROM users WHERE user_id = $1', [id], (error, results) => {
+    pool.query('SELECT * FROM users WHERE user_id = $1', [id], (error, results) => {
       if (error) {
         console.log(error);
         if (onError) {
@@ -58,7 +58,7 @@ const fetchUserByUsername = (token, username, onSuccess, onError) => {
       return;
     }
 
-    queries.pool.query('SELECT * FROM users WHERE username = $1', [username], (error, results) => {
+    pool.query('SELECT * FROM users WHERE username = $1', [username], (error, results) => {
       if (error) {
         console.log(error);
         if (onError) {
@@ -81,7 +81,7 @@ const fetchUserByEmail = (token, email, onSuccess, onError) => {
       return;
     }
 
-    queries.pool.query('SELECT * FROM users WHERE email = $1', [email], (error, results) => {
+    pool.query('SELECT * FROM users WHERE email = $1', [email], (error, results) => {
       if (error) {
         console.log(error);
         if (onError) {
@@ -130,7 +130,7 @@ const insertUser = (token, user, onSuccess, onError) => {
 
         const new_password = bcrypt.hashSync(user_password, salt);
 
-        queries.pool.query(
+        pool.query(
           'INSERT INTO users (username,user_password,full_name,email,sex,birthday) VALUES ($1,$2,$3,$4,$5,$6)',
           [
             username, new_password, full_name, email, sex, birthday,
@@ -184,7 +184,7 @@ const patchUser = (token, id, user, onSuccess, onError) => {
 
         const new_password = bcrypt.hashSync(user_password, salt);
 
-        queries.pool.query(
+        pool.query(
           'UPDATE users SET (username,user_password,full_name,email,sex,birthday) = ($1,$2,$3,$4,$5,$6) WHERE user_id = $7',
           [
             username, new_password, full_name, email, sex, birthday, id,
@@ -210,7 +210,7 @@ const removeUserById = (token, id, onSuccess, onError) => {
       return;
     }
 
-    queries.pool.query('DELETE FROM users WHERE user_id = $1', [id], (error, results) => {
+    pool.query('DELETE FROM users WHERE user_id = $1', [id], (error, results) => {
       if (error) {
         console.log(error);
         onError(error.message);

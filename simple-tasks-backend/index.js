@@ -10,6 +10,14 @@ const rateLimiter = require('./config/rateLimiter');
 const userRoutes = require('./routes/userRoutes');
 const loginRoutes = require('./routes/loginRoutes');
 
+const migrate = require('./migrations');
+
+try {
+  migrate();
+} catch (e) {
+  throw new Error (e);
+}
+
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
