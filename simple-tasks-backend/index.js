@@ -4,6 +4,8 @@ const port = process.env.PORT;
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const cors = require('./config/cors');
+const rateLimiter = require('./config/rateLimiter');
 
 const userRoutes = require('./routes/userRoutes');
 const loginRoutes = require('./routes/loginRoutes');
@@ -14,6 +16,9 @@ app.use(
     extended: true,
   }),
 );
+
+app.use(cors);
+app.use(rateLimiter);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);

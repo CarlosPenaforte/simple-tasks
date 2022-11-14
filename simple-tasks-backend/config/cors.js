@@ -1,38 +1,16 @@
 const cors = require('cors');
 
-// TO-DO
-// const whitelist = [ 'http://developer1.com', 'http://developer2.com' ];
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error());
-//     }
-//   },
-// };
-
-const userCorsOptions = {
-  origin: '*',
-  methods: process.env.USER_METHODS,
-  credentials: true,
-  allowedHeaders: [
-    'Content-Type', 'Access-Control-Allow-Origin', 'Origin', 'Accept',
-  ],
+const whitelist = [
+  'http://localhost:8000', 'http://localhost:3000', 'http://localhost:8080',
+];
+const corsOptionsDelegate = function (req, callback) {
+  let corsOptions;
+  if (whitelist.indexOf(req.header('Origin')) !== -1) {
+    corsOptions = { origin: true };
+  } else {
+    corsOptions = { origin: false };
+  }
+  callback(null, corsOptions);
 };
-const userCors = cors(userCorsOptions);
 
-const loginCorsOptions = {
-  origin: '*',
-  methods: process.env.LOGIN_METHODS,
-  credentials: true,
-  allowedHeaders: [
-    'Content-Type', 'Access-Control-Allow-Origin', 'Origin', 'Accept',
-  ],
-};
-const loginCors = cors(loginCorsOptions);
-
-module.exports = {
-  userCors,
-  loginCors,
-};
+module.exports = cors(corsOptionsDelegate);

@@ -1,7 +1,6 @@
 const app = require('express');
 const router = app.Router();
 const { login } = require('../controllers/loginController');
-const { loginCors } = require('../config/cors');
 
 router.use((req, res, next) => {
   console.log(
@@ -14,8 +13,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.options('/', loginCors);
 
-router.post('/', loginCors, login);
+router.post('/', login);
 
 module.exports = router;
