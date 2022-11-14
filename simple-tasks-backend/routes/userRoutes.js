@@ -1,5 +1,7 @@
-const app = require('express');
-const router = app.Router();
+const express = require('express');
+const router = express.Router();
+const { userCors } = require('../config/cors');
+
 const {
   getUsers,
   getUserById,
@@ -19,10 +21,13 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/', getUsers);
-router.get('/:id', getUserById);
-router.post('/', createUser);
-router.put('/:id', updateUser);
-router.delete('/:id', deleteUserById);
+router.options('/', userCors);
+router.options('/:id', userCors);
+
+router.get('/', userCors, getUsers);
+router.get('/:id', userCors, getUserById);
+router.post('/', userCors, createUser);
+router.put('/:id', userCors, updateUser);
+router.delete('/:id', userCors, deleteUserById);
 
 module.exports = router;

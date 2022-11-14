@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const authenticateUser = (email, password, onSuccess, onError) => {
   try {
     queries.pool.query('SELECT * FROM users WHERE email = $1', [email], (error, results) => {
-      if (error) {
+      if (error || !results.rows[0]) {
         console.log(error);
         if (onError) {
           onError('Wrong email or password.');

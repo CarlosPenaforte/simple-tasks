@@ -24,4 +24,5 @@ app.get('/', (request, response) => {
 });
 
 app.use('/api/v1/users', userRoutes);
+
 app.use('/login', loginRoutes);
