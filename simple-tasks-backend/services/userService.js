@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { pool } = require('../config/queries');
+const { pool } = require('../config/pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 

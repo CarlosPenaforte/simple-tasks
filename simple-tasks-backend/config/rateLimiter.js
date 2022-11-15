@@ -1,5 +1,5 @@
 const { RateLimiterPostgres } = require('rate-limiter-flexible');
-const { pool } = require('./queries');
+const { pool } = require('./pg');
 
 const options = {
   storeClient: pool,

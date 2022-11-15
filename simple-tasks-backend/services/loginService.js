@@ -1,4 +1,4 @@
-const queries = require('../config/queries');
+const queries = require('../config/pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
