@@ -10,21 +10,21 @@ const {
 } = require('../services/userService');
 
 
-const getUsers = (request, response) => {
+const getUsers = async (request, response) => {
   const { token } = request.body;
 
-  fetchUsers(
+  await fetchUsers(
     token,
     (rows) => response.status(200).json(rows),
     (message) => response.status(403).send(message),
   );
 };
 
-const getUserById = (request, response) => {
+const getUserById = async (request, response) => {
   const id = parseInt(request.params.id);
   const { token } = request.body;
 
-  fetchUserById(
+  await fetchUserById(
     token,
     id,
     (user) => response.status(200).json(user),
@@ -32,12 +32,12 @@ const getUserById = (request, response) => {
   );
 };
 
-const getUserByUsername = (request, response) => {
+const getUserByUsername = async (request, response) => {
   const {
     token, username,
   } = request.body;
 
-  fetchUserByUsername(
+  await fetchUserByUsername(
     token,
     username,
     (user) => response.status(200).json(user),
@@ -45,12 +45,12 @@ const getUserByUsername = (request, response) => {
   );
 };
 
-const getUserByEmail = (request, response) => {
+const getUserByEmail = async (request, response) => {
   const {
     token, email,
   } = request.body;
 
-  fetchUserByEmail(
+  await fetchUserByEmail(
     token,
     email,
     (user) => response.status(200).json(user),
@@ -58,12 +58,12 @@ const getUserByEmail = (request, response) => {
   );
 };
 
-const createUser = (request, response) => {
+const createUser = async (request, response) => {
   const {
     user, token,
   } = request.body;
 
-  insertUser(
+  await insertUser(
     token,
     user,
     (answer) => response.status(201).send(answer),
@@ -71,13 +71,13 @@ const createUser = (request, response) => {
   );
 };
 
-const updateUser = (request, response) => {
+const updateUser = async (request, response) => {
   const id = parseInt(request.params.id);
   const {
     user, token,
   } = request.body;
 
-  patchUser(
+  await patchUser(
     token,
     id,
     user,
@@ -86,11 +86,11 @@ const updateUser = (request, response) => {
   );
 };
 
-const deleteUserById = (request, response) => {
+const deleteUserById = async (request, response) => {
   const id = parseInt(request.params.id);
   const { token } = request.body;
 
-  removeUserById(
+  await removeUserById(
     token,
     id,
     (answer) => response.status(202).send(answer),

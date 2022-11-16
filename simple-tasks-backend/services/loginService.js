@@ -1,15 +1,16 @@
-const queries = require('../config/pg');
+const { pool } = require('../config/pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const authenticateUser = (email, password, onSuccess, onError) => {
+const authenticateUser = async (email, password, onSuccess, onError) => {
+  const client = await pool.connect();
+  await client.query('BEGIN');
   try {
-    queries.pool.query('SELECT * FROM users WHERE email = $1', [email], (error, results) => {
+    client.query('SELECT * FROM users WHERE email = $1', [email], async (error, results) => {
       if (error || !results.rows[0]) {
         console.log(error);
-        if (onError) {
-          onError('Wrong email or password.');
-        }
+        onError('Wrong email or password.');
+        await client.query('ROLLBACK');
         return;
       }
 
@@ -20,13 +21,16 @@ const authenticateUser = (email, password, onSuccess, onError) => {
         onSuccess({
           token, user,
         });
+        await client.query('COMMIT');
       } else {
         onError('Wrong email or password.');
+        await client.query('ROLLBACK');
       }
     });
   } catch (error) {
     console.log(error);
     onError('Internal Server error Occured');
+    await client.query('ROLLBACK');
   }
 };
 
