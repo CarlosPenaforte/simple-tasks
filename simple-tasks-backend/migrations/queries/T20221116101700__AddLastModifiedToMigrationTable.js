@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 module.exports = async (client) => {
-  await client.query('ALTER TABLE user_plans ADD COLUMN IF NOT EXISTS start_date TIMESTAMP NOT NULL')
+  await client.query('ALTER TABLE migrations ADD COLUMN IF NOT EXISTS last_modified TIMESTAMP NOT NULL')
     .catch((error) => {
       if (error) {
         console.log(error.message);

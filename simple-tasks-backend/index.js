@@ -12,7 +12,7 @@ const loginRoutes = require('./routes/loginRoutes');
 
 const migrate = require('./migrations');
 
-migrate(() => {
+migrate().then(() => {
   app.use(bodyParser.json());
   app.use(
     bodyParser.urlencoded({
