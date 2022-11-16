@@ -32,6 +32,8 @@ const authenticateUser = async (email, password, onSuccess, onError) => {
     onError('Internal Server error Occured');
     await client.query('ROLLBACK');
   }
+
+  client.release();
 };
 
 module.exports = {

@@ -110,5 +110,6 @@ module.exports = async () => {
     await client.query('COMMIT');
     console.log('===== Migrations finished =====');
     client.release();
+    await pool.end();
   }
 };

@@ -28,6 +28,7 @@ const fetchUsers = async (token, onSuccess, onError) => {
       await client.query('COMMIT');
     });
   });
+  client.release();
 };
 
 const fetchUserById = async (token, id, onSuccess, onError) => {
@@ -53,6 +54,7 @@ const fetchUserById = async (token, id, onSuccess, onError) => {
       await client.query('COMMIT');
     });
   });
+  client.release();
 };
 
 const fetchUserByUsername = async (token, username, onSuccess, onError) => {
@@ -79,6 +81,7 @@ const fetchUserByUsername = async (token, username, onSuccess, onError) => {
       await client.query('COMMIT');
     });
   });
+  client.release();
 };
 
 const fetchUserByEmail = async (token, email, onSuccess, onError) => {
@@ -105,6 +108,7 @@ const fetchUserByEmail = async (token, email, onSuccess, onError) => {
       await client.query('COMMIT');
     });
   });
+  client.release();
 };
 
 const insertUser = async (token, user, onSuccess, onError) => {
@@ -168,6 +172,7 @@ const insertUser = async (token, user, onSuccess, onError) => {
       });
     }
   });
+  client.release();
 };
 
 const patchUser = async (token, id, user, onSuccess, onError) => {
@@ -233,6 +238,7 @@ const patchUser = async (token, id, user, onSuccess, onError) => {
       });
     }
   });
+  client.release();
 };
 
 const removeUserById =async (token, id, onSuccess, onError) => {
@@ -259,6 +265,7 @@ const removeUserById =async (token, id, onSuccess, onError) => {
       await client.query('COMMIT');
     });
   });
+  client.release();
 };
 
 module.exports = {
