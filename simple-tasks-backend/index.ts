@@ -1,16 +1,17 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 const port = process.env.PORT;
 
-const express = require('express');
-const bodyParser = require('body-parser');
+import express from 'express';
+import bodyParser from 'body-parser';
 const app = express();
-const cors = require('./config/cors');
-const rateLimiter = require('./config/rateLimiter');
+import corsMiddleware from './src/config/cors';
+import rateLimiter from './src/config/rateLimiter';
 
-const userRoutes = require('./routes/userRoutes');
-const loginRoutes = require('./routes/loginRoutes');
+import userRoutes from './src/routes/userRoutes';
+import loginRoutes from './src/routes/loginRoutes';
 
-const migrate = require('./migrations');
+import migrate from './src/migrations';
 
 migrate().then(() => {
   app.use(bodyParser.json());
@@ -20,7 +21,7 @@ migrate().then(() => {
     }),
   );
 
-  app.use(cors);
+  app.use(corsMiddleware);
   app.use(rateLimiter);
 
   app.listen(port, () => {
