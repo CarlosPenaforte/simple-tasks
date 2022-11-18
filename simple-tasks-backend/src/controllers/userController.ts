@@ -1,5 +1,8 @@
+import {
+  Request, Response,
+} from 'express';
 /* eslint-disable no-unused-vars */
-const {
+import {
   fetchUsers,
   fetchUserById,
   fetchUserByUsername,
@@ -7,32 +10,32 @@ const {
   insertUser,
   patchUser,
   removeUserById,
-} = require('../services/userService');
+} from '../services/userService';
 
 
-const getUsers = async (request, response) => {
+export const getUsers = async (request: Request, response: Response): Promise<void> => {
   const { token } = request.body;
 
   await fetchUsers(
     token,
-    (rows) => response.status(200).json(rows),
-    (message) => response.status(403).send(message),
+    (rows: object) => response.status(200).json(rows),
+    (message: string | object) => response.status(403).send(message),
   );
 };
 
-const getUserById = async (request, response) => {
-  const id = parseInt(request.params.id);
+export const getUserById = async (request: Request, response: Response): Promise<void> => {
+  const id: number = parseInt(request.params.id);
   const { token } = request.body;
 
   await fetchUserById(
     token,
     id,
-    (user) => response.status(200).json(user),
-    (message) => response.status(403).send(message),
+    (user: object) => response.status(200).json(user),
+    (message: string | object) => response.status(403).send(message),
   );
 };
 
-const getUserByUsername = async (request, response) => {
+export const getUserByUsername = async (request: Request, response: Response): Promise<void> => {
   const {
     token, username,
   } = request.body;
@@ -40,12 +43,12 @@ const getUserByUsername = async (request, response) => {
   await fetchUserByUsername(
     token,
     username,
-    (user) => response.status(200).json(user),
-    (message) => response.status(403).send(message),
+    (user: object) => response.status(200).json(user),
+    (message: string | object) => response.status(403).send(message),
   );
 };
 
-const getUserByEmail = async (request, response) => {
+export const getUserByEmail = async (request: Request, response: Response): Promise<void> => {
   const {
     token, email,
   } = request.body;
@@ -53,12 +56,12 @@ const getUserByEmail = async (request, response) => {
   await fetchUserByEmail(
     token,
     email,
-    (user) => response.status(200).json(user),
-    (message) => response.status(403).send(message),
+    (user: object) => response.status(200).json(user),
+    (message: string | object) => response.status(403).send(message),
   );
 };
 
-const createUser = async (request, response) => {
+export const createUser = async (request: Request, response: Response): Promise<void> => {
   const {
     user, token,
   } = request.body;
@@ -66,13 +69,13 @@ const createUser = async (request, response) => {
   await insertUser(
     token,
     user,
-    (answer) => response.status(201).send(answer),
-    (message) => response.status(403).send(message),
+    (answer: string | object) => response.status(201).send(answer),
+    (message: string | object) => response.status(403).send(message),
   );
 };
 
-const updateUser = async (request, response) => {
-  const id = parseInt(request.params.id);
+export const updateUser = async (request: Request, response: Response): Promise<void> => {
+  const id: number = parseInt(request.params.id);
   const {
     user, token,
   } = request.body;
@@ -81,29 +84,19 @@ const updateUser = async (request, response) => {
     token,
     id,
     user,
-    (answer) => response.status(204).send(answer),
-    (message) => response.status(403).send(message),
+    (answer: string | object) => response.status(204).send(answer),
+    (message: string | object) => response.status(403).send(message),
   );
 };
 
-const deleteUserById = async (request, response) => {
-  const id = parseInt(request.params.id);
+export const deleteUserById = async (request: Request, response: Response): Promise<void> => {
+  const id: number = parseInt(request.params.id);
   const { token } = request.body;
 
   await removeUserById(
     token,
     id,
-    (answer) => response.status(202).send(answer),
-    (message) => response.status(403).send(message),
+    (answer: string | object) => response.status(202).send(answer),
+    (message: string | object) => response.status(403).send(message),
   );
-};
-
-module.exports = {
-  getUsers,
-  getUserById,
-  getUserByUsername,
-  getUserByEmail,
-  createUser,
-  updateUser,
-  deleteUserById,
 };

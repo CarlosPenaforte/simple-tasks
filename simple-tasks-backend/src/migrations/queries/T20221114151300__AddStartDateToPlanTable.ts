@@ -1,5 +1,7 @@
+import { PoolClient } from 'pg';
+
 /* eslint-disable no-unused-vars */
-module.exports = async (client) => {
+module.exports = async (client: PoolClient) => {
   await client.query('ALTER TABLE user_plans ADD COLUMN IF NOT EXISTS start_date TIMESTAMP NOT NULL')
     .catch((error) => {
       if (error) {

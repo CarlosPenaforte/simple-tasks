@@ -1,15 +1,13 @@
-const express = require('express');
+import express, {
+  NextFunction, Request, Response,
+} from 'express';
 const router = express.Router();
 
-const {
-  getUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUserById,
-} = require('../controllers/userController');
+import {
+  getUsers, getUserById, createUser, updateUser, deleteUserById,
+} from '../controllers/userController';
 
-router.use((req, res, next) => {
+router.use((req: Request, res: Response, next: NextFunction) => {
   console.log(
     new Date(Date.now()).toLocaleTimeString()
       + ': Executing method '
@@ -26,4 +24,4 @@ router.post('/', createUser);
 router.put('/:id', updateUser);
 router.delete('/:id', deleteUserById);
 
-module.exports = router;
+export default router;

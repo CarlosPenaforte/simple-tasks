@@ -1,6 +1,9 @@
-const { authenticateUser } = require('../services/loginService');
+import {
+  Request, Response,
+} from 'express';
+import { authenticateUser } from '../services/loginService';
 
-const login = async (request, response) => {
+export const login = async (request: Request, response: Response): Promise<void> => {
   const {
     email, password,
   } = request.body;
@@ -11,8 +14,4 @@ const login = async (request, response) => {
     console.log(message);
     response.status(403).send(message);
   });
-};
-
-module.exports = {
-  login,
 };

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import pool from '../config/pg.js';
+import pool from '../config/pg';
 import fs from 'fs';
 import {
   PoolClient, QueryResult,
@@ -25,31 +25,34 @@ const runMigration = async (
 };
 
 export default async () => {
-  const client = await pool.connect();
+  const client: PoolClient = await pool.connect();
 
   try {
     await client.query('BEGIN');
     console.log('===== Starting migrations =====');
-    const files = fs.readdirSync('./migrations/queries');
+    const files: Array<string> = fs.readdirSync('./src/migrations/queries');
 
-    files.forEach(async (file) => {
-      const file_id = file.substring(0, 15);
+    files.forEach(async (file: string) => {
+      const file_id: string = file.substring(0, 15);
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const migration = require('./queries/'+file);
-      const { mtime } = fs.statSync('./migrations/queries/' + file);
+      const migration: (client: PoolClient) => void = require('./queries/'+file);
+      const { mtime } = fs.statSync('./src/migrations/queries/' + file);
 
-      let dbMigration: QueryResult<object>;
-      try {
-        dbMigration = await client.query(
+      const dbMigration: void | QueryResult<{
+          migration_id: string, last_modified: Date
+        }> = await client.query(
           'Select * from migrations where migration_id = $1',
           [file_id],
-        );
-      } catch (error: unknown) {
-        console.log('Unable to fetch migration '+file_id);
-        await client.query('ROLLBACK');
-        if (error instanceof Error) {
-          throw new Error(error.message);
-        }
+        ).catch(async (error: unknown) => {
+          console.log('Unable to fetch migration '+file_id);
+          await client.query('ROLLBACK');
+          if (error instanceof Error) {
+            throw new Error(error.message);
+          }
+        });
+
+      if (!dbMigration) {
+        return;
       }
 
       if (dbMigration.rows.length === 0) {
@@ -133,6 +136,5 @@ export default async () => {
     await client.query('COMMIT');
     console.log('===== Migrations finished =====');
     client.release();
-    await pool.end();
   }
 };

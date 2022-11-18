@@ -1,8 +1,10 @@
-const app = require('express');
-const router = app.Router();
-const { login } = require('../controllers/loginController');
+import app, {
+  NextFunction, Request, Response, Router,
+} from 'express';
+const router: Router = app.Router();
+import { login } from '../controllers/loginController';
 
-router.use((req, res, next) => {
+router.use((req: Request, res: Response, next: NextFunction) => {
   console.log(
     new Date(Date.now()).toLocaleTimeString()
       + ': Executing method '
@@ -16,4 +18,4 @@ router.use((req, res, next) => {
 
 router.post('/', login);
 
-module.exports = router;
+export default router;
