@@ -31,6 +31,7 @@ export default async () => {
     await client.query('BEGIN');
     console.log('===== Starting migrations =====');
     const files: Array<string> = fs.readdirSync('./src/migrations/queries');
+    files.sort();
 
     files.forEach(async (file: string) => {
       const file_id: string = file.substring(0, 15);

@@ -50,11 +50,10 @@ export const getUserByUsername = async (request: Request, response: Response): P
 
 export const getUserByEmail = async (request: Request, response: Response): Promise<void> => {
   const {
-    token, email,
+    email,
   } = request.body;
 
   await fetchUserByEmail(
-    token,
     email,
     (user: object) => response.status(200).json(user),
     (message: string | object) => response.status(403).send(message),
@@ -63,11 +62,10 @@ export const getUserByEmail = async (request: Request, response: Response): Prom
 
 export const createUser = async (request: Request, response: Response): Promise<void> => {
   const {
-    user, token,
+    user,
   } = request.body;
 
   await insertUser(
-    token,
     user,
     (answer: string | object) => response.status(201).send(answer),
     (message: string | object) => response.status(403).send(message),

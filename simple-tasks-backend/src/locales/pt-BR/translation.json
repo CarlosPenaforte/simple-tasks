@@ -1,0 +1,9 @@
+{
+  "LOGIN": {
+    "WRONG_CREDENTIALS": "Email e/ou senha incorreto(s)"
+  },
+  "SYSTEM": {
+    "INTERNAL_ERROR": "Erro interno no servidor"
+  },
+  "INFO": "API utilizando Node.js, Express e Postgres"
+}

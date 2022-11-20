@@ -1,0 +1,9 @@
+{
+  "LOGIN": {
+    "WRONG_CREDENTIALS": "Wrong email and/or password"
+  },
+  "SYSTEM": {
+    "INTERNAL_ERROR": "Internal server error"
+  },
+  "INFO": "Node.js, Express and Postgres API"
+}

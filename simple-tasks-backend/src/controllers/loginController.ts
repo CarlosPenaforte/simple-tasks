@@ -13,5 +13,6 @@ export const login = async (request: Request, response: Response): Promise<void>
   }, (message) => {
     console.log(message);
     response.status(403).send(message);
-  });
+  }, (toTranslate: string) => request.t(toTranslate),
+  );
 };

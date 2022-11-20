@@ -7,6 +7,7 @@ export const authenticateUser = async (
   email: string, password: string,
   onSuccess: (message: string | object) => void,
   onError: (message: string | object) => void,
+  translate: (toTranslate: string) => string,
 ): Promise<void> => {
   const client: PoolClient = await pool.connect();
   await client.query('BEGIN');
@@ -14,7 +15,7 @@ export const authenticateUser = async (
     client.query('SELECT * FROM users WHERE email = $1', [email], async (error, results) => {
       if (error || !results.rows[0]) {
         console.log(error);
-        onError('Wrong email or password.');
+        onError(translate('LOGIN.WRONG_CREDENTIALS'));
         await client.query('ROLLBACK');
         return;
       }
@@ -30,17 +31,17 @@ export const authenticateUser = async (
           });
           await client.query('COMMIT');
         } else {
-          onError('Internal error');
+          onError(translate('SYSTEM.INTERNAL_ERROR'));
           await client.query('ROLLBACK');
         }
       } else {
-        onError('Wrong email or password.');
+        onError(translate('LOGIN.WRONG_CREDENTIALS'));
         await client.query('ROLLBACK');
       }
     });
   } catch (error) {
     console.log(error);
-    onError('Internal Server error Occured');
+    onError(translate('SYSTEM.INTERNAL_ERROR'));
     await client.query('ROLLBACK');
   }
 

@@ -108,7 +108,6 @@ export const fetchUserByUsername = async (
 };
 
 export const fetchUserByEmail = async (
-  token: string,
   email: string,
   onSuccess: (message: object) => Response<unknown, Record<string, unknown>> | Promise<void>,
   onError: (message: string | object) => Response<unknown, Record<string, unknown>> | Promise<void>,
@@ -116,33 +115,23 @@ export const fetchUserByEmail = async (
   if (process.env.TOKEN_KEY) {
     const client: PoolClient = await pool.connect();
     await client.query('BEGIN');
-    jwt.verify(token, process.env.TOKEN_KEY, async (e, decoded) => {
-      if (e) {
-        onError({
-          auth: false, message: 'Falha ao autenticar o token.',
-        });
+
+    client.query('SELECT * FROM users WHERE email = $1', [email], async (error, results) => {
+      if (error) {
+        console.log(error);
+        onError(error.message);
         await client.query('ROLLBACK');
         return;
       }
 
-      client.query('SELECT * FROM users WHERE email = $1', [email], async (error, results) => {
-        if (error) {
-          console.log(error);
-          onError(error.message);
-          await client.query('ROLLBACK');
-          return;
-        }
-
-        onSuccess(results.rows[0]);
-        await client.query('COMMIT');
-      });
+      onSuccess(results.rows[0]);
+      await client.query('COMMIT');
     });
     client.release();
   }
 };
 
 export const insertUser = async (
-  token: string,
   user: {
     username: string;
     user_password: string;
@@ -159,64 +148,55 @@ export const insertUser = async (
     const client: PoolClient = await pool.connect();
     await client.query('BEGIN');
 
-    jwt.verify(token, process.env.TOKEN_KEY, async (e, decoded) => {
-      if (e) {
-        onError({
-          auth: false, message: 'Falha ao autenticar o token.',
-        });
-        await client.query('ROLLBACK');
-        return;
-      }
-      const {
-        username, user_password, full_name, email, sex, birthday, confirm_password,
-      } = user;
+    const {
+      username, user_password, full_name, email, sex, birthday, confirm_password,
+    } = user;
 
-      if (!username || !email || !user_password || !confirm_password) {
-        onError('Fill the required fields');
-        await client.query('ROLLBACK');
-        return;
-      }
-      //Confirm Passwords
-      if (user_password !== confirm_password) {
-        onError('Password must match');
-        await client.query('ROLLBACK');
-        return;
-      } else {
-        //Validation
-        fetchUserByEmail(token, email, async (results:object) => {
-          const user = results;
+    if (!username || !email || !user_password || !confirm_password) {
+      onError('Fill the required fields');
+      await client.query('ROLLBACK');
+      return;
+    }
+    //Confirm Passwords
+    if (user_password !== confirm_password) {
+      onError('Password must match');
+      await client.query('ROLLBACK');
+      return;
+    } else {
+      //Validation
+      fetchUserByEmail(email, async (results:object) => {
+        const user = results;
 
-          if (user) {
-            onError('Email already exists');
-            await client.query('ROLLBACK');
-            return;
-          }
-
-          //Password Hashing
-          const salt: string = bcrypt.genSaltSync(parseInt(process.env.SALT_ROUNDS || '8'));
-
-          const new_password: string = bcrypt.hashSync(user_password, salt);
-
-          client.query(
-            'INSERT INTO users (username,user_password,full_name,email,sex,birthday) VALUES ($1,$2,$3,$4,$5,$6)',
-            [
-              username, new_password, full_name, email, sex, birthday,
-            ], async (error, results) => {
-              if (error) {
-                console.log(error);
-                onError(error.message);
-                await client.query('ROLLBACK');
-                return;
-              }
-              onSuccess('ok');
-              await client.query('COMMIT');
-            });
-        }, async (error) => {
-          onError(error);
+        if (user) {
+          onError('Email already exists');
           await client.query('ROLLBACK');
-        });
-      }
-    });
+          return;
+        }
+
+        //Password Hashing
+        const salt: string = bcrypt.genSaltSync(parseInt(process.env.SALT_ROUNDS || '8'));
+
+        const new_password: string = bcrypt.hashSync(user_password, salt);
+
+        client.query(
+          'INSERT INTO users (username,user_password,full_name,email,sex,birthday) VALUES ($1,$2,$3,$4,$5,$6)',
+          [
+            username, new_password, full_name, email, sex, birthday,
+          ], async (error, results) => {
+            if (error) {
+              console.log(error);
+              onError(error.message);
+              await client.query('ROLLBACK');
+              return;
+            }
+            onSuccess('ok');
+            await client.query('COMMIT');
+          });
+      }, async (error) => {
+        onError(error);
+        await client.query('ROLLBACK');
+      });
+    }
     client.release();
   }
 };
