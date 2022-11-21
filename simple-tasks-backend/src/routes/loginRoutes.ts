@@ -5,13 +5,11 @@ const router: Router = app.Router();
 import { login } from '../controllers/loginController';
 
 router.use((req: Request, res: Response, next: NextFunction) => {
-  console.log(
-    new Date(Date.now()).toLocaleTimeString()
-      + ': Executing method '
-      + req.method
-      + ' on '
-      + req.originalUrl,
-  );
+  console.log(req.t('SYSTEM.EXECUTING_METHOD', {
+    time: new Date(Date.now()).toLocaleTimeString(),
+    method: req.method,
+    url: req.originalUrl,
+  }));
   next();
 });
 

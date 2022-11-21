@@ -8,11 +8,15 @@ export const login = async (request: Request, response: Response): Promise<void>
     email, password,
   } = request.body;
 
-  await authenticateUser(email, password, (user) => {
-    response.status(200).json(user);
-  }, (message) => {
+  await authenticateUser(email, password, (user: object): void => {
+    response.status(200).json({
+      ...user, auth: true,
+    });
+  }, (message: string): void => {
     console.log(message);
-    response.status(403).send(message);
-  }, (toTranslate: string) => request.t(toTranslate),
+    response.status(403).json({
+      message, auth: false,
+    });
+  }, (toTranslate: string): string => request.t(toTranslate),
   );
 };

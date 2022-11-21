@@ -5,12 +5,14 @@ import jwt from 'jsonwebtoken';
 import pool from '../config/pg';
 import { PoolClient } from 'pg';
 import { Response } from 'express';
+import { Transform } from 'stream';
 
 
 export const fetchUsers = async (
   token: string,
   onSuccess: (message: object) => Response<unknown, Record<string, unknown>> | Promise<void>,
   onError: (message: string | object) => Response<unknown, Record<string, unknown>> | Promise<void>,
+  translate: (toTranslate: string) => string,
 ): Promise<void> => {
   if (process.env.TOKEN_KEY) {
     const client: PoolClient = await pool.connect();
@@ -18,7 +20,7 @@ export const fetchUsers = async (
     jwt.verify(token, process.env.TOKEN_KEY, async (e, decoded) => {
       if (e) {
         onError({
-          auth: false, message: 'Falha ao autenticar o token.',
+          auth: false, message: translate('TOKEN.AUTH_FAILED'),
         });
         await client.query('ROLLBACK');
         return;
@@ -45,6 +47,7 @@ export const fetchUserById = async (
   id: number,
   onSuccess: (message: object) => Response<unknown, Record<string, unknown>> | Promise<void>,
   onError: (message: string | object) => Response<unknown, Record<string, unknown>> | Promise<void>,
+  translate: (toTranslate: string) => string,
 ): Promise<void> => {
   if (process.env.TOKEN_KEY) {
     const client: PoolClient = await pool.connect();
@@ -52,7 +55,7 @@ export const fetchUserById = async (
     jwt.verify(token, process.env.TOKEN_KEY, async (e, decoded) => {
       if (e) {
         onError({
-          auth: false, message: 'Falha ao autenticar o token.',
+          auth: false, message: translate('TOKEN.AUTH_FAILED'),
         });
         await client.query('ROLLBACK');
         return;
@@ -78,6 +81,7 @@ export const fetchUserByUsername = async (
   username: string,
   onSuccess: (message: object) => Response<unknown, Record<string, unknown>> | Promise<void>,
   onError: (message: string | object) => Response<unknown, Record<string, unknown>> | Promise<void>,
+  translate: (toTranslate: string) => string,
 ): Promise<void> => {
   if (process.env.TOKEN_KEY) {
     const client: PoolClient = await pool.connect();
@@ -85,7 +89,7 @@ export const fetchUserByUsername = async (
     jwt.verify(token, process.env.TOKEN_KEY, async (e, decoded) => {
       if (e) {
         onError({
-          auth: false, message: 'Falha ao autenticar o token.',
+          auth: false, message: translate('TOKEN.AUTH_FAILED'),
         });
         await client.query('ROLLBACK');
         return;
@@ -111,6 +115,7 @@ export const fetchUserByEmail = async (
   email: string,
   onSuccess: (message: object) => Response<unknown, Record<string, unknown>> | Promise<void>,
   onError: (message: string | object) => Response<unknown, Record<string, unknown>> | Promise<void>,
+  translate: (toTranslate: string) => string,
 ): Promise<void> => {
   if (process.env.TOKEN_KEY) {
     const client: PoolClient = await pool.connect();
@@ -143,6 +148,7 @@ export const insertUser = async (
   },
   onSuccess: (message: string | object) => void,
   onError: (message: string | object) => void,
+  translate: (toTranslate: string) => string,
 ): Promise<void> => {
   if (process.env.TOKEN_KEY) {
     const client: PoolClient = await pool.connect();
@@ -153,13 +159,13 @@ export const insertUser = async (
     } = user;
 
     if (!username || !email || !user_password || !confirm_password) {
-      onError('Fill the required fields');
+      onError(translate('SIGNUP.UNFILLED_FIELDS'));
       await client.query('ROLLBACK');
       return;
     }
     //Confirm Passwords
     if (user_password !== confirm_password) {
-      onError('Password must match');
+      onError(translate('SIGNUP.UNMATCHED_PASSWORDS'));
       await client.query('ROLLBACK');
       return;
     } else {
@@ -168,7 +174,7 @@ export const insertUser = async (
         const user = results;
 
         if (user) {
-          onError('Email already exists');
+          onError(translate('SIGNUP.EMAIL_EXISTS'));
           await client.query('ROLLBACK');
           return;
         }
@@ -189,13 +195,13 @@ export const insertUser = async (
               await client.query('ROLLBACK');
               return;
             }
-            onSuccess('ok');
+            onSuccess(translate('SIGNUP.REGISTERED_SUCCESSFULLY'));
             await client.query('COMMIT');
           });
       }, async (error) => {
         onError(error);
         await client.query('ROLLBACK');
-      });
+      }, (toTranslate: string): string => translate(toTranslate));
     }
     client.release();
   }
@@ -215,6 +221,7 @@ export const patchUser = async (
   },
   onSuccess: (message: string | object) => void,
   onError: (message: string | object) => void,
+  translate: (toTranslate: string) => string,
 ): Promise<void> => {
   const client: PoolClient = await pool.connect();
   await client.query('BEGIN');
@@ -222,7 +229,7 @@ export const patchUser = async (
     jwt.verify(token, process.env.TOKEN_KEY, async (e, decoded) => {
       if (e) {
         onError({
-          auth: false, message: 'Falha ao autenticar o token.',
+          auth: false, message: translate('TOKEN.AUTH_FAILED'),
         });
         await client.query('ROLLBACK');
         return;
@@ -233,13 +240,13 @@ export const patchUser = async (
       } = user;
 
       if (!username || !email || !user_password || !confirm_password) {
-        onError('Fill the required fields');
+        onError(translate('SIGNUP.UNFILLED_FIELDS'));
         await client.query('ROLLBACK');
         return;
       }
       //Confirm Passwords
       if (user_password !== confirm_password) {
-        onError('Password must match');
+        onError(translate('SIGNUP.UNMATCHED_PASSWORDS'));
         await client.query('ROLLBACK');
         return;
       } else {
@@ -249,7 +256,7 @@ export const patchUser = async (
 
           if (!user) {
             console.log(user);
-            onError('Id not registered');
+            onError(translate('USER_UPDATE.ID_NOT_FOUND'));
             await client.query('ROLLBACK');
             return;
           }
@@ -270,13 +277,13 @@ export const patchUser = async (
                 await client.query('ROLLBACK');
                 return;
               }
-              onSuccess('ok');
+              onSuccess(translate('USER_UPDATE.UPDATED_SUCCESSFULLY'));
               await client.query('COMMIT');
             });
         }, async (error) => {
           onError(error);
           await client.query('ROLLBACK');
-        });
+        }, (toTranslate: string): string => translate(toTranslate));
       }
     });
     client.release();
@@ -288,6 +295,7 @@ export const removeUserById = async (
   id: number,
   onSuccess: (message: string | object) => void,
   onError: (message: string | object) => void,
+  translate: (toTranslate: string) => string,
 ): Promise<void> => {
   const client: PoolClient = await pool.connect();
   await client.query('BEGIN');
@@ -295,7 +303,7 @@ export const removeUserById = async (
     jwt.verify(token, process.env.TOKEN_KEY, async (e, decoded) => {
       if (e) {
         onError({
-          auth: false, message: 'Falha ao autenticar o token.',
+          auth: false, message: translate('TOKEN.AUTH_FAILED'),
         });
         await client.query('ROLLBACK');
         return;

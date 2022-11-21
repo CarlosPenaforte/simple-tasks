@@ -4,6 +4,7 @@ import fs from 'fs';
 import {
   PoolClient, QueryResult,
 } from 'pg';
+import i18n from 'i18next';
 
 const runMigration = async (
   migrationId: string,
@@ -13,9 +14,9 @@ const runMigration = async (
   try {
     await migration(client);
 
-    console.log('Runned migration '+migrationId+' successfully');
+    console.log(i18n.t('MIGRATION.RUNNED_SUCCESSFULLY', { migrationId }));
   } catch (error: unknown) {
-    console.log('Unable to migrate '+migrationId);
+    console.log(i18n.t('MIGRATION.FAILED_RUNNING', { migrationId }));
     await client.query('ROLLBACK');
     if (error instanceof Error) {
       throw new Error(error.message);
@@ -29,7 +30,7 @@ export default async () => {
 
   try {
     await client.query('BEGIN');
-    console.log('===== Starting migrations =====');
+    console.log(i18n.t('MIGRATION.STARTING_MIGRATIONS'));
     const files: Array<string> = fs.readdirSync('./src/migrations/queries');
     files.sort();
 
@@ -45,7 +46,7 @@ export default async () => {
           'Select * from migrations where migration_id = $1',
           [file_id],
         ).catch(async (error: unknown) => {
-          console.log('Unable to fetch migration '+file_id);
+          console.log(i18n.t('MIGRATION.FAILED_FETCHING', { migrationId: file_id }));
           await client.query('ROLLBACK');
           if (error instanceof Error) {
             throw new Error(error.message);
@@ -65,7 +66,7 @@ export default async () => {
             [ file_id, mtime ],
           );
         } catch (error: unknown) {
-          console.log('Error inserting migration '+file_id+' in db. Insert manually');
+          console.log(i18n.t('MIGRATION.FAILED_INSERTING', { migrationId: file_id }));
           await client.query('ROLLBACK');
           if (error instanceof Error) {
             throw new Error(error.message);
@@ -81,7 +82,7 @@ export default async () => {
               [ mtime, file_id ],
             );
           } catch (error: unknown) {
-            console.log('Error updating migration '+file_id+' in db. Update manually');
+            console.log(i18n.t('MIGRATION.FAILED_UPDATING', { migrationId: file_id }));
             await client.query('ROLLBACK');
             if (error instanceof Error) {
               throw new Error(error.message);
@@ -109,9 +110,9 @@ export default async () => {
                 [migration.migration_id],
               );
 
-              console.log('Migration '+migration.migration_id+' removed successfully');
+              console.log(i18n.t('MIGRATION.REMOVED_SUCCESSFULLY', { migrationId: migration.migration_id }));
             } catch (error: unknown) {
-              console.log('Error removing migration '+ migration.migration_id);
+              console.log(i18n.t('MIGRATION.FAILED_REMOVING', { migrationId: migration.migration_id }));
               await client.query('ROLLBACK');
               if (error instanceof Error) {
                 throw new Error(error.message);
@@ -121,7 +122,7 @@ export default async () => {
         });
       }
     } catch (error: unknown) {
-      console.log('Unable to check migrations from database');
+      console.log(i18n.t('MIGRATION.FAILED_ACCESSING_DB'));
       await client.query('ROLLBACK');
       if (error instanceof Error) {
         throw new Error(error.message);
@@ -135,7 +136,7 @@ export default async () => {
     }
   } finally {
     await client.query('COMMIT');
-    console.log('===== Migrations finished =====');
+    console.log(i18n.t('MIGRATION.FINISHING_MIGRATIONS'));
     client.release();
   }
 };

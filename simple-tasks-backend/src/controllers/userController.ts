@@ -18,8 +18,13 @@ export const getUsers = async (request: Request, response: Response): Promise<vo
 
   await fetchUsers(
     token,
-    (rows: object) => response.status(200).json(rows),
-    (message: string | object) => response.status(403).send(message),
+    (users: object) => response.status(200).json({
+      users, hasError: false,
+    }),
+    (message: string | object) => response.status(403).json({
+      message, hasError: true,
+    }),
+    (toTranslate: string) => request.t(toTranslate),
   );
 };
 
@@ -30,8 +35,13 @@ export const getUserById = async (request: Request, response: Response): Promise
   await fetchUserById(
     token,
     id,
-    (user: object) => response.status(200).json(user),
-    (message: string | object) => response.status(403).send(message),
+    (user: object) => response.status(200).json({
+      user, hasError: false,
+    }),
+    (message: string | object) => response.status(403).json({
+      message, hasError: true,
+    }),
+    (toTranslate: string) => request.t(toTranslate),
   );
 };
 
@@ -43,8 +53,13 @@ export const getUserByUsername = async (request: Request, response: Response): P
   await fetchUserByUsername(
     token,
     username,
-    (user: object) => response.status(200).json(user),
-    (message: string | object) => response.status(403).send(message),
+    (user: object) => response.status(200).json({
+      user, hasError: false,
+    }),
+    (message: string | object) => response.status(403).json({
+      message, hasError: true,
+    }),
+    (toTranslate: string) => request.t(toTranslate),
   );
 };
 
@@ -55,8 +70,13 @@ export const getUserByEmail = async (request: Request, response: Response): Prom
 
   await fetchUserByEmail(
     email,
-    (user: object) => response.status(200).json(user),
-    (message: string | object) => response.status(403).send(message),
+    (user: object) => response.status(200).json({
+      user, hasError: false,
+    }),
+    (message: string | object) => response.status(403).json({
+      message, hasError: true,
+    }),
+    (toTranslate: string) => request.t(toTranslate),
   );
 };
 
@@ -67,8 +87,13 @@ export const createUser = async (request: Request, response: Response): Promise<
 
   await insertUser(
     user,
-    (answer: string | object) => response.status(201).send(answer),
-    (message: string | object) => response.status(403).send(message),
+    (answer: string | object) => response.status(201).json({
+      answer, hasError: false,
+    }),
+    (message: string | object) => response.status(403).json({
+      message, hasError: true,
+    }),
+    (toTranslate: string) => request.t(toTranslate),
   );
 };
 
@@ -82,8 +107,13 @@ export const updateUser = async (request: Request, response: Response): Promise<
     token,
     id,
     user,
-    (answer: string | object) => response.status(204).send(answer),
-    (message: string | object) => response.status(403).send(message),
+    (answer: string | object) => response.status(204).json({
+      answer, hasError: false,
+    }),
+    (message: string | object) => response.status(403).json({
+      message, hasError: true,
+    }),
+    (toTranslate: string) => request.t(toTranslate),
   );
 };
 
@@ -94,7 +124,12 @@ export const deleteUserById = async (request: Request, response: Response): Prom
   await removeUserById(
     token,
     id,
-    (answer: string | object) => response.status(202).send(answer),
-    (message: string | object) => response.status(403).send(message),
+    (answer: string | object) => response.status(202).json({
+      answer, hasError: false,
+    }),
+    (message: string | object) => response.status(403).json({
+      message, hasError: true,
+    }),
+    (toTranslate: string) => request.t(toTranslate),
   );
 };

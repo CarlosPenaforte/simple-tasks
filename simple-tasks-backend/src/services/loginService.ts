@@ -5,8 +5,8 @@ import { PoolClient } from 'pg';
 
 export const authenticateUser = async (
   email: string, password: string,
-  onSuccess: (message: string | object) => void,
-  onError: (message: string | object) => void,
+  onSuccess: (message: object) => void,
+  onError: (message: string) => void,
   translate: (toTranslate: string) => string,
 ): Promise<void> => {
   const client: PoolClient = await pool.connect();
