@@ -32,5 +32,12 @@
     "FAILED_REMOVING": "Erro removendo migration {{migrationId}}",
     "FAILED_ACCESSING_DB": "Incapaz de acessar as migrations na base de dados",
     "FINISHING_MIGRATIONS": "===== Finalizando migrations ====="
+  },
+  "PLAN": {
+    "ALREADY_HAVE_PLAN": "Usuário já possui um plano ativo",
+    "NO_ACTIVE_PLAN": "User não possui um plano ativo para atualizar",
+    "DEACTIVATED": "Plano desativado com sucesso",
+    "UPDATED": "Plano atualizado com sucesso",
+    "REGISTERED": "Plano registrado com sucesso"
   }
 }
