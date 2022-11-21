@@ -17,10 +17,10 @@ router.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 router.get('/', getPlans);
-router.get('/title=:title', getPlanByTitle);
-router.get('/user-id=:id', getUserPlanByUserId);
-router.post('/', createUserPlan);
-router.put('/', updateUserPlan);
-router.delete('/:id', deactivateUserPlanByUserId);
+router.get('/:title', getPlanByTitle);
+router.get('/userplans/:id', getUserPlanByUserId);
+router.post('/userplans', createUserPlan);
+router.put('/userplans', updateUserPlan);
+router.delete('/userplans/:id', deactivateUserPlanByUserId);
 
 export default router;

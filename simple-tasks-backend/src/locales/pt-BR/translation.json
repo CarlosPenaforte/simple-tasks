@@ -39,5 +39,11 @@
     "DEACTIVATED": "Plano desativado com sucesso",
     "UPDATED": "Plano atualizado com sucesso",
     "REGISTERED": "Plano registrado com sucesso"
+  },
+  "TASK": {
+    "REGISTERED": "Tarefa criada com sucesso",
+    "NOT_FOUND": "Tarefa não encontrada",
+    "UPDATED": "Tarefa atualizada com sucesso",
+    "DELETED": "Tarefa deletada com sucesso"
   }
 }

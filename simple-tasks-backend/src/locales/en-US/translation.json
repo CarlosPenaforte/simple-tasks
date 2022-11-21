@@ -39,5 +39,11 @@
     "DEACTIVATED": "Deactivated plan succesfully",
     "UPDATED": "Updated plan succesfully",
     "REGISTERED": "Registered plan succesfully"
+  },
+  "TASK": {
+    "REGISTERED": "Registered task successfully",
+    "NOT_FOUND": "Task not found",
+    "UPDATED": "Task updated successfully",
+    "DELETED": "Task deleted succesfully"
   }
 }
