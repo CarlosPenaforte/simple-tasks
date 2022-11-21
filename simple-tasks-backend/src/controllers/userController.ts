@@ -1,6 +1,7 @@
 import {
   Request, Response,
 } from 'express';
+import { DefaultTFuncReturn } from 'i18next';
 /* eslint-disable no-unused-vars */
 import {
   fetchUsers,
@@ -21,11 +22,9 @@ export const getUsers = async (request: Request, response: Response): Promise<vo
     (users: object) => response.status(200).json({
       users, hasError: false,
     }),
-    (message: string | object) => response.status(403).json({
+    (message: string | object | DefaultTFuncReturn) => response.status(403).json({
       message, hasError: true,
-    }),
-    (toTranslate: string) => request.t(toTranslate),
-  );
+    }));
 };
 
 export const getUserById = async (request: Request, response: Response): Promise<void> => {
@@ -38,11 +37,9 @@ export const getUserById = async (request: Request, response: Response): Promise
     (user: object) => response.status(200).json({
       user, hasError: false,
     }),
-    (message: string | object) => response.status(403).json({
+    (message: string | object | DefaultTFuncReturn) => response.status(403).json({
       message, hasError: true,
-    }),
-    (toTranslate: string) => request.t(toTranslate),
-  );
+    }));
 };
 
 export const getUserByUsername = async (request: Request, response: Response): Promise<void> => {
@@ -56,11 +53,9 @@ export const getUserByUsername = async (request: Request, response: Response): P
     (user: object) => response.status(200).json({
       user, hasError: false,
     }),
-    (message: string | object) => response.status(403).json({
+    (message: string | object | DefaultTFuncReturn) => response.status(403).json({
       message, hasError: true,
-    }),
-    (toTranslate: string) => request.t(toTranslate),
-  );
+    }));
 };
 
 export const getUserByEmail = async (request: Request, response: Response): Promise<void> => {
@@ -73,11 +68,9 @@ export const getUserByEmail = async (request: Request, response: Response): Prom
     (user: object) => response.status(200).json({
       user, hasError: false,
     }),
-    (message: string | object) => response.status(403).json({
+    (message: string | object | DefaultTFuncReturn) => response.status(403).json({
       message, hasError: true,
-    }),
-    (toTranslate: string) => request.t(toTranslate),
-  );
+    }));
 };
 
 export const createUser = async (request: Request, response: Response): Promise<void> => {
@@ -87,14 +80,12 @@ export const createUser = async (request: Request, response: Response): Promise<
 
   await insertUser(
     user,
-    (answer: string | object) => response.status(201).json({
+    (answer: string | object | DefaultTFuncReturn) => response.status(201).json({
       answer, hasError: false,
     }),
-    (message: string | object) => response.status(403).json({
+    (message: string| object | DefaultTFuncReturn) => response.status(403).json({
       message, hasError: true,
-    }),
-    (toTranslate: string) => request.t(toTranslate),
-  );
+    }));
 };
 
 export const updateUser = async (request: Request, response: Response): Promise<void> => {
@@ -107,14 +98,12 @@ export const updateUser = async (request: Request, response: Response): Promise<
     token,
     id,
     user,
-    (answer: string | object) => response.status(204).json({
+    (answer: string | object| DefaultTFuncReturn) => response.status(204).json({
       answer, hasError: false,
     }),
-    (message: string | object) => response.status(403).json({
+    (message: string | object| DefaultTFuncReturn) => response.status(403).json({
       message, hasError: true,
-    }),
-    (toTranslate: string) => request.t(toTranslate),
-  );
+    }));
 };
 
 export const deleteUserById = async (request: Request, response: Response): Promise<void> => {
@@ -129,7 +118,5 @@ export const deleteUserById = async (request: Request, response: Response): Prom
     }),
     (message: string | object) => response.status(403).json({
       message, hasError: true,
-    }),
-    (toTranslate: string) => request.t(toTranslate),
-  );
+    }));
 };

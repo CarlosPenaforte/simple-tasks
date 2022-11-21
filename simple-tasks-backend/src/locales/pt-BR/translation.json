@@ -15,7 +15,7 @@
     "UNFILLED_FIELDS": "Preencha os campos obrigatórios",
     "UNMATCHED_PASSWORDS": "As senhas informadas não se correspondem",
     "EMAIL_EXISTS": "Esse email já está cadastrado",
-    "REGISTERED_SUCCESFULLY": "Cadastrado com sucesso"
+    "REGISTERED_SUCCESSFULLY": "Cadastrado com sucesso"
   },
   "USER_UPDATE": {
     "ID_NOT_FOUND": "ID de usuário não encontrada",

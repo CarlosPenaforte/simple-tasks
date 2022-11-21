@@ -15,7 +15,7 @@
     "UNFILLED_FIELDS": "Fill the required fields",
     "UNMATCHED_PASSWORDS": "The provided passwords don't match",
     "EMAIL_EXISTS": "The provided email is already registered",
-    "REGISTERED_SUCCESFULLY": "Registered successfully"
+    "REGISTERED_SUCCESSFULLY": "Registered successfully"
   },
   "USER_UPDATE": {
     "ID_NOT_FOUND": "User ID not found",

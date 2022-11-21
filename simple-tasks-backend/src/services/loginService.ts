@@ -2,12 +2,12 @@ import pool from '../config/pg';
 import bcrypt from 'bcryptjs';
 import jwt, { Secret } from 'jsonwebtoken';
 import { PoolClient } from 'pg';
+import i18n from 'i18next';
 
 export const authenticateUser = async (
   email: string, password: string,
   onSuccess: (message: object) => void,
   onError: (message: string) => void,
-  translate: (toTranslate: string) => string,
 ): Promise<void> => {
   const client: PoolClient = await pool.connect();
   await client.query('BEGIN');
@@ -15,7 +15,7 @@ export const authenticateUser = async (
     client.query('SELECT * FROM users WHERE email = $1', [email], async (error, results) => {
       if (error || !results.rows[0]) {
         console.log(error);
-        onError(translate('LOGIN.WRONG_CREDENTIALS'));
+        onError(i18n.t('LOGIN.WRONG_CREDENTIALS'));
         await client.query('ROLLBACK');
         return;
       }
@@ -31,17 +31,17 @@ export const authenticateUser = async (
           });
           await client.query('COMMIT');
         } else {
-          onError(translate('SYSTEM.INTERNAL_ERROR'));
+          onError(i18n.t('SYSTEM.INTERNAL_ERROR'));
           await client.query('ROLLBACK');
         }
       } else {
-        onError(translate('LOGIN.WRONG_CREDENTIALS'));
+        onError(i18n.t('LOGIN.WRONG_CREDENTIALS'));
         await client.query('ROLLBACK');
       }
     });
   } catch (error) {
     console.log(error);
-    onError(translate('SYSTEM.INTERNAL_ERROR'));
+    onError(i18n.t('SYSTEM.INTERNAL_ERROR'));
     await client.query('ROLLBACK');
   }
 

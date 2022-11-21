@@ -17,6 +17,5 @@ export const login = async (request: Request, response: Response): Promise<void>
     response.status(403).json({
       message, auth: false,
     });
-  }, (toTranslate: string): string => request.t(toTranslate),
-  );
+  });
 };
