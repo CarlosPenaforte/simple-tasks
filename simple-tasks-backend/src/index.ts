@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 const port = process.env.PORT;
@@ -15,6 +16,8 @@ import taskRoutes from './routes/taskRoutes';
 import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
 import middleware from 'i18next-http-middleware';
+
+import winstonLogger from './config/winston';
 
 import migrate from './migrations';
 
@@ -42,6 +45,7 @@ migrate().then(() => {
 
   app.use(corsMiddleware);
   app.use(rateLimiter);
+  app.use(winstonLogger);
 
   app.listen(port, () => {
     console.log(i18next.t('SYSTEM.RUNNING_PORT', { port }));

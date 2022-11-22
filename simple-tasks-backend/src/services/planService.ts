@@ -26,13 +26,19 @@ export const fetchPlans = async (
 
       client.query('SELECT * FROM plans ORDER BY plan_title ASC', async (error, results) => {
         if (error) {
-          console.log(error);
           onError(error.message);
           await client.query('ROLLBACK');
           return;
         }
 
-        onSuccess(results.rows);
+        onSuccess(results.rows.map((user) => ({
+          id: user.user_id,
+          name: user.full_name,
+          username: user.username,
+          email: user.email,
+          sex: user.sex,
+          birthday: user.birthday,
+        })));
         await client.query('COMMIT');
       });
     });
@@ -59,13 +65,22 @@ export const fetchPlanByTitle = async (
       }
       client.query('SELECT * FROM plans WHERE plan_title = $1', [planTitle], async (error, results) => {
         if (error) {
-          console.log(error);
           onError(error.message);
           await client.query('ROLLBACK');
           return;
         }
 
-        onSuccess(results.rows[0]);
+        const user = results.rows[0];
+
+        onSuccess({
+          id: user.user_id,
+          name: user.full_name,
+          username: user.username,
+          email: user.email,
+          sex: user.sex,
+          birthday: user.birthday,
+        });
+
         await client.query('COMMIT');
       });
     });
@@ -76,7 +91,7 @@ export const fetchPlanByTitle = async (
 export const fetchUserPlanByUserId = async (
   token: string,
   userId: number,
-  onSuccess: (message: { planId: number, userId: number, active: number, startDate: Date, endDate: Date | null}) => Response<unknown, Record<string, unknown>> | Promise<void>,
+  onSuccess: (message: object) => Response<unknown, Record<string, unknown>> | Promise<void>,
   onError: (message: string | object) => Response<unknown, Record<string, unknown>> | Promise<void>,
 ): Promise<void> => {
   if (process.env.TOKEN_KEY) {
@@ -92,13 +107,22 @@ export const fetchUserPlanByUserId = async (
       }
       client.query('SELECT * FROM user_plans WHERE user_id = $1', [userId], async (error, results) => {
         if (error) {
-          console.log(error);
           onError(error.message);
           await client.query('ROLLBACK');
           return;
         }
-        console.log(results.rows);
-        onSuccess(results.rows[0]);
+
+        const user = results.rows[0];
+
+        onSuccess({
+          id: user.user_id,
+          name: user.full_name,
+          username: user.username,
+          email: user.email,
+          sex: user.sex,
+          birthday: user.birthday,
+        });
+
         await client.query('COMMIT');
       });
     });
@@ -139,7 +163,6 @@ export const insertUserPlan = async (
           planId, userId, startDate, endDate,
         ], async (error, results) => {
           if (error) {
-            console.log(error);
             onError(error.message);
             await client.query('ROLLBACK');
             return;
@@ -187,7 +210,6 @@ export const patchUserPlan = async (
           planId, userId, startDate, endDate, userId,
         ], async (error, results) => {
           if (error) {
-            console.log(error);
             onError(error.message);
             await client.query('ROLLBACK');
             return;
@@ -229,7 +251,6 @@ export const deactivateUserPlan = async (
 
         client.query('UPDATE user_plans SET plan_id = 1 WHERE user_id = $1', [userId], async (error, results) => {
           if (error) {
-            console.log(error);
             onError(error.message);
             await client.query('ROLLBACK');
             return;

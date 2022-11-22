@@ -14,7 +14,6 @@ export const authenticateUser = async (
   try {
     client.query('SELECT * FROM users WHERE email = $1', [email], async (error, results) => {
       if (error || !results.rows[0]) {
-        console.log(error);
         onError(i18n.t('LOGIN.WRONG_CREDENTIALS'));
         await client.query('ROLLBACK');
         return;
@@ -27,7 +26,15 @@ export const authenticateUser = async (
           const secret: Secret = process.env.TOKEN_KEY;
           const token: string = jwt.sign({ id: user.user_id }, secret, { expiresIn: 3600 });
           onSuccess({
-            token, user,
+            token,
+            user: {
+              id: user.user_id,
+              name: user.full_name,
+              username: user.username,
+              email: user.email,
+              sex: user.sex,
+              birthday: user.birthday,
+            },
           });
           await client.query('COMMIT');
         } else {
@@ -40,7 +47,6 @@ export const authenticateUser = async (
       }
     });
   } catch (error) {
-    console.log(error);
     onError(i18n.t('SYSTEM.INTERNAL_ERROR'));
     await client.query('ROLLBACK');
   }

@@ -21,7 +21,6 @@ const runMigration = async (
     if (error instanceof Error) {
       throw new Error(error.message);
     }
-    console.log(error);
   }
 };
 
@@ -129,7 +128,6 @@ export default async () => {
       }
     }
   } catch (error: unknown) {
-    console.log(error);
     await client.query('ROLLBACK');
     if (error instanceof Error) {
       throw new Error(error.message);

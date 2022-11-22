@@ -29,7 +29,6 @@ export const fetchUserTasks = async (
         [userId],
         async (error, results) => {
           if (error) {
-            console.log(error);
             onError(error.message);
             await client.query('ROLLBACK');
             return;
@@ -65,7 +64,6 @@ export const fetchSharedTasks = async (
         [userId],
         async (error, results) => {
           if (error) {
-            console.log(error);
             onError(error.message);
             await client.query('ROLLBACK');
             return;
@@ -102,7 +100,6 @@ export const fetchSingleTask = async (
         [taskId],
         async (error, results) => {
           if (error) {
-            console.log(error);
             onError(error.message);
             await client.query('ROLLBACK');
             return;
@@ -142,7 +139,6 @@ export const insertTask = async (
         userId, taskTitle, taskDescription, creationDate, dueDate, done,
       ], async (error, results) => {
         if (error) {
-          console.log(error);
           onError(error.message);
           await client.query('ROLLBACK');
           return;
@@ -190,7 +186,6 @@ export const patchTask = async (
           userId, taskTitle, taskDescription, creationDate, dueDate, done, taskId,
         ], async (error, results) => {
           if (error) {
-            console.log(error);
             onError(error.message);
             await client.query('ROLLBACK');
             return;
@@ -232,7 +227,6 @@ export const removeTask = async (
 
         await client.query('DELETE FROM tasks WHERE task_id = $1', [taskId])
           .catch(async (error) => {
-            console.log(error);
             onError(error.message);
             await client.query('ROLLBACK');
             return;
@@ -240,7 +234,6 @@ export const removeTask = async (
 
         await client.query('DELETE FROM shared_tasks WHERE task_id = $1', [taskId])
           .catch(async (error) => {
-            console.log(error);
             onError(error.message);
             await client.query('ROLLBACK');
             return;

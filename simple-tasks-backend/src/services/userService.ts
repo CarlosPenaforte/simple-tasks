@@ -27,7 +27,6 @@ export const fetchUsers = async (
 
       client.query('SELECT * FROM users ORDER BY username ASC', async (error, results) => {
         if (error) {
-          console.log(error);
           onError(error.message);
           await client.query('ROLLBACK');
           return;
@@ -60,7 +59,6 @@ export const fetchUserById = async (
       }
       client.query('SELECT * FROM users WHERE user_id = $1', [id], async (error, results) => {
         if (error) {
-          console.log(error);
           onError(error.message);
           await client.query('ROLLBACK');
           return;
@@ -94,7 +92,6 @@ export const fetchUserByUsername = async (
 
       client.query('SELECT * FROM users WHERE username = $1', [username], async (error, results) => {
         if (error) {
-          console.log(error);
           onError(error.message);
           await client.query('ROLLBACK');
           return;
@@ -119,7 +116,6 @@ export const fetchUserByEmail = async (
 
     client.query('SELECT * FROM users WHERE email = $1', [email], async (error, results) => {
       if (error) {
-        console.log(error);
         onError(error.message);
         await client.query('ROLLBACK');
         return;
@@ -185,7 +181,6 @@ export const insertUser = async (
             username, new_password, full_name, email, sex, birthday,
           ], async (error, results) => {
             if (error) {
-              console.log(error);
               onError(error.message);
               await client.query('ROLLBACK');
               return;
@@ -266,7 +261,6 @@ export const patchUser = async (
               username, new_password, full_name, email, sex, birthday, id,
             ], async (error, results) => {
               if (error) {
-                console.log(error);
                 onError(error.message);
                 await client.query('ROLLBACK');
                 return;
@@ -304,7 +298,6 @@ export const removeUserById = async (
 
       client.query('DELETE FROM users WHERE user_id = $1', [id], async (error, results) => {
         if (error) {
-          console.log(error);
           onError(error.message);
           await client.query('ROLLBACK');
           return;

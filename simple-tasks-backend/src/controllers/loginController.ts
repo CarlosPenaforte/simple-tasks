@@ -13,7 +13,6 @@ export const login = async (request: Request, response: Response): Promise<void>
       ...user, auth: true,
     });
   }, (message: string): void => {
-    console.log(message);
     response.status(403).json({
       message, auth: false,
     });
