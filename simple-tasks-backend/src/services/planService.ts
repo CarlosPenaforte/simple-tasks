@@ -108,7 +108,7 @@ export const fetchUserPlanByUserId = async (
 
 export const insertUserPlan = async (
   token: string,
-  plan: { planId: number, userId: number, active: number, startDate: Date, endDate: Date | null},
+  plan: { planId: number, userId: number, startDate: Date, endDate: Date | null},
   onSuccess: (message: DefaultTFuncReturn) => Response<unknown, Record<string, unknown>> | Promise<void>,
   onError: (message: string | object | DefaultTFuncReturn) => Response<unknown, Record<string, unknown>> | Promise<void>,
 ): Promise<void> => {
@@ -125,28 +125,18 @@ export const insertUserPlan = async (
       }
 
       const {
-        planId, userId, active, startDate, endDate,
+        planId, userId, startDate, endDate,
       } = plan;
 
       fetchUserPlanByUserId(token, userId, async (userPlan) => {
-        if (userPlan && userPlan.active === 1) {
-          onError(i18n.t('PLAN.NO_ACTIVE_PLAN'));
+        if (userPlan) {
+          onError(i18n.t('PLAN.ALREADY_HAVE_PLAN'));
           await client.query('ROLLBACK');
           return;
         }
 
-        if (userPlan && userPlan.active === 0) {
-          await client.query('DELETE FROM user_plans WHERE user_id = $1', [userId])
-            .catch(async (error) => {
-              console.log(error);
-              onError(error.message);
-              await client.query('ROLLBACK');
-              return;
-            });
-        }
-
-        client.query('INSERT INTO user_plans (plan_id, user_id, active, start_date, end_Date) values ($1,$2,$3,$4,$5)', [
-          planId, userId, active, startDate, endDate,
+        client.query('INSERT INTO user_plans (plan_id, user_id, start_date, end_Date) values ($1,$2,$3,$4,$5)', [
+          planId, userId, startDate, endDate,
         ], async (error, results) => {
           if (error) {
             console.log(error);
@@ -166,7 +156,7 @@ export const insertUserPlan = async (
 
 export const patchUserPlan = async (
   token: string,
-  plan: { planId: number, userId: number, active: number, startDate: Date, endDate: Date | null},
+  plan: { planId: number, userId: number, startDate: Date, endDate: Date | null},
   onSuccess: (message: DefaultTFuncReturn) => Response<unknown, Record<string, unknown>> | Promise<void>,
   onError: (message: string | object | DefaultTFuncReturn) => Response<unknown, Record<string, unknown>> | Promise<void>,
 ): Promise<void> => {
@@ -183,18 +173,18 @@ export const patchUserPlan = async (
       }
 
       const {
-        planId, userId, active, startDate, endDate,
+        planId, userId, startDate, endDate,
       } = plan;
 
       fetchUserPlanByUserId(token, userId, async (userPlan) => {
-        if (!userPlan || userPlan.active === 0) {
+        if (!userPlan) {
           onError(i18n.t('PLAN.NO_ACTIVE_PLAN'));
           await client.query('ROLLBACK');
           return;
         }
 
-        client.query('UPDATE user_plans SET (plan_id, user_id, active, start_date, end_Date) = ($1,$2,$3,$4,$5) WHERE user_id = $6', [
-          planId, userId, active, startDate, endDate, userId,
+        client.query('UPDATE user_plans SET (plan_id, user_id, start_date, end_Date) = ($1,$2,$3,$4,$5) WHERE user_id = $6', [
+          planId, userId, startDate, endDate, userId,
         ], async (error, results) => {
           if (error) {
             console.log(error);
@@ -231,13 +221,13 @@ export const deactivateUserPlan = async (
       }
 
       fetchUserPlanByUserId(token, userId, async (userPlan) => {
-        if (!userPlan || userPlan.active === 0) {
+        if (!userPlan) {
           onError(i18n.t('PLAN.NO_ACTIVE_PLAN'));
           await client.query('ROLLBACK');
           return;
         }
 
-        client.query('UPDATE user_plans SET active = 0 WHERE user_id = $1', [userId], async (error, results) => {
+        client.query('UPDATE user_plans SET plan_id = 1 WHERE user_id = $1', [userId], async (error, results) => {
           if (error) {
             console.log(error);
             onError(error.message);

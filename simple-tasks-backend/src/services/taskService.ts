@@ -6,7 +6,6 @@ import { PoolClient } from 'pg';
 import { Response } from 'express';
 import i18n, { DefaultTFuncReturn } from 'i18next';
 
-
 export const fetchUserTasks = async (
   token: string,
   userId: number,
@@ -46,7 +45,7 @@ export const fetchUserTasks = async (
 
 export const fetchSharedTasks = async (
   token: string,
-  userId: string,
+  userId: number,
   onSuccess: (message: object) => Response<unknown, Record<string, unknown>> | Promise<void>,
   onError: (message: string | object) => Response<unknown, Record<string, unknown>> | Promise<void>,
 ): Promise<void> => {
@@ -157,7 +156,7 @@ export const insertTask = async (
   }
 };
 
-export const patchUseTask = async (
+export const patchTask = async (
   token: string,
   taskId: number,
   task: { userId: number, taskTitle: string, taskDescription: string, creationDate: Date, dueDate: Date | null, done: number},
