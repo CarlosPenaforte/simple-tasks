@@ -3,7 +3,7 @@
     <q-header
       id="el-tasks-layout-header"
       reveal
-      class="bg-primary-main q-px-sm q-py-xs header-shadow"
+      class="bg-primary-main q-px-sm q-py-none header-shadow"
     >
       <q-toolbar class="row no-padding fit">
         <q-btn
@@ -12,7 +12,7 @@
           round
           icon="menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
+          @click="toggleLeftDrawer(true)"
         />
 
         <q-select
@@ -23,7 +23,7 @@
           label="Project"
           label-color="whity"
           color="primary-main"
-          class="q-ml-lg q-px-sm w-110"
+          class="q-ml-lg q-px-sm w-200"
         >
           <template v-slot:selected>
             <div v-html="projectSelected" class="text-whity"/>
@@ -38,17 +38,6 @@
           aria-label="Add"
           class="q-ml-xs"
         />
-
-        <q-space />
-
-        <q-btn
-          flat
-          dense
-          round
-          icon="search"
-          aria-label="Search"
-          @click="toggleSearchDialog"
-        />
       </q-toolbar>
     </q-header>
 
@@ -59,10 +48,54 @@
     >
       <q-list>
         <q-item
-          v-for="(route, index) in appRoutes"
+          class="justify-center items-center full-width q-pa-none"
+        >
+          <q-card
+            flat
+            class="full-width bg-secondary-filter"
+          >
+            <q-card-section
+              horizontal
+              class="justify-end q-pa-md q-pb-sm"
+            >
+              <q-icon
+                name="close"
+                size="26px"
+                color="secondary"
+                @click="toggleLeftDrawer(false)"
+              />
+            </q-card-section>
+            <q-card-section
+              horizontal
+              class="justify-center items-center q-px-sm q-pb-lg q-pt-none"
+            >
+              <q-icon
+                name="circle"
+                size="54px"
+                color="secondary"
+                @click="toggleLeftDrawer(false)"
+              />
+              <q-space />
+              <div class="column">
+                <span
+                  class="fs-22 q-mb-none q-pb-none lh-20 text-secondary"
+                  v-html="'Ricardo Sales'"
+                />
+                <span
+                  class="fs-11 q-mt-none q-pt-none lh-11 text-secondary"
+                  v-html="'ricardosales@gmail.com'"
+                />
+              </div>
+              <q-space/>
+              <q-space/>
+            </q-card-section>
+          </q-card>
+        </q-item>
+        <q-item
+          v-for="(option, index) in drawerOptions"
           :key="index"
         >
-          {{route.title}}
+          {{option.title}}
         </q-item>
       </q-list>
     </q-drawer>
@@ -76,12 +109,13 @@
         <q-btn
           flat
           no-caps
-          aria-label="Share"
+          no-wrap
+          aria-label="Sort"
           class="col-4 q-pt-sm"
         >
           <div class="column items-center justify-center">
-            <q-icon name="share" size="24px" color="dark-common"/>
-            <div v-html="'Share'" class="fs-12 lh-20 fw-regular text-secondary" />
+            <q-icon name="sort" size="24px" color="dark-common"/>
+            <div v-html="'Sort'" class="fs-12 lh-20 fw-regular text-secondary"/>
           </div>
         </q-btn>
         <q-btn
@@ -99,13 +133,13 @@
         <q-btn
           flat
           no-caps
-          no-wrap
-          aria-label="Sort"
+          aria-label="Search"
           class="col-4 q-pt-sm"
+          @click="toggleSearchDialog(true)"
         >
           <div class="column items-center justify-center">
-            <q-icon name="sort" size="24px" color="dark-common"/>
-            <div v-html="'Sort'" class="fs-12 lh-20 fw-regular text-secondary"/>
+            <q-icon name="search" size="24px" color="dark-common"/>
+            <div v-html="'search'" class="fs-12 lh-20 fw-regular text-secondary" />
           </div>
         </q-btn>
       </q-toolbar>
@@ -121,48 +155,10 @@
     Task, Urgency,
   } from 'components/models';
 
-  const routesList = [
+  const drawerOptions = [
     {
-      title: 'Docs',
-      caption: 'quasar.dev',
-      icon: 'school',
-      link: 'https://quasar.dev',
-    },
-    {
-      title: 'Github',
-      caption: 'github.com/quasarframework',
-      icon: 'code',
-      link: 'https://github.com/quasarframework',
-    },
-    {
-      title: 'Discord Chat Channel',
-      caption: 'chat.quasar.dev',
-      icon: 'chat',
-      link: 'https://chat.quasar.dev',
-    },
-    {
-      title: 'Forum',
-      caption: 'forum.quasar.dev',
-      icon: 'record_voice_over',
-      link: 'https://forum.quasar.dev',
-    },
-    {
-      title: 'Twitter',
-      caption: '@quasarframework',
-      icon: 'rss_feed',
-      link: 'https://twitter.quasar.dev',
-    },
-    {
-      title: 'Facebook',
-      caption: '@QuasarFramework',
-      icon: 'public',
-      link: 'https://facebook.quasar.dev',
-    },
-    {
-      title: 'Quasar Awesome',
-      caption: 'Community Quasar projects',
-      icon: 'favorite',
-      link: 'https://awesome.quasar.dev',
+      title: 'Logout',
+      icon: 'logout',
     },
   ];
 
@@ -230,13 +226,13 @@
       const reactiveTasks = reactive(tasks);
 
       return {
-        appRoutes: routesList,
+        drawerOptions,
         leftDrawerOpen,
-        toggleLeftDrawer() {
-          leftDrawerOpen.value = !leftDrawerOpen.value;
+        toggleLeftDrawer(shouldOpen: boolean) {
+          leftDrawerOpen.value = shouldOpen;
         },
-        toggleSearchDialog() {
-          searchDialogOpen.value = !searchDialogOpen.value;
+        toggleSearchDialog(shouldOpen: boolean) {
+          searchDialogOpen.value = shouldOpen;
         },
         searchDialogOpen,
         tasks: reactiveTasks,
