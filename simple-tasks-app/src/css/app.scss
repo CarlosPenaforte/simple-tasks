@@ -1,0 +1,41 @@
+// app global css in SCSS form
+
+@each $font-size in $font-sizes {
+  .fs-#{$font-size} {
+    font-size: #{$font-size}px;
+  }
+}
+
+@each $line-height in $line-heights {
+  .lh-#{$line-height} {
+    line-height: #{$line-height}px;
+  }
+}
+
+@each $weight-name, $font-weight in $font-weights {
+  .fw-#{$weight-name} {
+    font-weight: #{$font-weight};
+  }
+}
+
+@each $color-name, $color in $colors {
+  .text-#{$color-name} {
+    color: #{$color} !important;
+  }
+  .bg-#{$color-name} {
+    background-color: #{$color} !important;
+  }
+}
+
+@each $opacity in $opacities {
+  .opacity-#{$opacity} {
+    opacity: #{$opacity/100.0};
+  }
+}
+
+@for $i from 1 through 40 {
+  $width: $i * 10px;
+  .w-#{$i * 10} {
+    width: $width;
+  }
+}
