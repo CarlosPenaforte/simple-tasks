@@ -26,7 +26,7 @@
           class="q-ml-lg q-px-sm w-200"
         >
           <template v-slot:selected>
-            <div v-html="projectSelected" class="text-whity"/>
+            <div v-html="projectSelected" class="text-whity fw-medium"/>
           </template>
         </q-select>
 
@@ -48,7 +48,7 @@
     >
       <q-list>
         <q-item
-          class="justify-center items-center full-width q-pa-none"
+          class="justify-center items-center full-width no-padding"
         >
           <q-card
             flat
@@ -67,16 +67,15 @@
             </q-card-section>
             <q-card-section
               horizontal
-              class="justify-center items-center q-px-sm q-pb-lg q-pt-none"
+              class="justify-start items-center q-px-sm q-pb-lg q-pt-none"
             >
               <q-icon
                 name="circle"
                 size="54px"
                 color="secondary"
-                @click="toggleLeftDrawer(false)"
+                class="q-pr-lg"
               />
-              <q-space />
-              <div class="column">
+              <div class="column q-pl-xs">
                 <span
                   class="fs-22 q-mb-none q-pb-none lh-20 text-secondary"
                   v-html="'Ricardo Sales'"
@@ -86,16 +85,42 @@
                   v-html="'ricardosales@gmail.com'"
                 />
               </div>
-              <q-space/>
-              <q-space/>
             </q-card-section>
           </q-card>
         </q-item>
         <q-item
-          v-for="(option, index) in drawerOptions"
+          v-for="({ title, icon, path}, index) in drawerOptions"
           :key="index"
+          class="no-padding no-margin"
         >
-          {{option.title}}
+          <q-btn
+            flat
+            no-caps
+            :class="`full-width justify-center items-start q-pl-md ${
+              isSelectedDrawerOption(index)
+                ? 'text-primary-main bg-primary-filter'
+                : 'text-secondary bg-white'
+            }`"
+            @click="changeSelectedDrawerOption(index, path)"
+          >
+            <div>
+              <q-icon
+                :name="icon"
+                :color="isSelectedDrawerOption(index) ? 'primary-main' : 'secondary'"
+                class="q-pr-md q-pl-xs"
+              />
+              <span
+                v-html="title"
+                class="q-pl-xs fw-medium fs-16 lh-18"
+              />
+            </div>
+          </q-btn>
+        </q-item>
+        <q-item class="no-padding no-margin">
+          <span
+            class="text-dark fs-12 lh-14 full-width justify-end items-end"
+            v-html="'Simple Tasks v0.1.0'"
+          />
         </q-item>
       </q-list>
     </q-drawer>
@@ -154,8 +179,16 @@
   import {
     Task, Urgency,
   } from 'components/models';
+  import {
+    useRouter, useRoute,
+  } from 'vue-router';
 
   const drawerOptions = [
+    {
+      title: 'Your Tasks',
+      icon: 'checklist',
+      path: '/',
+    },
     {
       title: 'Logout',
       icon: 'logout',
@@ -220,20 +253,43 @@
   export default defineComponent({
     name: 'MainLayout',
     setup () {
+      const router = useRouter();
+      const route = useRoute();
+
       const leftDrawerOpen = ref(false);
+      const selectedDrawerOption = ref(0);
       const searchDialogOpen = ref(false);
       const projectSelected = ref('MyProject');
       const reactiveTasks = reactive(tasks);
 
+      function toggleLeftDrawer(shouldOpen: boolean) {
+        leftDrawerOpen.value = shouldOpen;
+      }
+
+      function toggleSearchDialog(shouldOpen: boolean) {
+        searchDialogOpen.value = shouldOpen;
+      }
+
+      function changeSelectedDrawerOption(optionIndex: number, pathToGo: string | undefined) {
+        selectedDrawerOption.value = optionIndex;
+        if (pathToGo && route.path !== pathToGo) {
+          router.push(pathToGo);
+        }
+        toggleLeftDrawer(false);
+      }
+
+      function isSelectedDrawerOption(optionIndex: number): boolean {
+        return selectedDrawerOption.value === optionIndex;
+      }
+
       return {
+        toggleLeftDrawer,
+        toggleSearchDialog,
+        isSelectedDrawerOption,
+        changeSelectedDrawerOption,
         drawerOptions,
+        selectedDrawerOption,
         leftDrawerOpen,
-        toggleLeftDrawer(shouldOpen: boolean) {
-          leftDrawerOpen.value = shouldOpen;
-        },
-        toggleSearchDialog(shouldOpen: boolean) {
-          searchDialogOpen.value = shouldOpen;
-        },
         searchDialogOpen,
         tasks: reactiveTasks,
         projectSelected,
