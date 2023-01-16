@@ -24,6 +24,8 @@
           label-color="whity"
           color="primary-main"
           class="q-ml-lg q-px-sm w-200"
+          transition-show="jump-down"
+          transition-hide="jump-up"
         >
           <template v-slot:selected>
             <div v-html="projectSelected" class="text-whity fw-medium"/>
@@ -37,6 +39,7 @@
           icon="add"
           aria-label="Add"
           class="q-ml-xs"
+          @click="openDialog"
         />
       </q-toolbar>
     </q-header>
@@ -45,6 +48,7 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
+      class="column"
     >
       <q-list>
         <q-item
@@ -116,13 +120,12 @@
             </div>
           </q-btn>
         </q-item>
-        <q-item class="no-padding no-margin">
-          <span
-            class="text-dark fs-12 lh-14 full-width justify-end items-end"
-            v-html="'Simple Tasks v0.1.0'"
-          />
-        </q-item>
       </q-list>
+      <q-space />
+      <span
+        class="no-margin full-width text-right q-pr-md q-pb-sm text-dark fs-11 lh-12"
+        v-html="'Simple Tasks v0.1.0'"
+      />
     </q-drawer>
 
     <q-page-container>
@@ -169,6 +172,40 @@
         </q-btn>
       </q-toolbar>
     </q-footer>
+
+    <big-dialog
+      v-model="isDialogOpen"
+      :handle-save="saveProject"
+    >
+      <q-input
+        v-model="projectName"
+        bottom-slots
+        counter
+        clearable
+        maxlength="20"
+        label="Project name"
+        color="primary-main"
+        class="q-mb-md"
+      >
+        <template v-slot:hint>
+          Max of 20 characters
+        </template>
+      </q-input>
+      <q-input
+        v-model="projectDescription"
+        bottom-slots
+        counter
+        clearable
+        maxlength="50"
+        label="Description"
+        color="primary-main"
+        class="q-mb-md"
+      >
+        <template v-slot:hint>
+          Max of 50 characters
+        </template>
+      </q-input>
+    </big-dialog>
   </q-layout>
 </template>
 
@@ -182,6 +219,7 @@
   import {
     useRouter, useRoute,
   } from 'vue-router';
+  import BigDialog from '../components/BigDialog.vue';
 
   const drawerOptions = [
     {
@@ -250,8 +288,15 @@
     'Party',
   ];
 
+  function saveProject(): void {
+    1+1;
+  }
+
   export default defineComponent({
     name: 'MainLayout',
+    components: {
+      BigDialog,
+    },
     setup () {
       const router = useRouter();
       const route = useRoute();
@@ -261,6 +306,9 @@
       const searchDialogOpen = ref(false);
       const projectSelected = ref('MyProject');
       const reactiveTasks = reactive(tasks);
+      const isDialogOpen = ref(false);
+      const projectName = ref('');
+      const projectDescription = ref('');
 
       function toggleLeftDrawer(shouldOpen: boolean) {
         leftDrawerOpen.value = shouldOpen;
@@ -282,6 +330,10 @@
         return selectedDrawerOption.value === optionIndex;
       }
 
+      function openDialog(): void {
+        isDialogOpen.value = true;
+      }
+
       return {
         toggleLeftDrawer,
         toggleSearchDialog,
@@ -294,6 +346,11 @@
         tasks: reactiveTasks,
         projectSelected,
         projectOptions,
+        openDialog,
+        isDialogOpen,
+        projectName,
+        saveProject,
+        projectDescription,
       };
     },
   });

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isSearchOpen">
+  <div v-if="isDialogOpen">
     <div v-for="(task, index) in filteredTasks" :key="index" v-html="task.taskId" />
   </div>
 </template>
@@ -27,9 +27,9 @@
   }
 
   export default defineComponent({
-    name: 'SearchDialog',
+    name: 'MidDialog',
     props: {
-      isSearchOpen: {
+      isDialogOpen: {
         type: Boolean,
         default: false,
       },

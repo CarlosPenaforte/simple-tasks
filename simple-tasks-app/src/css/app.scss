@@ -39,3 +39,10 @@
     width: $width;
   }
 }
+
+@for $i from 1 through 40 {
+  $height: $i * 10px;
+  .h-#{$i * 10} {
+    height: $height;
+  }
+}
