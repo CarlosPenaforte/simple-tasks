@@ -66,7 +66,7 @@
                   </q-list>
                 </q-menu>
               </q-icon>
-              <q-checkbox v-model="task.done"/>
+              <q-checkbox v-model="task.done" color="primary-main"/>
             </div>
           </q-item-section>
         </q-item>

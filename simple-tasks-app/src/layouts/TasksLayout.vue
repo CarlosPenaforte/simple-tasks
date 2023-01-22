@@ -39,7 +39,7 @@
           icon="add"
           aria-label="Add"
           class="q-ml-xs"
-          @click="openDialog"
+          @click="openCreateProjectDialog"
         />
       </q-toolbar>
     </q-header>
@@ -152,6 +152,7 @@
           no-wrap
           aria-label="AddCircle"
           class="col-4 q-py-xs"
+          @click="openCreateTaskDialog"
         >
           <div class="column items-center justify-center">
             <q-icon name="add_circle_outline" size="30px" color="primary-main"/>
@@ -174,11 +175,11 @@
     </q-footer>
 
     <big-dialog
-      v-model="isDialogOpen"
+      v-model="isCreateProjectOpen"
       :handle-save="saveProject"
     >
       <q-input
-        v-model="projectName"
+        v-model="newProject.name"
         bottom-slots
         counter
         clearable
@@ -192,7 +193,7 @@
         </template>
       </q-input>
       <q-input
-        v-model="projectDescription"
+        v-model="newProject.description"
         bottom-slots
         counter
         clearable
@@ -203,6 +204,87 @@
       >
         <template v-slot:hint>
           Max of 50 characters
+        </template>
+      </q-input>
+    </big-dialog>
+
+    <big-dialog
+      v-model="isCreateTaskOpen"
+      :handle-save="saveTask"
+    >
+      <q-input
+        v-model="newTask.name"
+        bottom-slots
+        counter
+        clearable
+        maxlength="20"
+        label="Project name"
+        color="primary-main"
+        class="q-mb-md"
+      >
+        <template v-slot:hint>
+          Max of 20 characters
+        </template>
+      </q-input>
+
+      <q-input
+        v-model="newTask.description"
+        bottom-slots
+        counter
+        clearable
+        maxlength="50"
+        label="Description"
+        color="primary-main"
+        class="q-mb-md"
+      >
+        <template v-slot:hint>
+          Max of 50 characters
+        </template>
+      </q-input>
+
+      <span class="q-mt-md q-mb-sm text-secondary fs-12 lh-16" v-html="'Urgency'"/>
+      <div class="q-px-none text-capitalize fs-13 lh-16 text-dark">
+        <q-radio
+          v-model="newTask.urgency"
+          :val="Urgency.URGENT"
+          :label="Urgency.URGENT"
+          color="negative"
+        />
+        <q-radio
+          v-model="newTask.urgency"
+          :val="Urgency.IMPORTANT"
+          :label="Urgency.IMPORTANT"
+          color="warning"
+        />
+        <q-radio
+          v-model="newTask.urgency"
+          :val="Urgency.COMMON"
+          :label="Urgency.COMMON"
+          color="positive"
+        />
+      </div>
+
+      <span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16" v-html="'Due date'"/>
+      <q-input
+        v-model="newTask.dueDate"
+        mask="####-##-##"
+        placeholder="YYYY-MM-DD"
+        color="primary-main"
+        class="q-mb-md"
+      >
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy>
+              <q-date
+                v-model="newTask.dueDate"
+                mask="YYYY-MM-DD"
+                color="primary-main"
+                title="Due date"
+                subtitle="Select a due date to the new task"
+                v-close-popup
+              />
+            </q-popup-proxy>
+          </q-icon>
         </template>
       </q-input>
     </big-dialog>
@@ -288,10 +370,6 @@
     'Party',
   ];
 
-  function saveProject(): void {
-    1+1;
-  }
-
   export default defineComponent({
     name: 'MainLayout',
     components: {
@@ -306,9 +384,18 @@
       const searchDialogOpen = ref(false);
       const projectSelected = ref('MyProject');
       const reactiveTasks = reactive(tasks);
-      const isDialogOpen = ref(false);
-      const projectName = ref('');
-      const projectDescription = ref('');
+      const isCreateProjectOpen = ref(false);
+      const isCreateTaskOpen = ref(false);
+      const newProject = ref({
+        name: '',
+        description: '',
+      });
+      const newTask = ref({
+        name: '',
+        description: '',
+        urgency: Urgency.URGENT,
+        dueDate: '',
+      });
 
       function toggleLeftDrawer(shouldOpen: boolean) {
         leftDrawerOpen.value = shouldOpen;
@@ -330,8 +417,20 @@
         return selectedDrawerOption.value === optionIndex;
       }
 
-      function openDialog(): void {
-        isDialogOpen.value = true;
+      function openCreateProjectDialog(): void {
+        isCreateProjectOpen.value = true;
+      }
+
+      function openCreateTaskDialog(): void {
+        isCreateTaskOpen.value = true;
+      }
+
+      function saveProject(): void {
+        1+1;
+      }
+
+      function saveTask(): void {
+        1+1;
       }
 
       return {
@@ -346,11 +445,15 @@
         tasks: reactiveTasks,
         projectSelected,
         projectOptions,
-        openDialog,
-        isDialogOpen,
-        projectName,
+        openCreateProjectDialog,
+        openCreateTaskDialog,
+        isCreateProjectOpen,
+        isCreateTaskOpen,
+        newProject,
         saveProject,
-        projectDescription,
+        saveTask,
+        newTask,
+        Urgency,
       };
     },
   });
