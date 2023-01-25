@@ -27,7 +27,7 @@
   import {
     defineComponent, PropType, computed, WritableComputedRef, ComputedRef,
   } from 'vue';
-  import TaskList from 'components/Tasks/TaskList.vue';
+  import TaskList from '../components/tasks/TaskList.vue';
 
   export default defineComponent({
     name: 'SelfTasks',

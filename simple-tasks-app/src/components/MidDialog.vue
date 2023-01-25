@@ -1,46 +1,74 @@
 <template>
-  <div v-if="isDialogOpen">
-    <div v-for="(task, index) in filteredTasks" :key="index" v-html="task.taskId" />
-  </div>
+  <q-dialog
+    v-model="isDialogOpen"
+    persistent
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
+    <q-card class="bg-whity text-dark q-pa-sm">
+      <q-bar class="bg-transparent q-px-none q-pt-lg q-pb-xs">
+        <q-btn
+          dense
+          flat
+          icon="close"
+          size="20px"
+          color="negative"
+          @click="isDialogOpen = false"
+        />
+
+        <q-space />
+
+        <q-btn
+          dense
+          flat
+          :icon="doneIcon"
+          size="20px"
+          color="positive"
+          @click="doneFunction()"
+        />
+      </q-bar>
+
+      <q-card-section class="bg-transparent q-mx-sm q-px-xs q-py-sm column">
+        <slot />
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
   import {
     defineComponent,
-    PropType,
     computed,
   } from 'vue';
-  import {
-    Task,
-  } from './models';
-
-  function useTasks(tasks: Task[], emit: (event: string, args: Task[]) => void) {
-    const filteredTasks = computed({
-      get():Task[] {
-        return tasks;
-      },
-      set(newTasks: Task[]) {
-        emit('update:modelValue', newTasks);
-      },
-    });
-    return { filteredTasks };
-  }
 
   export default defineComponent({
     name: 'MidDialog',
     props: {
-      isDialogOpen: {
-        type: Boolean,
-        default: false,
-      },
       modelValue: {
-        type: Array as PropType<Task[]>,
-        default: () => [],
+        type: Boolean,
+        required: true,
+      },
+      doneFunction: {
+        type: Function,
+        required: true,
+      },
+      doneIcon: {
+        type: String,
+        default: 'done',
       },
     },
     setup(props, { emit }) {
+      const isDialogOpen = computed({
+        get():boolean {
+          return props.modelValue;
+        },
+        set(newState: boolean) {
+          emit('update:modelValue', newState);
+        },
+      });
+
       return {
-        ...useTasks(props.modelValue, emit),
+        isDialogOpen,
       };
     },
   });

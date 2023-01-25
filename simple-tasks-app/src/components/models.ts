@@ -11,6 +11,21 @@ export enum Urgency {
   COMMON = 'common',
 }
 
+export enum Orientation {
+  ASC = 'ascending',
+  DESC = 'descending',
+}
+
+interface SingleSortBy {
+  use: boolean,
+  orientation: Orientation,
+}
+
+export interface SortBy {
+  name: SingleSortBy,
+  dueDate: SingleSortBy,
+}
+
 export interface Plan {
   planId: number;
   title: string;

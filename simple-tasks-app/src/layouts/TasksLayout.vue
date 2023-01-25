@@ -164,7 +164,7 @@
           no-caps
           aria-label="Search"
           class="col-4 q-pt-sm"
-          @click="toggleSearchDialog(true)"
+          @click="openSearchDialog"
         >
           <div class="column items-center justify-center">
             <q-icon name="search" size="24px" color="dark-common"/>
@@ -174,120 +174,17 @@
       </q-toolbar>
     </q-footer>
 
-    <big-dialog
+    <create-project-dialog
       v-model="isCreateProjectOpen"
-      :handle-save="saveProject"
-    >
-      <q-input
-        v-model="newProject.name"
-        bottom-slots
-        counter
-        clearable
-        maxlength="20"
-        label="Project name"
-        color="primary-main"
-        class="q-mb-md"
-      >
-        <template v-slot:hint>
-          Max of 20 characters
-        </template>
-      </q-input>
-      <q-input
-        v-model="newProject.description"
-        bottom-slots
-        counter
-        clearable
-        maxlength="50"
-        label="Description"
-        color="primary-main"
-        class="q-mb-md"
-      >
-        <template v-slot:hint>
-          Max of 50 characters
-        </template>
-      </q-input>
-    </big-dialog>
+    />
 
-    <big-dialog
+    <create-task-dialog
       v-model="isCreateTaskOpen"
-      :handle-save="saveTask"
-    >
-      <q-input
-        v-model="newTask.name"
-        bottom-slots
-        counter
-        clearable
-        maxlength="20"
-        label="Project name"
-        color="primary-main"
-        class="q-mb-md"
-      >
-        <template v-slot:hint>
-          Max of 20 characters
-        </template>
-      </q-input>
+    />
 
-      <q-input
-        v-model="newTask.description"
-        bottom-slots
-        counter
-        clearable
-        maxlength="50"
-        label="Description"
-        color="primary-main"
-        class="q-mb-md"
-      >
-        <template v-slot:hint>
-          Max of 50 characters
-        </template>
-      </q-input>
-
-      <span class="q-mt-md q-mb-sm text-secondary fs-12 lh-16" v-html="'Urgency'"/>
-      <div class="q-px-none text-capitalize fs-13 lh-16 text-dark">
-        <q-radio
-          v-model="newTask.urgency"
-          :val="Urgency.URGENT"
-          :label="Urgency.URGENT"
-          color="negative"
-        />
-        <q-radio
-          v-model="newTask.urgency"
-          :val="Urgency.IMPORTANT"
-          :label="Urgency.IMPORTANT"
-          color="warning"
-        />
-        <q-radio
-          v-model="newTask.urgency"
-          :val="Urgency.COMMON"
-          :label="Urgency.COMMON"
-          color="positive"
-        />
-      </div>
-
-      <span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16" v-html="'Due date'"/>
-      <q-input
-        v-model="newTask.dueDate"
-        mask="####-##-##"
-        placeholder="YYYY-MM-DD"
-        color="primary-main"
-        class="q-mb-md"
-      >
-        <template v-slot:append>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy>
-              <q-date
-                v-model="newTask.dueDate"
-                mask="YYYY-MM-DD"
-                color="primary-main"
-                title="Due date"
-                subtitle="Select a due date to the new task"
-                v-close-popup
-              />
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
-    </big-dialog>
+    <search-dialog
+      v-model="isSearchDialogOpen"
+    />
   </q-layout>
 </template>
 
@@ -301,7 +198,9 @@
   import {
     useRouter, useRoute,
   } from 'vue-router';
-  import BigDialog from '../components/BigDialog.vue';
+  import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
+  import CreateTaskDialog from '../components/tasks/CreateTaskDialog.vue';
+  import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
 
   const drawerOptions = [
     {
@@ -373,7 +272,9 @@
   export default defineComponent({
     name: 'MainLayout',
     components: {
-      BigDialog,
+      CreateProjectDialog,
+      CreateTaskDialog,
+      SearchDialog,
     },
     setup () {
       const router = useRouter();
@@ -381,28 +282,18 @@
 
       const leftDrawerOpen = ref(false);
       const selectedDrawerOption = ref(0);
-      const searchDialogOpen = ref(false);
+      const isSearchDialogOpen = ref(false);
       const projectSelected = ref('MyProject');
       const reactiveTasks = reactive(tasks);
       const isCreateProjectOpen = ref(false);
       const isCreateTaskOpen = ref(false);
-      const newProject = ref({
-        name: '',
-        description: '',
-      });
-      const newTask = ref({
-        name: '',
-        description: '',
-        urgency: Urgency.URGENT,
-        dueDate: '',
-      });
 
       function toggleLeftDrawer(shouldOpen: boolean) {
         leftDrawerOpen.value = shouldOpen;
       }
 
-      function toggleSearchDialog(shouldOpen: boolean) {
-        searchDialogOpen.value = shouldOpen;
+      function openSearchDialog() {
+        isSearchDialogOpen.value = true;
       }
 
       function changeSelectedDrawerOption(optionIndex: number, pathToGo: string | undefined) {
@@ -425,23 +316,15 @@
         isCreateTaskOpen.value = true;
       }
 
-      function saveProject(): void {
-        1+1;
-      }
-
-      function saveTask(): void {
-        1+1;
-      }
-
       return {
         toggleLeftDrawer,
-        toggleSearchDialog,
+        openSearchDialog,
         isSelectedDrawerOption,
         changeSelectedDrawerOption,
         drawerOptions,
         selectedDrawerOption,
         leftDrawerOpen,
-        searchDialogOpen,
+        isSearchDialogOpen,
         tasks: reactiveTasks,
         projectSelected,
         projectOptions,
@@ -449,11 +332,6 @@
         openCreateTaskDialog,
         isCreateProjectOpen,
         isCreateTaskOpen,
-        newProject,
-        saveProject,
-        saveTask,
-        newTask,
-        Urgency,
       };
     },
   });
