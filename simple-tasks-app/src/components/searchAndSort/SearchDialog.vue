@@ -73,9 +73,11 @@
 
 <script lang="ts">
   import {
-    defineComponent, ref, computed,
+    defineComponent, computed, WritableComputedRef, reactive,
   } from 'vue';
-  import { Urgency } from '../models';
+  import {
+    Urgency, SearchFields,
+  } from '../models';
   import MidDialog from '../MidDialog.vue';
 
   export default defineComponent ({
@@ -90,13 +92,13 @@
       },
     },
     setup (props, { emit }) {
-      const searchFields = ref({
+      const searchFields : SearchFields = reactive({
         name: '',
         urgency: Urgency.URGENT,
         dueDate: '',
       });
 
-      const isSearchDialogOpen = computed({
+      const isSearchDialogOpen : WritableComputedRef<boolean> = computed({
         get(): boolean {
           return props.modelValue;
         },
@@ -105,7 +107,7 @@
         },
       });
 
-      function searchTasks() {
+      function searchTasks(): void {
         isSearchDialogOpen.value = false;
       }
 

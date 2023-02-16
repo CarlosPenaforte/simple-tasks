@@ -26,6 +26,12 @@ export interface SortBy {
   dueDate: SingleSortBy,
 }
 
+export interface SearchFields {
+  name: string,
+  urgency: Urgency,
+  dueDate: string,
+}
+
 export interface Plan {
   planId: number;
   title: string;

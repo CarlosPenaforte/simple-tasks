@@ -140,6 +140,7 @@
           no-wrap
           aria-label="Sort"
           class="col-4 q-pt-sm"
+          @click="openSortDialog"
         >
           <div class="column items-center justify-center">
             <q-icon name="sort" size="24px" color="dark-common"/>
@@ -185,6 +186,10 @@
     <search-dialog
       v-model="isSearchDialogOpen"
     />
+
+    <sort-dialog
+      v-model="isSortDialogOpen"
+    />
   </q-layout>
 </template>
 
@@ -201,6 +206,7 @@
   import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
   import CreateTaskDialog from '../components/tasks/CreateTaskDialog.vue';
   import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
+  import SortDialog from '../components/searchAndSort/SortDialog.vue';
 
   const drawerOptions = [
     {
@@ -275,6 +281,7 @@
       CreateProjectDialog,
       CreateTaskDialog,
       SearchDialog,
+      SortDialog,
     },
     setup () {
       const router = useRouter();
@@ -283,6 +290,7 @@
       const leftDrawerOpen = ref(false);
       const selectedDrawerOption = ref(0);
       const isSearchDialogOpen = ref(false);
+      const isSortDialogOpen = ref(false);
       const projectSelected = ref('MyProject');
       const reactiveTasks = reactive(tasks);
       const isCreateProjectOpen = ref(false);
@@ -294,6 +302,10 @@
 
       function openSearchDialog() {
         isSearchDialogOpen.value = true;
+      }
+
+      function openSortDialog() {
+        isSortDialogOpen.value = true;
       }
 
       function changeSelectedDrawerOption(optionIndex: number, pathToGo: string | undefined) {
@@ -325,9 +337,11 @@
         selectedDrawerOption,
         leftDrawerOpen,
         isSearchDialogOpen,
+        isSortDialogOpen,
         tasks: reactiveTasks,
         projectSelected,
         projectOptions,
+        openSortDialog,
         openCreateProjectDialog,
         openCreateTaskDialog,
         isCreateProjectOpen,
