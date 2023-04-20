@@ -48,14 +48,9 @@
                   transition-hide="flip-left"
                 >
                   <q-list style="min-width: 100px">
-                    <q-item clickable v-close-popup>
+                    <q-item clickable @click="$emit('open-edit-task',task)" v-close-popup>
                       <q-item-section>
                         <span v-html="'Editar'" class="text-dark" />
-                      </q-item-section>
-                    </q-item>
-                    <q-item clickable v-close-popup>
-                      <q-item-section>
-                        <span v-html="'Compartilhar'" class="text-dark" />
                       </q-item-section>
                     </q-item>
                     <q-item clickable v-close-popup>

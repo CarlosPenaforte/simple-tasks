@@ -12,8 +12,8 @@ export enum Urgency {
 }
 
 export enum Orientation {
-  ASC = 'ascending',
-  DESC = 'descending',
+  ASC = 'Ascending',
+  DESC = 'Descending',
 }
 
 interface SingleSortBy {

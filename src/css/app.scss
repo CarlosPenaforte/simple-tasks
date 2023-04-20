@@ -12,6 +12,12 @@
   }
 }
 
+@for $i from 1 through 10 {
+  .ls-#{$i} {
+    letter-spacing: #{$i}px;
+  }
+}
+
 @each $weight-name, $font-weight in $font-weights {
   .fw-#{$weight-name} {
     font-weight: #{$font-weight};

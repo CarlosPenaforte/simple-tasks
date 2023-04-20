@@ -5,7 +5,7 @@
     transition-show="slide-up"
     transition-hide="slide-down"
   >
-    <q-card class="bg-whity text-dark q-pa-sm">
+    <q-card class="bg-whity text-dark q-pa-sm full-width">
       <q-bar class="bg-transparent q-px-none q-pt-lg q-pb-xs">
         <q-btn
           dense

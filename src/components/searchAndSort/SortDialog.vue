@@ -4,9 +4,9 @@
     :done-function="sortTasks"
     done-icon="sort"
   >
-  <q-list separator class="fit">
-    <q-item>
-      <q-item-section>
+  <q-list separator class="full-width q-px-none q-mx-none">
+    <q-item class="border-box">
+      <q-item-section class="text-dark q-px-none">
         Name
       </q-item-section>
       <q-item-section>
@@ -15,21 +15,19 @@
           :options="orientationOptions"
           borderless
           behavior="menu"
-          label="Project"
-          label-color="whity"
           color="primary-main"
-          class="q-ml-lg q-px-sm w-200"
+          class="q-ml-sm fit"
           transition-show="jump-down"
           transition-hide="jump-up"
         >
           <template v-slot:selected>
-            <div v-html="sortBy.name.orientation" class="text-whity fw-medium text-capitalize"/>
+            <div v-html="sortBy.name.orientation" class="text-dark fw-medium text-capitalize"/>
           </template>
         </q-select>
       </q-item-section>
     </q-item>
     <q-item>
-      <q-item-section>
+      <q-item-section class="text-dark">
         Due date
       </q-item-section>
       <q-item-section>
@@ -38,15 +36,13 @@
           :options="orientationOptions"
           borderless
           behavior="menu"
-          label="Project"
-          label-color="whity"
           color="primary-main"
-          class="q-ml-lg q-px-sm w-200"
+          class="q-ml-sm fit"
           transition-show="jump-down"
           transition-hide="jump-up"
         >
           <template v-slot:selected>
-            <div v-html="sortBy.dueDate.orientation" class="text-whity fw-medium text-capitalize"/>
+            <div v-html="sortBy.dueDate.orientation" class="text-dark fw-medium text-capitalize"/>
           </template>
         </q-select>
       </q-item-section>
@@ -114,3 +110,10 @@
     },
   });
 </script>
+
+<style scoped>
+
+.border-box {
+  box-sizing: border-box;
+}
+</style>

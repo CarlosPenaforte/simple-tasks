@@ -4,16 +4,19 @@
       <task-list
         v-model="urgentTasks"
         :urgency="Urgency.URGENT"
+        @open-edit-task="(task: Task) => $emit('open-edit-task',task)"
       />
 
       <task-list
         v-model="importantTasks"
         :urgency="Urgency.IMPORTANT"
+        @open-edit-task="(task: Task) => $emit('open-edit-task',task)"
       />
 
       <task-list
         v-model="commonTasks"
         :urgency="Urgency.COMMON"
+        @open-edit-task="(task: Task) => $emit('open-edit-task',task)"
       />
     </q-list>
   </q-page>

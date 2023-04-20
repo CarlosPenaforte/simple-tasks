@@ -129,7 +129,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view v-model="tasks"/>
+      <router-view v-model="tasks" @open-edit-task="(task: Task) => openEditTaskDialog(task)"/>
     </q-page-container>
 
     <q-footer class="bg-secondary-filter">
@@ -179,9 +179,12 @@
       v-model="isCreateProjectOpen"
     />
 
-    <create-task-dialog
+    <task-dialog
+      :current-task="taskToEdit"
       v-model="isCreateTaskOpen"
     />
+
+    <task-dialog is-edit :current-task="taskToEdit" v-model="isEditTaskOpen"/>
 
     <search-dialog
       v-model="isSearchDialogOpen"
@@ -204,7 +207,7 @@
     useRouter, useRoute,
   } from 'vue-router';
   import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
-  import CreateTaskDialog from '../components/tasks/CreateTaskDialog.vue';
+  import TaskDialog from '../components/tasks/TaskDialog.vue';
   import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
   import SortDialog from '../components/searchAndSort/SortDialog.vue';
 
@@ -279,7 +282,7 @@
     name: 'MainLayout',
     components: {
       CreateProjectDialog,
-      CreateTaskDialog,
+      TaskDialog,
       SearchDialog,
       SortDialog,
     },
@@ -295,6 +298,8 @@
       const reactiveTasks = reactive(tasks);
       const isCreateProjectOpen = ref(false);
       const isCreateTaskOpen = ref(false);
+      const isEditTaskOpen = ref(false);
+      let taskToEdit = reactive(tasks[0]);
 
       function toggleLeftDrawer(shouldOpen: boolean) {
         leftDrawerOpen.value = shouldOpen;
@@ -328,6 +333,11 @@
         isCreateTaskOpen.value = true;
       }
 
+      function openEditTaskDialog(task: Task): void {
+        isEditTaskOpen.value = true;
+        taskToEdit = task;
+      }
+
       return {
         toggleLeftDrawer,
         openSearchDialog,
@@ -344,8 +354,11 @@
         openSortDialog,
         openCreateProjectDialog,
         openCreateTaskDialog,
+        openEditTaskDialog,
         isCreateProjectOpen,
         isCreateTaskOpen,
+        isEditTaskOpen,
+        taskToEdit,
       };
     },
   });

@@ -3,6 +3,15 @@
       v-model="isCreateTaskOpen"
       :handle-save="saveTask"
     >
+      <h1 class="text-secondary fs-20 lh-22 ls-2 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
+        <template v-if="isEdit">
+          Edit the Task
+        </template>
+        <template v-else>
+          Create a Task
+        </template>
+      </h1>
+
       <q-input
         v-model="newTask.name"
         bottom-slots
@@ -11,7 +20,7 @@
         maxlength="20"
         label="Task name"
         color="primary-main"
-        class="q-mb-md"
+        class="q-mb-md text-dark"
       >
         <template v-slot:hint>
           Max of 20 characters
@@ -26,7 +35,7 @@
         maxlength="50"
         label="Description"
         color="primary-main"
-        class="q-mb-md"
+        class="q-mb-md text-dark"
       >
         <template v-slot:hint>
           Max of 50 characters
@@ -34,7 +43,7 @@
       </q-input>
 
       <span class="q-mt-md q-mb-sm text-secondary fs-12 lh-16" v-html="'Urgency'"/>
-      <div class="q-px-none text-capitalize fs-13 lh-16 text-dark">
+      <div class="q-pl-none q-pr-sm text-capitalize fs-13 lh-16 text-dark flex justify-between">
         <q-radio
           v-model="newTask.urgency"
           :val="Urgency.URGENT"
@@ -72,6 +81,7 @@
                 color="primary-main"
                 title="Due date"
                 subtitle="Select a due date to the new task"
+                class="text-dark"
                 v-close-popup
               />
             </q-popup-proxy>
@@ -83,10 +93,10 @@
 
 <script lang="ts">
   import {
-    defineComponent, ref, computed,
+    defineComponent, computed, PropType, reactive,
   } from 'vue';
   import {
-    Urgency,
+    Urgency, Task,
   } from 'components/models';
   import BigDialog from '../BigDialog.vue';
 
@@ -104,14 +114,32 @@
         type: Boolean,
         required: true,
       },
+      isEdit: {
+        type: Boolean,
+        default: true,
+      },
+      currentTask: {
+        type: Object as PropType<Task>,
+        required: true,
+      },
     },
+
     setup (props, { emit }) {
-      const newTask = ref({
+      let newTask = reactive({
         name: '',
         description: '',
         urgency: Urgency.URGENT,
         dueDate: '',
       });
+
+      if (props.isEdit) {
+        newTask = reactive({
+          name: props.currentTask.title,
+          description: props.currentTask.description,
+          urgency: props.currentTask.urgency,
+          dueDate: props.currentTask.dueDate? props.currentTask.dueDate.toLocaleDateString('pt-BR') : '',
+        });
+      }
 
       const isCreateTaskOpen = computed({
         get():boolean {
