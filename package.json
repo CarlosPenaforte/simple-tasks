@@ -4,7 +4,7 @@
   "description": "A easy-to-use app individual and/or team tasks management",
   "productName": "Simple Tasks",
   "author": "Carlos Penaforte <dannhl08@gmail.com>",
-  "private": true,
+  "private": false,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
