@@ -1,0 +1,55 @@
+// Quasar SCSS (& Sass) Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
+
+// Check documentation for full list of Quasar variables
+
+// Your own variables (that are declared here) and Quasar's own
+// ones will be available out of the box in your .vue/.scss/.sass files
+
+// It's highly recommended to change the default colors
+// to match your app's branding.
+// Tip: Use the "Theme Builder" on Quasar's documentation website.
+
+$colors: (
+  primary-main: rgb(243, 150, 33),
+  primary-lighter: rgb(255, 180, 50),
+  primary-darker: rgb(220, 132, 25),
+  primary-filter: rgba(243, 150, 33, 0.07),
+
+  secondary: rgb(83, 105, 115),
+  secondary-filter: #53535310,
+  whity: rgb(250, 250, 250),
+  common: #dcdcdc,
+  lighter-common: rgb(245,245,245),
+
+  dark: rgb(50, 30, 10),
+  dark-common: rgb(50, 50, 50),
+
+  positive: rgb(80, 200, 80),
+  negative: rgb(255, 0, 80),
+  info: #31CCEC,
+  warning: rgb(255, 225, 50),
+
+  dark-positive: rgb(50, 150, 50),
+  dark-negative: rgb(155, 0, 50),
+  dark-info: rgb(49, 170, 196),
+  dark-warning: rgb(200, 180, 40)
+);
+
+
+$font-sizes: 10, 11, 12, 14, 16, 18, 20, 22;
+
+$line-heights: 12, 13, 14, 16, 18, 20, 22, 24;
+
+$font-weights: (
+  thin: 100,
+  light: 300,
+  regular: 400,
+  medium: 500,
+  bold: 700,
+  bolder: 900
+);
+
+$opacities: 20, 40, 60, 80, 100;
