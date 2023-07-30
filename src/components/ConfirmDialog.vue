@@ -38,44 +38,44 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent,
-	computed,
-} from 'vue';
+  import {
+    defineComponent,
+    computed,
+  } from 'vue';
 
-export default defineComponent({
-	name: 'ConfirmDialog',
-	props: {
-		modelValue: {
-			type: Boolean,
-			required: true,
-		},
-		doneFunction: {
-			type: Function,
-			required: true,
-		},
-		doneIcon: {
-			type: String,
-			default: 'done',
-		},
-		confirmQuestion: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props, { emit }) {
-		const isDialogOpen = computed({
-			get():boolean {
-				return props.modelValue;
-			},
-			set(newState: boolean) {
-				emit('update:modelValue', newState);
-			},
-		});
+  export default defineComponent({
+    name: 'ConfirmDialog',
+  });
+</script>
 
-		return {
-			isDialogOpen,
-		};
-	},
-});
+<script setup lang="ts">
+  const props = defineProps({
+    modelValue: {
+      type: Boolean,
+      required: true,
+    },
+    doneFunction: {
+      type: Function,
+      required: true,
+    },
+    doneIcon: {
+      type: String,
+      default: 'done',
+    },
+    confirmQuestion: {
+      type: String,
+      required: true,
+    },
+  });
+
+  const emit = defineEmits([ 'update:modelValue' ]);
+
+  const isDialogOpen = computed({
+    get():boolean {
+      return props.modelValue;
+    },
+    set(newState: boolean) {
+      emit('update:modelValue', newState);
+    },
+  });
 </script>

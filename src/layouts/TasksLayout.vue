@@ -141,7 +141,7 @@
 
 		<q-page-container>
 			<router-view
-				v-model="tasks"
+				v-model="reactiveTasks"
 				@open-edit-task="openEditTaskDialog"
 				@open-delete-task="openDeleteTaskDialog"
 			/>
@@ -236,155 +236,127 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent, ref, reactive,
-} from 'vue';
-import { useProjectStore } from 'src/stores/projectStore';
-import { useTaskStore } from 'src/stores/taskStore';
-import { useUserStore } from 'src/stores/userStore';
-import {
-	Task, Urgency,
-} from 'src/models';
-import { storeToRefs } from 'pinia';
-import {
-	useRouter, useRoute,
-} from 'vue-router';
-import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
-import TaskDialog from '../components/tasks/TaskDialog.vue';
-import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
-import SortDialog from '../components/searchAndSort/SortDialog.vue';
-import ConfirmDialog from '../components/ConfirmDialog.vue';
+  import {
+    defineComponent, ref, reactive,
+  } from 'vue';
+  import { useProjectStore } from 'src/stores/projectStore';
+  import { useTaskStore } from 'src/stores/taskStore';
+  import { useUserStore } from 'src/stores/userStore';
+  import {
+    Task, Urgency,
+  } from 'src/models';
+  import { storeToRefs } from 'pinia';
+  import {
+    useRouter, useRoute,
+  } from 'vue-router';
+  import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
+  import TaskDialog from '../components/tasks/TaskDialog.vue';
+  import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
+  import SortDialog from '../components/searchAndSort/SortDialog.vue';
+  import ConfirmDialog from '../components/ConfirmDialog.vue';
 
-const drawerOptions = [
-	{
-		title: 'Your Tasks',
-		icon: 'checklist',
-		path: '/',
-	},
-	{
-		title: 'Logout',
-		icon: 'logout',
-	},
-];
+  export default defineComponent({
+    name: 'MainLayout',
+    components: {
+      CreateProjectDialog,
+      TaskDialog,
+      SearchDialog,
+      SortDialog,
+      ConfirmDialog,
+    },
+  });
+</script>
 
-const taskStore = useTaskStore();
+<script setup lang="ts">
+  const drawerOptions = [
+    {
+      title: 'Your Tasks',
+      icon: 'checklist',
+      path: '/',
+    },
+    {
+      title: 'Logout',
+      icon: 'logout',
+    },
+  ];
 
-const projectStore = useProjectStore();
+  const taskStore = useTaskStore();
+  const projectStore = useProjectStore();
+  const userStore = useUserStore();
 
-const userStore = useUserStore();
+  const router = useRouter();
+  const route = useRoute();
 
-export default defineComponent({
-	name: 'MainLayout',
-	components: {
-		CreateProjectDialog,
-		TaskDialog,
-		SearchDialog,
-		SortDialog,
-		ConfirmDialog,
-	},
-	setup() {
-		const router = useRouter();
-		const route = useRoute();
+  const projectOptions = storeToRefs(projectStore).projects;
+  const { tasks } = storeToRefs(taskStore);
+  const { user } = storeToRefs(userStore);
 
-		const projectOptions = storeToRefs(projectStore).projects;
-		const { tasks } = storeToRefs(taskStore);
-		const { user } = storeToRefs(userStore);
+  const leftDrawerOpen = ref(false);
+  const selectedDrawerOption = ref(0);
+  const isSearchDialogOpen = ref(false);
+  const isSortDialogOpen = ref(false);
+  const projectSelected = ref(projectOptions.value[0]);
+  const reactiveTasks = reactive(tasks);
+  const isCreateProjectOpen = ref(false);
+  const isCreateTaskOpen = ref(false);
+  const isEditTaskOpen = ref(false);
+  let targettedTask = reactive({
+    taskId: 1,
+    userId: 1,
+    projectId: 1,
+    title: 'ct1',
+    description: 'ok',
+    creationDate: new Date(),
+    urgency: Urgency.URGENT,
+    done: false,
+  });
+  const isDeleteTaskOpen = ref(false);
 
-		const leftDrawerOpen = ref(false);
-		const selectedDrawerOption = ref(0);
-		const isSearchDialogOpen = ref(false);
-		const isSortDialogOpen = ref(false);
-		const projectSelected = ref(projectOptions.value[0]);
-		const reactiveTasks = reactive(tasks);
-		const isCreateProjectOpen = ref(false);
-		const isCreateTaskOpen = ref(false);
-		const isEditTaskOpen = ref(false);
-		let targettedTask = reactive({
-			taskId: 1,
-			userId: 1,
-			projectId: 1,
-			title: 'ct1',
-			description: 'ok',
-			creationDate: new Date(),
-			urgency: Urgency.URGENT,
-			done: false,
-		});
-		const isDeleteTaskOpen = ref(false);
+  function toggleLeftDrawer(shouldOpen: boolean) {
+    leftDrawerOpen.value = shouldOpen;
+  }
 
-		function toggleLeftDrawer(shouldOpen: boolean) {
-			leftDrawerOpen.value = shouldOpen;
-		}
+  function openSearchDialog() {
+    isSearchDialogOpen.value = true;
+  }
 
-		function openSearchDialog() {
-			isSearchDialogOpen.value = true;
-		}
+  function openSortDialog() {
+    isSortDialogOpen.value = true;
+  }
 
-		function openSortDialog() {
-			isSortDialogOpen.value = true;
-		}
+  function changeSelectedDrawerOption(optionIndex: number, pathToGo: string | undefined) {
+    selectedDrawerOption.value = optionIndex;
+    if (pathToGo && route.path !== pathToGo) {
+      router.push(pathToGo);
+    }
+    toggleLeftDrawer(false);
+  }
 
-		function changeSelectedDrawerOption(optionIndex: number, pathToGo: string | undefined) {
-			selectedDrawerOption.value = optionIndex;
-			if (pathToGo && route.path !== pathToGo) {
-				router.push(pathToGo);
-			}
-			toggleLeftDrawer(false);
-		}
+  function isSelectedDrawerOption(optionIndex: number): boolean {
+    return selectedDrawerOption.value === optionIndex;
+  }
 
-		function isSelectedDrawerOption(optionIndex: number): boolean {
-			return selectedDrawerOption.value === optionIndex;
-		}
+  function openCreateProjectDialog(): void {
+    isCreateProjectOpen.value = true;
+  }
 
-		function openCreateProjectDialog(): void {
-			isCreateProjectOpen.value = true;
-		}
+  function openCreateTaskDialog(): void {
+    isCreateTaskOpen.value = true;
+  }
 
-		function openCreateTaskDialog(): void {
-			isCreateTaskOpen.value = true;
-		}
+  function openEditTaskDialog(task: Task): void {
+    isEditTaskOpen.value = true;
+    targettedTask = task;
+  }
 
-		function openEditTaskDialog(task: Task): void {
-			isEditTaskOpen.value = true;
-			targettedTask = task;
-		}
+  function openDeleteTaskDialog(task: Task): void {
+    isDeleteTaskOpen.value = true;
+    targettedTask = task;
+  }
 
-		function openDeleteTaskDialog(task: Task): void {
-			isDeleteTaskOpen.value = true;
-			targettedTask = task;
-		}
-
-		function deleteTask(): void {
-			isDeleteTaskOpen.value = false;
-		}
-
-		return {
-			toggleLeftDrawer,
-			openSearchDialog,
-			isSelectedDrawerOption,
-			changeSelectedDrawerOption,
-			drawerOptions,
-			selectedDrawerOption,
-			leftDrawerOpen,
-			isSearchDialogOpen,
-			isSortDialogOpen,
-			tasks: reactiveTasks,
-			projectSelected,
-			projectOptions,
-			openSortDialog,
-			openCreateProjectDialog,
-			openCreateTaskDialog,
-			openEditTaskDialog,
-			isCreateProjectOpen,
-			isCreateTaskOpen,
-			isEditTaskOpen,
-			targettedTask,
-			openDeleteTaskDialog,
-			deleteTask,
-			isDeleteTaskOpen,
-			user,
-		};
-	},
-});
+  function deleteTask(): void {
+    isDeleteTaskOpen.value = false;
+  }
 </script>
 
 <style>

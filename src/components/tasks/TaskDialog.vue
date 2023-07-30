@@ -98,70 +98,66 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent, computed, PropType, reactive,
-} from 'vue';
-import {
-	Urgency, Task,
-} from 'src/models';
-import BigDialog from '../BigDialog.vue';
+  import {
+    defineComponent, computed, PropType, reactive,
+  } from 'vue';
+  import {
+    Urgency, Task,
+  } from 'src/models';
+  import BigDialog from '../BigDialog.vue';
 
-function saveTask() {
-	return 0;
-}
+  export default defineComponent({
+    name: 'CreateTaskDialog',
+    components: {
+      BigDialog,
+    },
+  });
+</script>
 
-export default defineComponent({
-	name: 'CreateTaskDialog',
-	components: {
-		BigDialog,
-	},
-	props: {
-		modelValue: {
-			type: Boolean,
-			required: true,
-		},
-		isEdit: {
-			type: Boolean,
-			default: false,
-		},
-		currentTask: {
-			type: Object as PropType<Task>,
-			required: true,
-		},
-	},
+<script setup lang="ts">
+  const props = defineProps({
+    modelValue: {
+      type: Boolean,
+      required: true,
+    },
+    isEdit: {
+      type: Boolean,
+      default: false,
+    },
+    currentTask: {
+      type: Object as PropType<Task>,
+      required: true,
+    },
+  });
 
-	setup(props, { emit }) {
-		let newTask = reactive({
-			name: '',
-			description: '',
-			urgency: Urgency.URGENT,
-			dueDate: '',
-		});
+  const emit = defineEmits([ 'update:modelValue' ]);
 
-		if (props.isEdit) {
-			newTask = reactive({
-				name: props.currentTask.title,
-				description: props.currentTask.description,
-				urgency: props.currentTask.urgency,
-				dueDate: props.currentTask.dueDate ? props.currentTask.dueDate.toLocaleDateString('pt-BR') : '',
-			});
-		}
+  function saveTask() {
+    return 0;
+  }
 
-		const isCreateTaskOpen = computed({
-			get():boolean {
-				return props.modelValue;
-			},
-			set(newState: boolean) {
-				emit('update:modelValue', newState);
-			},
-		});
+  let newTask = reactive({
+    name: '',
+    description: '',
+    urgency: Urgency.URGENT,
+    dueDate: '',
+  });
 
-		return {
-			newTask,
-			saveTask,
-			isCreateTaskOpen,
-			Urgency,
-		};
-	},
-});
+  if (props.isEdit) {
+    newTask = reactive({
+      name: props.currentTask.title,
+      description: props.currentTask.description,
+      urgency: props.currentTask.urgency,
+      dueDate: props.currentTask.dueDate ? props.currentTask.dueDate.toLocaleDateString('pt-BR') : '',
+    });
+  }
+
+  const isCreateTaskOpen = computed({
+    get():boolean {
+      return props.modelValue;
+    },
+    set(newState: boolean) {
+      emit('update:modelValue', newState);
+    },
+  });
 </script>

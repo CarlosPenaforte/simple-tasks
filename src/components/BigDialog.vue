@@ -37,42 +37,41 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent,
-	computed,
-} from 'vue';
+  import {
+    defineComponent,
+    computed,
+  } from 'vue';
 
-export default defineComponent({
-	name: 'BigDialog',
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false,
-		},
-		handleSave: {
-			type: Function,
-			required: true,
-		},
-	},
-	setup(props, { emit }) {
-		const isDialogOpen = computed({
-			get():boolean {
-				return props.modelValue;
-			},
-			set(newTasks: boolean) {
-				emit('update:modelValue', newTasks);
-			},
-		});
+  export default defineComponent({
+    name: 'BigDialog',
+  });
+</script>
 
-		function save(): void {
-			props.handleSave();
-			isDialogOpen.value = false;
-		}
+<script setup lang="ts">
+  const props = defineProps({
+    modelValue: {
+      type: Boolean,
+      default: false,
+    },
+    handleSave: {
+      type: Function,
+      required: true,
+    },
+  });
 
-		return {
-			isDialogOpen,
-			save,
-		};
-	},
-});
+  const emit = defineEmits([ 'update:modelValue' ]);
+
+  const isDialogOpen = computed({
+    get():boolean {
+      return props.modelValue;
+    },
+    set(newTasks: boolean) {
+      emit('update:modelValue', newTasks);
+    },
+  });
+
+  function save(): void {
+    props.handleSave();
+    isDialogOpen.value = false;
+  }
 </script>

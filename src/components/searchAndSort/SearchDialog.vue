@@ -78,51 +78,48 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent, computed, WritableComputedRef, reactive,
-} from 'vue';
-import {
-	Urgency, SearchFields,
-} from 'src/models';
-import MidDialog from '../MidDialog.vue';
+  import {
+    defineComponent, computed, WritableComputedRef, reactive,
+  } from 'vue';
+  import {
+    Urgency, SearchFields,
+  } from 'src/models';
+  import MidDialog from '../MidDialog.vue';
 
-export default defineComponent({
-	name: 'SearchDialog',
-	components: {
-		MidDialog,
-	},
-	props: {
-		modelValue: {
-			type: Boolean,
-			required: true,
-		},
-	},
-	setup(props, { emit }) {
-		const searchFields : SearchFields = reactive({
-			name: '',
-			urgency: Urgency.URGENT,
-			dueDate: '',
-		});
+  export default defineComponent({
+    name: 'SearchDialog',
+    components: {
+      MidDialog,
+    },
+  });
+</script>
 
-		const isSearchDialogOpen : WritableComputedRef<boolean> = computed({
-			get(): boolean {
-				return props.modelValue;
-			},
-			set(newState: boolean) {
-				emit('update:modelValue', newState);
-			},
-		});
+<script setup lang="ts">
+  const props = defineProps({
+    modelValue: {
+      type: Boolean,
+      required: true,
+    },
+  });
 
-		function searchTasks(): void {
-			isSearchDialogOpen.value = false;
-		}
+  const emit = defineEmits([ 'update:modelValue' ]);
 
-		return {
-			isSearchDialogOpen,
-			searchTasks,
-			Urgency,
-			searchFields,
-		};
-	},
-});
+  const searchFields : SearchFields = reactive({
+    name: '',
+    urgency: Urgency.URGENT,
+    dueDate: '',
+  });
+
+  const isSearchDialogOpen : WritableComputedRef<boolean> = computed({
+    get(): boolean {
+      return props.modelValue;
+    },
+    set(newState: boolean) {
+      emit('update:modelValue', newState);
+    },
+  });
+
+  function searchTasks(): void {
+    isSearchDialogOpen.value = false;
+  }
 </script>

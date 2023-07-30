@@ -61,36 +61,30 @@
 </template>
 
 <script lang="ts">
-import { useRouter } from 'vue-router';
-import {
-	defineComponent, ref, Ref,
-} from 'vue';
+  import { useRouter } from 'vue-router';
+  import {
+    defineComponent, ref, Ref,
+  } from 'vue';
 
-export default defineComponent({
-	name: 'LoginPage',
-	setup() {
-		const email: Ref<string> = ref('');
-		const password: Ref<string> = ref('');
-		const togglePwdVisibility: Ref<boolean> = ref(false);
+  export default defineComponent({
+    name: 'LoginPage',
 
-		const isValidEmail = (val: string) => {
-			const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-			return emailPattern.test(val) || 'Invalid email';
-		};
+  });
+</script>
 
-		const router = useRouter();
+<script setup lang="ts">
+  const email: Ref<string> = ref('');
+  const password: Ref<string> = ref('');
+  const togglePwdVisibility: Ref<boolean> = ref(false);
 
-		const pushToUrl = (path: string) => {
-			router.push(path);
-		};
+  const isValidEmail = (val: string) => {
+    const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
+    return emailPattern.test(val) || 'Invalid email';
+  };
 
-		return {
-			email,
-			password,
-			togglePwdVisibility,
-			isValidEmail,
-			pushToUrl,
-		};
-	},
-});
+  const router = useRouter();
+
+  const pushToUrl = (path: string) => {
+    router.push(path);
+  };
 </script>

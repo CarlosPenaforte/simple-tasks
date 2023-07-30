@@ -58,63 +58,59 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent, reactive, computed, WritableComputedRef,
-} from 'vue';
-import {
-	Orientation, SortBy,
-} from 'src/models';
-import MidDialog from '../MidDialog.vue';
+  import {
+    defineComponent, reactive, computed, WritableComputedRef,
+  } from 'vue';
+  import {
+    Orientation, SortBy,
+  } from 'src/models';
+  import MidDialog from '../MidDialog.vue';
 
-const sortBy: SortBy = reactive({
-	name: {
-		use: false,
-		orientation: Orientation.ASC,
-	},
-	dueDate: {
-		use: false,
-		orientation: Orientation.ASC,
-	},
-});
+  export default defineComponent({
+    name: 'SortDialog',
+    components: {
+      MidDialog,
+    },
+  });
+</script>
 
-const orientationOptions: Orientation[] = [
-	Orientation.ASC, Orientation.DESC,
-];
+<script setup lang="ts">
+  const props = defineProps({
+    modelValue: {
+      type: Boolean,
+      required: true,
+    },
+  });
 
-export default defineComponent({
-	name: 'SortDialog',
-	components: {
-		MidDialog,
-	},
-	props: {
-		modelValue: {
-			type: Boolean,
-			required: true,
-		},
-	},
-	setup(props, { emit }) {
-		const isSortDialogOpen : WritableComputedRef<boolean> = computed({
-			get(): boolean {
-				return props.modelValue;
-			},
-			set(newState: boolean) {
-				emit('update:modelValue', newState);
-			},
-		});
+  const emit = defineEmits([ 'update:modelValue' ]);
 
-		function sortTasks(): void {
-			isSortDialogOpen.value = false;
-		}
+  const sortBy: SortBy = reactive({
+    name: {
+      use: false,
+      orientation: Orientation.ASC,
+    },
+    dueDate: {
+      use: false,
+      orientation: Orientation.ASC,
+    },
+  });
 
-		return {
-			isSortDialogOpen,
-			sortTasks,
-			Orientation,
-			sortBy,
-			orientationOptions,
-		};
-	},
-});
+  const orientationOptions: Orientation[] = [
+    Orientation.ASC, Orientation.DESC,
+  ];
+
+  const isSortDialogOpen : WritableComputedRef<boolean> = computed({
+    get(): boolean {
+      return props.modelValue;
+    },
+    set(newState: boolean) {
+      emit('update:modelValue', newState);
+    },
+  });
+
+  function sortTasks(): void {
+    isSortDialogOpen.value = false;
+  }
 </script>
 
 <style scoped>

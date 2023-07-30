@@ -35,46 +35,44 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent, ref, computed,
-} from 'vue';
-import BigDialog from '../BigDialog.vue';
+  import {
+    defineComponent, ref, computed,
+  } from 'vue';
+  import BigDialog from '../BigDialog.vue';
 
-function saveProject() {
-	return 0;
-}
+  function saveProject() {
+    return 0;
+  }
 
-export default defineComponent({
-	name: 'CreateProjectDialog',
-	components: {
-		BigDialog,
-	},
-	props: {
-		modelValue: {
-			type: Boolean,
-			required: true,
-		},
-	},
-	setup(props, { emit }) {
-		const newProject = ref({
-			name: '',
-			description: '',
-		});
+  export default defineComponent({
+    name: 'CreateProjectDialog',
+    components: {
+      BigDialog,
+    },
+  });
+</script>
 
-		const isCreateProjectOpen = computed({
-			get():boolean {
-				return props.modelValue;
-			},
-			set(newState: boolean) {
-				emit('update:modelValue', newState);
-			},
-		});
+<script setup lang="ts">
+  const props = defineProps({
+    modelValue: {
+      type: Boolean,
+      required: true,
+    },
+  });
 
-		return {
-			newProject,
-			saveProject,
-			isCreateProjectOpen,
-		};
-	},
-});
+  const emit = defineEmits([ 'update:modelValue' ]);
+
+  const newProject = ref({
+    name: '',
+    description: '',
+  });
+
+  const isCreateProjectOpen = computed({
+    get():boolean {
+      return props.modelValue;
+    },
+    set(newState: boolean) {
+      emit('update:modelValue', newState);
+    },
+  });
 </script>

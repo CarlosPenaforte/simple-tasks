@@ -79,46 +79,40 @@
 </template>
 
 <script lang="ts">
-import { useRouter } from 'vue-router';
-import {
-	defineComponent, reactive, ref, Ref,
-} from 'vue';
+  import { useRouter } from 'vue-router';
+  import {
+    defineComponent, reactive, ref, Ref,
+  } from 'vue';
 
+  export default defineComponent({
+    name: 'RegisterPage',
+  });
+</script>
+
+<script setup lang="ts">
   interface RegisterForm {
     email: string,
     password: string,
     confirmPassword: string,
   }
 
-export default defineComponent({
-	name: 'RegisterPage',
-	setup() {
-		const form: RegisterForm = reactive(
-			{
-				email: '',
-				password: '',
-				confirmPassword: '',
-			},
-		);
+  const form: RegisterForm = reactive(
+    {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  );
 
-		const togglePwdVisibility: Ref<boolean> = ref(false);
+  const togglePwdVisibility: Ref<boolean> = ref(false);
 
-		const isValidEmail = (val: string) => {
-			const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-			return emailPattern.test(val) || 'Invalid email';
-		};
+  const isValidEmail = (val: string) => {
+    const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
+    return emailPattern.test(val) || 'Invalid email';
+  };
 
-		const router = useRouter();
-		const pushToUrl = (path: string) => {
-			router.push(path);
-		};
-
-		return {
-			form,
-			togglePwdVisibility,
-			isValidEmail,
-			pushToUrl,
-		};
-	},
-});
+  const router = useRouter();
+  const pushToUrl = (path: string) => {
+    router.push(path);
+  };
 </script>

@@ -36,40 +36,39 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent,
-	computed,
-} from 'vue';
+  import {
+    defineComponent,
+    computed,
+  } from 'vue';
 
-export default defineComponent({
-	name: 'MidDialog',
-	props: {
-		modelValue: {
-			type: Boolean,
-			required: true,
-		},
-		doneFunction: {
-			type: Function,
-			required: true,
-		},
-		doneIcon: {
-			type: String,
-			default: 'done',
-		},
-	},
-	setup(props, { emit }) {
-		const isDialogOpen = computed({
-			get():boolean {
-				return props.modelValue;
-			},
-			set(newState: boolean) {
-				emit('update:modelValue', newState);
-			},
-		});
+  export default defineComponent({
+    name: 'MidDialog',
+  });
+</script>
+<script setup lang="ts">
+  const props = defineProps({
+    modelValue: {
+      type: Boolean,
+      required: true,
+    },
+    doneFunction: {
+      type: Function,
+      required: true,
+    },
+    doneIcon: {
+      type: String,
+      default: 'done',
+    },
+  });
 
-		return {
-			isDialogOpen,
-		};
-	},
-});
+  const emit = defineEmits([ 'update:modelValue' ]);
+
+  const isDialogOpen = computed({
+    get():boolean {
+      return props.modelValue;
+    },
+    set(newState: boolean) {
+      emit('update:modelValue', newState);
+    },
+  });
 </script>

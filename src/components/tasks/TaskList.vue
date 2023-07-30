@@ -98,70 +98,66 @@
 </template>
 
 <script lang="ts">
-import {
-	Task, Urgency,
-} from 'src/models';
-import {
-	defineComponent, PropType, computed, WritableComputedRef,
-} from 'vue';
-import { isTask } from 'src/util/commonFunctions';
+  import {
+    Task, Urgency,
+  } from 'src/models';
+  import {
+    defineComponent, PropType, computed, WritableComputedRef,
+  } from 'vue';
+  import { isTask } from 'src/util/commonFunctions';
 
-export default defineComponent({
-	name: 'TaskList',
-	props: {
-		modelValue: {
-			type: Array as PropType<Task[]>,
-			required: true,
-		},
-		urgency: {
-			type: String as PropType<Urgency>,
-			required: true,
-		},
-	},
-	setup(props, { emit }) {
-		const tasks: WritableComputedRef<Task[]> = computed({
-			get():Task[] {
-				return props.modelValue;
-			},
-			set(newTasks: Task[]): void {
-				emit('update:modelValue', newTasks);
-			},
-		});
+  export default defineComponent({
+    name: 'TaskList',
+  });
+</script>
 
-		const undoneTasks = computed({
-			get():Task[] {
-				return tasks.value.filter((task) => !task.done);
-			},
-			set(newTasks: Task[]): void {
-				tasks.value = tasks.value.map((task) => {
-					const maybeTask = newTasks.find(
-						(newTask) => newTask.taskId === task.taskId,
-					);
+<script setup lang="ts">
+  const props = defineProps({
+    modelValue: {
+      type: Array as PropType<Task[]>,
+      required: true,
+    },
+    urgency: {
+      type: String as PropType<Urgency>,
+      required: true,
+    },
+  });
 
-					if (isTask(maybeTask)) {
-						return maybeTask;
-					}
+  const emit = defineEmits([ 'update:modelValue', 'conclude-task' ]);
 
-					return task;
-				});
-			},
-		});
+  const tasks: WritableComputedRef<Task[]> = computed({
+    get():Task[] {
+      return props.modelValue;
+    },
+    set(newTasks: Task[]): void {
+      emit('update:modelValue', newTasks);
+    },
+  });
 
-		const checkedTask = (task : Task, done : boolean) => {
-			if (done) {
-				emit('conclude-task', task);
-			}
-		};
+  const undoneTasks = computed({
+    get():Task[] {
+      return tasks.value.filter((task) => !task.done);
+    },
+    set(newTasks: Task[]): void {
+      tasks.value = tasks.value.map((task) => {
+        const maybeTask = newTasks.find(
+          (newTask) => newTask.taskId === task.taskId,
+        );
 
-		console.log(tasks);
+        if (isTask(maybeTask)) {
+          return maybeTask;
+        }
 
-		return {
-			tasks,
-			undoneTasks,
-			checkedTask,
-		};
-	},
-});
+        return task;
+      });
+    },
+  });
+
+  const checkedTask = (task : Task, done : boolean) => {
+    if (done) {
+      emit('conclude-task', task);
+    }
+  };
 </script>
 
 <style lang="scss">

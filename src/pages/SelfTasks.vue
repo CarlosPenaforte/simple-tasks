@@ -44,72 +44,67 @@
 </template>
 
 <script lang="ts">
-import {
-	Task, Urgency,
-} from 'src/models';
-import {
-	defineComponent, PropType, computed, WritableComputedRef, ComputedRef, ref,
-} from 'vue';
-import { filterTasksByUrgency } from '../util/commonFunctions';
-import TaskList from '../components/tasks/TaskList.vue';
+  import {
+    PropType, computed, ComputedRef, ref,
+  } from 'vue';
+  import {
+    Task, Urgency,
+  } from 'src/models';
+  import TaskList from '../components/tasks/TaskList.vue';
 
-export default defineComponent({
-	name: 'SelfTasks',
-	components: {
-		TaskList,
-	},
-	props: {
-		modelValue: {
-			type: Array as PropType<Task[]>,
-			required: true,
-		},
-	},
-	setup(props, { emit }) {
-		const tasks: WritableComputedRef<Task[]> = computed({
-			get():Task[] {
-				return props.modelValue;
-			},
-			set(newTasks: Task[]) {
-				emit('update:modelValue', newTasks);
-			},
-		});
+  export default {
+    name: 'SelfTasks',
+    components: {
+      TaskList,
+    },
+  };
+</script>
 
-		const shouldShowCongratulations = ref(false);
+<script setup lang="ts">
+  import { filterTasksByUrgency } from '../util/commonFunctions';
 
-		const hideCongratulations = () => {
-			shouldShowCongratulations.value = false;
-		};
+  const props = defineProps({
+    modelValue: {
+      type: Array as PropType<Task[]>,
+      required: true,
+    },
+  });
 
-		const showCongratulations = () => {
-			shouldShowCongratulations.value = true;
+  // const emit = defineEmits([ 'update:modelValue' ]);
 
-			setTimeout(() => {
-				hideCongratulations();
-			}, 2000);
-		};
+  // const tasks: WritableComputedRef<Task[]> = computed({
+  // 	get():Task[] {
+  // 		return props.modelValue;
+  // 	},
+  // 	set(newTasks: Task[]) {
+  // 		emit('update:modelValue', newTasks);
+  // 	},
+  // });
 
-		const urgentTasks: ComputedRef<Task[]> = computed(
-			(): Task[] => filterTasksByUrgency(props.modelValue, Urgency.URGENT),
-		);
-		const importantTasks: ComputedRef<Task[]> = computed(
-			(): Task[] => filterTasksByUrgency(props.modelValue, Urgency.IMPORTANT),
-		);
-		const commonTasks: ComputedRef<Task[]> = computed(
-			(): Task[] => filterTasksByUrgency(props.modelValue, Urgency.COMMON),
-		);
+  const shouldShowCongratulations = ref(false);
 
-		return {
-			tasks,
-			urgentTasks,
-			importantTasks,
-			commonTasks,
-			Urgency,
-			shouldShowCongratulations,
-			showCongratulations,
-			hideCongratulations,
-		};
-	},
-});
+  const hideCongratulations = () => {
+    shouldShowCongratulations.value = false;
+  };
+
+  const showCongratulations = () => {
+    shouldShowCongratulations.value = true;
+
+    setTimeout(() => {
+      hideCongratulations();
+    }, 2000);
+  };
+
+  const urgentTasks: ComputedRef<Task[]> = computed(
+    (): Task[] => filterTasksByUrgency(props.modelValue, Urgency.URGENT),
+  );
+  const importantTasks: ComputedRef<Task[]> = computed(
+    (): Task[] => filterTasksByUrgency(props.modelValue, Urgency.IMPORTANT),
+  );
+  const commonTasks: ComputedRef<Task[]> = computed(
+    (): Task[] => filterTasksByUrgency(props.modelValue, Urgency.COMMON),
+  );
+
 </script>
 
 <style scoped lang="scss">
