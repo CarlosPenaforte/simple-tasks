@@ -1,15 +1,15 @@
 <template>
 	<q-expansion-item
 		borderless
-		:header-class="`expansion-header-${urgency} bg-whity`"
+		:header-class="`expansion-header-${props.urgency} bg-whity`"
 	>
 		<template v-slot:header>
 			<q-item-section>
-				<span class="expansion-header-label text-dark"> {{ urgency }} </span>
+				<span class="expansion-header-label text-dark"> {{ props.urgency }} </span>
 			</q-item-section>
 
 			<q-item-section side>
-				<span class="text-dark">{{ undoneTasks.length }}</span>
+				<span class="text-dark">{{ tasks.length }}</span>
 			</q-item-section>
 		</template>
 
@@ -17,7 +17,7 @@
 			<q-list separator
 				class="fit"
 			>
-				<q-item v-for="(task, index) in undoneTasks"
+				<q-item v-for="(task, index) in tasks"
 					:key="index"
 				>
 					<q-item-section>
@@ -97,9 +97,9 @@
     Task, Urgency,
   } from 'src/models';
   import {
-    defineComponent, PropType, computed, WritableComputedRef,
+    defineComponent, PropType,
   } from 'vue';
-  import { isTask } from 'src/utils/commonFunctions';
+  import { useTaskStore } from '@/stores/taskStore';
 
   export default defineComponent({
     name: 'TaskList',
@@ -107,51 +107,22 @@
 </script>
 
 <script setup lang="ts">
+  const taskStore = useTaskStore();
+
   const props = defineProps({
-    modelValue: {
-      type: Array as PropType<Task[]>,
-      required: true,
-    },
     urgency: {
       type: String as PropType<Urgency>,
       required: true,
     },
   });
 
-  const emit = defineEmits([ 'update:modelValue', 'conclude-task' ]);
-
-  const tasks: WritableComputedRef<Task[]> = computed({
-    get():Task[] {
-      return props.modelValue;
-    },
-    set(newTasks: Task[]): void {
-      emit('update:modelValue', newTasks);
-    },
-  });
-
-  const undoneTasks = computed({
-    get():Task[] {
-      return tasks.value.filter((task) => !task.done);
-    },
-    set(newTasks: Task[]): void {
-      tasks.value = tasks.value.map((task) => {
-        const maybeTask = newTasks.find(
-          (newTask) => newTask.taskId === task.taskId,
-        );
-
-        if (isTask(maybeTask)) {
-          return maybeTask;
-        }
-
-        return task;
-      });
-    },
-  });
+  const tasks = taskStore.undoneTasks.filter((task) => task.urgency === props.urgency);
 
   const checkedTask = (task : Task, done : boolean) => {
-    if (done) {
-      emit('conclude-task', task);
-    }
+    taskStore.updateTask({
+      ...task,
+      done,
+    });
   };
 </script>
 

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import {
 	Task, Urgency,
 } from 'src/models';
+import { filterTasksByUrgency } from '@/utils/commonFunctions';
 
 export const useTaskStore = defineStore('task', {
 	state: () => ({
@@ -78,6 +79,25 @@ export const useTaskStore = defineStore('task', {
 		},
 		removeTask(taskId: number) {
 			this.tasks = this.tasks.filter((task) => !(task.taskId === taskId));
+		},
+	},
+	getters: {
+		undoneTasks(): Task[] {
+			return this.tasks.filter((task) => !task.done);
+		},
+
+		doneTasks(): Task[] {
+			return this.tasks.filter((task) => task.done);
+		},
+
+		urgentTasks(): Task[] {
+			return filterTasksByUrgency(this.tasks, Urgency.URGENT);
+		},
+		importantTasks(): Task[] {
+			return filterTasksByUrgency(this.tasks, Urgency.IMPORTANT);
+		},
+		commonTasks(): Task[] {
+			return filterTasksByUrgency(this.tasks, Urgency.COMMON);
 		},
 	},
 });

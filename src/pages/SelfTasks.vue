@@ -5,7 +5,6 @@
 			class="fit"
 		>
 			<task-list
-				v-model="urgentTasks"
 				:urgency="Urgency.URGENT"
 				@open-edit-task="(task: Task) => $emit('open-edit-task',task)"
 				@open-delete-task="(task: Task) => $emit('open-delete-task',task)"
@@ -13,7 +12,6 @@
 			/>
 
 			<task-list
-				v-model="importantTasks"
 				:urgency="Urgency.IMPORTANT"
 				@open-edit-task="(task: Task) => $emit('open-edit-task',task)"
 				@open-delete-task="(task: Task) => $emit('open-delete-task',task)"
@@ -21,7 +19,6 @@
 			/>
 
 			<task-list
-				v-model="commonTasks"
 				:urgency="Urgency.COMMON"
 				@open-edit-task="(task: Task) => $emit('open-edit-task',task)"
 				@open-delete-task="(task: Task) => $emit('open-delete-task',task)"
@@ -43,13 +40,9 @@
 
 <script lang="ts">
   import {
-    PropType, computed, ComputedRef,
-  } from 'vue';
-  import {
     Task, Urgency,
   } from '@/models';
   import TaskList from '@/components/tasks/TaskList.vue';
-  import { filterTasksByUrgency } from '@/utils/commonFunctions';
   import { useState } from '@/utils/composables';
 
   export default {
@@ -61,13 +54,6 @@
 </script>
 
 <script setup lang="ts">
-  const props = defineProps({
-    modelValue: {
-      type: Array as PropType<Task[]>,
-      required: true,
-    },
-  });
-
   // const emit = defineEmits([ 'update:modelValue' ]);
 
   // const tasks: WritableComputedRef<Task[]> = computed({
@@ -91,17 +77,6 @@
       hideCongratulations();
     }, 2000);
   };
-
-  const urgentTasks: ComputedRef<Task[]> = computed(
-    (): Task[] => filterTasksByUrgency(props.modelValue, Urgency.URGENT),
-  );
-  const importantTasks: ComputedRef<Task[]> = computed(
-    (): Task[] => filterTasksByUrgency(props.modelValue, Urgency.IMPORTANT),
-  );
-  const commonTasks: ComputedRef<Task[]> = computed(
-    (): Task[] => filterTasksByUrgency(props.modelValue, Urgency.COMMON),
-  );
-
 </script>
 
 <style scoped lang="scss">
