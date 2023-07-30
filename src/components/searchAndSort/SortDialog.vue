@@ -79,15 +79,14 @@
 </script>
 
 <script setup lang="ts">
-  const [ props, emit ] = [
-    defineProps({
-      modelValue: {
-        type: Boolean,
-        default: false,
-      },
-    }),
-    defineEmits([ 'update:modelValue' ]),
-  ];
+  const props = defineProps({
+    modelValue: {
+      type: Boolean,
+      default: false,
+    },
+  });
+
+  const emit = defineEmits([ 'update:modelValue' ]);
 
   const sortBy: SortBy = reactive({
     name: {

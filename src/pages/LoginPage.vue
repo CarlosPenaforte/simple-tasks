@@ -54,6 +54,7 @@
 					color="positive"
 					text-color="whity"
 					class="col-5 no-padding no-margin text-weight-bold"
+					@click.stop.prevent="pushToUrl('/')"
 				/>
 			</q-card-actions>
 		</q-card>
@@ -65,7 +66,7 @@
   import {
     defineComponent, ref, Ref,
   } from 'vue';
-  import { useState } from '@/utils/composables';
+  import { useState } from 'src/utils/composables';
 
   export default defineComponent({
     name: 'LoginPage',

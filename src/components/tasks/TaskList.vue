@@ -99,7 +99,7 @@
   import {
     defineComponent, PropType,
   } from 'vue';
-  import { useTaskStore } from '@/stores/taskStore';
+  import { useTaskStore } from 'src/stores/taskStore';
 
   export default defineComponent({
     name: 'TaskList',

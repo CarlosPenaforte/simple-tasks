@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import {
 	Task, Urgency,
 } from 'src/models';
-import { filterTasksByUrgency } from '@/utils/commonFunctions';
+import { filterTasksByUrgency } from 'src/utils/commonFunctions';
 
 export const useTaskStore = defineStore('task', {
 	state: () => ({

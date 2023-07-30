@@ -111,23 +111,22 @@
 </script>
 
 <script setup lang="ts">
-  const [ props, emit ] = [
-    defineProps({
-      modelValue: {
-        type: Boolean,
-        required: true,
-      },
-      isEdit: {
-        type: Boolean,
-        default: false,
-      },
-      currentTask: {
-        type: Object as PropType<Task>,
-        required: true,
-      },
-    }),
-    defineEmits([ 'update:modelValue' ]),
-  ];
+  const props = defineProps({
+    modelValue: {
+      type: Boolean,
+      required: true,
+    },
+    isEdit: {
+      type: Boolean,
+      default: false,
+    },
+    currentTask: {
+      type: Object as PropType<Task>,
+      required: true,
+    },
+  });
+
+  const emit = defineEmits([ 'update:modelValue' ]);
 
   function saveTask() {
     return 0;

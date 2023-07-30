@@ -104,7 +104,7 @@
 					</q-card>
 				</q-item>
 				<q-item
-					v-for="({ title, icon, path}, index) in drawerOptions"
+					v-for="({ title, icon, path, action}, index) in drawerOptions"
 					:key="index"
 					class="no-padding no-margin"
 				>
@@ -116,7 +116,7 @@
 								? 'text-primary-main bg-primary-filter'
 								: 'text-secondary bg-white'
 						}`"
-						@click="changeSelectedDrawerOption(index, path)"
+						@click="changeSelectedDrawerOption(index, path, action)"
 					>
 						<div>
 							<q-icon
@@ -253,7 +253,7 @@
   import {
     useRouter, useRoute,
   } from 'vue-router';
-  import { useState } from '@/utils/composables';
+  import { useState } from 'src/utils/composables';
   import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
   import TaskDialog from '../components/tasks/TaskDialog.vue';
   import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
@@ -273,18 +273,6 @@
 </script>
 
 <script setup lang="ts">
-  const drawerOptions = [
-    {
-      title: 'Your Tasks',
-      icon: 'checklist',
-      path: '/',
-    },
-    {
-      title: 'Logout',
-      icon: 'logout',
-    },
-  ];
-
   const taskStore = useTaskStore();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
@@ -329,11 +317,13 @@
     isSortDialogOpen.value = true;
   }
 
-  function changeSelectedDrawerOption(optionIndex: number, pathToGo: string | undefined) {
+  function changeSelectedDrawerOption(optionIndex: number, pathToGo?: string, action?: () => void) {
     setDrawerOption(optionIndex);
     if (pathToGo && route.path !== pathToGo) {
       router.push(pathToGo);
     }
+    if (action) action();
+
     toggleLeftDrawer(false);
   }
 
@@ -362,6 +352,23 @@
   function deleteTask(): void {
     isDeleteTaskOpen.value = false;
   }
+
+  function logout():void {
+    router.push('/login');
+  }
+
+  const drawerOptions = [
+    {
+      title: 'Your Tasks',
+      icon: 'checklist',
+      path: '/',
+    },
+    {
+      title: 'Logout',
+      icon: 'logout',
+      action: logout,
+    },
+  ];
 </script>
 
 <style>

@@ -72,6 +72,7 @@
 					color="positive"
 					text-color="whity"
 					class="col-5 no-padding no-margin text-weight-bold"
+					@click.stop.prevent="pushToUrl('/')"
 				/>
 			</q-card-actions>
 		</q-card>

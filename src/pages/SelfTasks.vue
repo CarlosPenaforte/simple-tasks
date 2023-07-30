@@ -39,11 +39,11 @@
 </template>
 
 <script lang="ts">
+  import { useState } from 'src/utils/composables';
   import {
     Task, Urgency,
-  } from '@/models';
-  import TaskList from '@/components/tasks/TaskList.vue';
-  import { useState } from '@/utils/composables';
+  } from 'src/models';
+  import TaskList from 'src/components/tasks/TaskList.vue';
 
   export default {
     name: 'SelfTasks',
