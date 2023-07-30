@@ -28,15 +28,17 @@
 					transition-hide="jump-up"
 				>
 					<template v-slot:selected>
-						<div v-html="projectSelected?.name"
+						<div
 							class="text-whity fw-medium"
-						/>
+						>
+							{{ projectSelected?.name }}
+						</div>
 					</template>
 
 					<template v-slot:option="scope">
 						<q-item v-bind="scope.itemProps">
 							<q-item-section>
-								<span v-html="scope.opt.name" />
+								<span>{{ scope.opt.name }}</span>
 							</q-item-section>
 						</q-item>
 					</template>
@@ -93,12 +95,10 @@
 							<div class="column q-pl-xs">
 								<span
 									class="fs-22 q-mb-none q-pb-none lh-20 text-secondary"
-									v-html="user.fullName"
-								/>
+								>{{ user.fullName }}</span>
 								<span
 									class="fs-11 q-mt-none q-pt-none lh-11 text-secondary"
-									v-html="user.email"
-								/>
+								>{{ user.email }}</span>
 							</div>
 						</q-card-section>
 					</q-card>
@@ -125,9 +125,8 @@
 								class="q-pr-md q-pl-xs"
 							/>
 							<span
-								v-html="title"
 								class="q-pl-xs fw-medium fs-16 lh-18"
-							/>
+							>{{ title }}</span>
 						</div>
 					</q-btn>
 				</q-item>
@@ -135,8 +134,7 @@
 			<q-space />
 			<span
 				class="no-margin full-width text-right q-pr-md q-pb-sm text-dark fs-11 lh-12"
-				v-html="'Simple Tasks v0.1.0'"
-			/>
+			>Simple Tasks v0.1.0</span>
 		</q-drawer>
 
 		<q-page-container>
@@ -162,9 +160,11 @@
 							size="24px"
 							color="dark-common"
 						/>
-						<div v-html="'Sort'"
+						<div
 							class="fs-12 lh-20 fw-regular text-secondary"
-						/>
+						>
+							Sort
+						</div>
 					</div>
 				</q-btn>
 				<q-btn
@@ -180,9 +180,11 @@
 							size="30px"
 							color="primary-main"
 						/>
-						<div v-html="'Create Task'"
+						<div
 							class="fs-14 lh-20 fw-medium text-primary-lighter"
-						/>
+						>
+							Create Task
+						</div>
 					</div>
 				</q-btn>
 				<q-btn
@@ -197,9 +199,11 @@
 							size="24px"
 							color="dark-common"
 						/>
-						<div v-html="'search'"
+						<div
 							class="fs-12 lh-20 fw-regular text-secondary"
-						/>
+						>
+							search
+						</div>
 					</div>
 				</q-btn>
 			</q-toolbar>

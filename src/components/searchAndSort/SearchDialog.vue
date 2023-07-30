@@ -19,9 +19,7 @@
 			</template>
 		</q-input>
 
-		<span class="q-mt-xs q-mb-xs text-secondary fs-12 lh-16"
-			v-html="'Search by urgency'"
-		/>
+		<span class="q-mt-xs q-mb-xs text-secondary fs-12 lh-16">Search by urgency</span>
 		<div class="q-px-none text-capitalize fs-12 lh-14 text-dark full-width">
 			<q-radio
 				v-model="searchFields.urgency"
@@ -47,9 +45,7 @@
 			/>
 		</div>
 
-		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16"
-			v-html="'Search by due date'"
-		/>
+		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">Search by due date</span>
 		<q-input
 			v-model="searchFields.dueDate"
 			mask="####-##-##"

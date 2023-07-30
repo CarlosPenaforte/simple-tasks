@@ -23,9 +23,11 @@
 						transition-hide="jump-up"
 					>
 						<template v-slot:selected>
-							<div v-html="sortBy.name.orientation"
+							<div
 								class="text-dark fw-medium text-capitalize"
-							/>
+							>
+								{{ sortBy.name.orientation }}
+							</div>
 						</template>
 					</q-select>
 				</q-item-section>
@@ -46,9 +48,11 @@
 						transition-hide="jump-up"
 					>
 						<template v-slot:selected>
-							<div v-html="sortBy.dueDate.orientation"
+							<div
 								class="text-dark fw-medium text-capitalize"
-							/>
+							>
+								{{ sortBy.dueDate.orientation }}
+							</div>
 						</template>
 					</q-select>
 				</q-item-section>

@@ -29,9 +29,7 @@
 			</q-bar>
 
 			<q-card-section class="bg-transparent q-mx-sm q-px-xs q-py-sm column">
-				<span class="text-center q-py-md fs-16 lh-28"
-					v-html="confirmQuestion"
-				/>
+				<span class="text-center q-py-md fs-16 lh-28">{{ confirmQuestion }}</span>
 			</q-card-section>
 		</q-card>
 	</q-dialog>

@@ -5,15 +5,11 @@
 	>
 		<template v-slot:header>
 			<q-item-section>
-				<span class="expansion-header-label text-dark"
-					v-html="urgency"
-				/>
+				<span class="expansion-header-label text-dark"> {{ urgency }} </span>
 			</q-item-section>
 
 			<q-item-section side>
-				<span class="text-dark"
-					v-html="`(${undoneTasks.length})`"
-				/>
+				<span class="text-dark">{{ undoneTasks.length }}</span>
 			</q-item-section>
 		</template>
 
@@ -27,15 +23,14 @@
 					<q-item-section>
 						<div class="column">
 							<div class="row justify-start items-center">
-								<span v-html="task.title"
+								<span
 									class="text-dark fs-14"
-								/>
+								>{{ task.title }}</span>
 								<template v-if="task.dueDate && task.dueDate <= new Date()">
 									<q-space />
 									<span
-										v-html="'Until ' + task.dueDate.toLocaleDateString()"
 										class="text-negative fs-12 q-mr-xs"
-									/>
+									> {{ 'Until ' + task.dueDate.toLocaleDateString() }}</span>
 									<q-icon
 										name="info"
 										color="negative"
@@ -43,9 +38,9 @@
 									/>
 								</template>
 							</div>
-							<span v-html="task.description"
+							<span
 								class="text-secondary fs-12"
-							/>
+							>{{ task.description }}</span>
 						</div>
 					</q-item-section>
 					<q-item-section side
@@ -67,9 +62,9 @@
 											v-close-popup
 										>
 											<q-item-section>
-												<span v-html="'Edit'"
+												<span
 													class="text-dark"
-												/>
+												>Edit</span>
 											</q-item-section>
 										</q-item>
 										<q-item clickable
@@ -77,9 +72,9 @@
 											v-close-popup
 										>
 											<q-item-section>
-												<span v-html="'Delete'"
+												<span
 													class="text-negative"
-												/>
+												>Delete</span>
 											</q-item-section>
 										</q-item>
 									</q-list>

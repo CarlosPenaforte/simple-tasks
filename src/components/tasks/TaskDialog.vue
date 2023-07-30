@@ -42,9 +42,7 @@
 			</template>
 		</q-input>
 
-		<span class="q-mt-md q-mb-sm text-secondary fs-12 lh-16"
-			v-html="'Urgency'"
-		/>
+		<span class="q-mt-md q-mb-sm text-secondary fs-12 lh-16">Urgency</span>
 		<div class="q-pl-none q-pr-sm text-capitalize fs-13 lh-16 text-dark flex justify-between">
 			<q-radio
 				v-model="newTask.urgency"
@@ -66,9 +64,7 @@
 			/>
 		</div>
 
-		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16"
-			v-html="'Due date'"
-		/>
+		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">Due date</span>
 		<q-input
 			v-model="newTask.dueDate"
 			mask="####-##-##"

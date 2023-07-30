@@ -35,9 +35,7 @@
 				@click.stop="hideCongratulations"
 			>
 				Congratulations
-				<span class="q-mt-md"
-					v-html="'Task done!'"
-				/>
+				<span class="q-mt-md">Task done!</span>
 			</span>
 		</Transition>
 	</q-page>
