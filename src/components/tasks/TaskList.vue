@@ -1,11 +1,11 @@
 <template>
 	<q-expansion-item
 		borderless
-		:header-class="`expansion-header-${props.urgency} bg-whity`"
+		:header-class="`expansion-header-${props.urgency || 'dones'} bg-whity`"
 	>
 		<template v-slot:header>
 			<q-item-section>
-				<span class="expansion-header-label text-dark"> {{ props.urgency }} </span>
+				<span class="expansion-header-label text-dark"> {{ props.urgency || 'DONE' }} </span>
 			</q-item-section>
 
 			<q-item-section side>
@@ -97,7 +97,9 @@
     Task, Urgency,
   } from 'src/models';
   import {
+    computed,
     defineComponent, PropType,
+    ComputedRef,
   } from 'vue';
   import { useTaskStore } from 'src/stores/taskStore';
 
@@ -110,13 +112,17 @@
   const taskStore = useTaskStore();
 
   const props = defineProps({
-    urgency: {
-      type: String as PropType<Urgency>,
-      required: true,
-    },
+    urgency: String as PropType<Urgency>,
+    showDoneTasks: Boolean,
   });
 
-  const tasks = taskStore.undoneTasks.filter((task) => task.urgency === props.urgency);
+  let tasks: ComputedRef<Task[]>;
+
+  if (props.urgency) {
+    tasks = computed(() => taskStore.undoneTasks.filter((task) => task.urgency === props.urgency));
+  } else if (props.showDoneTasks) {
+    tasks = computed(() => taskStore.doneTasks);
+  }
 
   const checkedTask = (task : Task, done : boolean) => {
     taskStore.updateTask({
@@ -139,6 +145,10 @@
 
   .expansion-header-urgent {
     border-left: 20px solid map.get($colors,'negative');
+  }
+
+  .expansion-header-dones {
+    border-left: 20px solid map.get($colors,'secondary');
   }
 
   .expansion-header-label {

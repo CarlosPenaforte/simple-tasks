@@ -25,7 +25,10 @@
 					:type="togglePwdVisibility ? 'text' : 'password'"
 					name="password"
 					label="Passsword"
-					:rules="[val => !!val || 'Password is missing', val => val.length >= 6 || 'Password length must be at least 6']"
+					:rules="[
+						val => !!val || 'Password is missing',
+						val => val.length >= 6 || 'Password length must be at least 6'
+					]"
 					lazy-rules
 					color="primary-main"
 					class="full-width text-dark q-mb-md"

@@ -8,41 +8,30 @@
 				:urgency="Urgency.URGENT"
 				@open-edit-task="(task: Task) => $emit('open-edit-task',task)"
 				@open-delete-task="(task: Task) => $emit('open-delete-task',task)"
-				@conclude-task="showCongratulations"
 			/>
 
 			<task-list
 				:urgency="Urgency.IMPORTANT"
 				@open-edit-task="(task: Task) => $emit('open-edit-task',task)"
 				@open-delete-task="(task: Task) => $emit('open-delete-task',task)"
-				@conclude-task="showCongratulations"
 			/>
 
 			<task-list
 				:urgency="Urgency.COMMON"
 				@open-edit-task="(task: Task) => $emit('open-edit-task',task)"
 				@open-delete-task="(task: Task) => $emit('open-delete-task',task)"
-				@conclude-task="showCongratulations"
+			/>
+
+			<task-list
+				show-done-tasks
+				@open-edit-task="(task: Task) => $emit('open-edit-task',task)"
+				@open-delete-task="(task: Task) => $emit('open-delete-task',task)"
 			/>
 		</q-list>
-		<Transition name="congratulations">
-			<span
-				v-if="shouldShowCongratulations"
-				class="fs-22 lh-14 fw-medium text-primary-darker fit flex justify-center items-center column congratulations"
-				@click.stop="hideCongratulations"
-			>
-				Congratulations
-				<span class="q-mt-md">Task done!</span>
-			</span>
-		</Transition>
 	</q-page>
 </template>
 
 <script lang="ts">
-  import { useState } from 'src/utils/composables';
-  import {
-    Task, Urgency,
-  } from 'src/models';
   import TaskList from 'src/components/tasks/TaskList.vue';
 
   export default {
@@ -54,79 +43,10 @@
 </script>
 
 <script setup lang="ts">
-  // const emit = defineEmits([ 'update:modelValue' ]);
-
-  // const tasks: WritableComputedRef<Task[]> = computed({
-  // 	get():Task[] {
-  // 		return props.modelValue;
-  // 	},
-  // 	set(newTasks: Task[]) {
-  // 		emit('update:modelValue', newTasks);
-  // 	},
-  // });
-  const [ shouldShowCongratulations, setShowCongratulations ] = useState(false);
-
-  const hideCongratulations = () => {
-    setShowCongratulations(false);
-  };
-
-  const showCongratulations = () => {
-    setShowCongratulations(true);
-
-    setTimeout(() => {
-      hideCongratulations();
-    }, 2000);
-  };
+  import {
+    Task, Urgency,
+  } from 'src/models';
 </script>
 
 <style scoped lang="scss">
-  @use "sass:map";
-
-  .congratulations {
-    position:absolute;
-    left: 0;
-    top: 0;
-    z-index: 10;
-    background-color: rgba(0,0,0,0.1);
-  }
-
-  .fade-enter-active {
-    transition: congrats-up 500ms ease-out;
-  }
-
-  .fade-leave-active {
-    transition: congrats-down 500ms ease-in;
-  }
-
-  .fade-enter-from,
-  .fade-leave-to {
-    opacity: 0;
-    transform: translateY(60vh);
-  }
-
-  @keyframes congrats-up {
-    0% {
-      opacity: 0;
-      transform: translateY(60vh);
-    }
-
-    100% {
-      opacity: 1;
-      box-shadow: 4px 4px 0 map.get($colors,'primary-filter');
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes congrats-down {
-    0% {
-      opacity: 1;
-      box-shadow: inset 4px 4px 0 map.get($colors,'primary-filter');
-      transform: translateY(0);
-    }
-
-    100% {
-      opacity: 0;
-      transform: translateY(60vh);
-    }
-  }
 </style>
