@@ -36,7 +36,7 @@
 
 <script lang="ts">
   import {
-    defineComponent, ref, computed,
+    defineComponent, computed, reactive,
   } from 'vue';
   import BigDialog from '../BigDialog.vue';
 
@@ -63,7 +63,7 @@
     defineEmits([ 'update:modelValue' ]),
   ];
 
-  const newProject = ref({
+  const newProject = reactive({
     name: '',
     description: '',
   });

@@ -34,7 +34,7 @@
 						<q-icon
 							:name="togglePwdVisibility ? 'visibility' : 'visibility_off'"
 							class="cursor-pointer"
-							@click="togglePwdVisibility = !togglePwdVisibility"
+							@click="setPwdVisibility(!togglePwdVisibility)"
 						/>
 					</template>
 				</q-input>
@@ -52,7 +52,7 @@
 						<q-icon
 							:name="togglePwdVisibility ? 'visibility' : 'visibility_off'"
 							class="cursor-pointer"
-							@click="togglePwdVisibility = !togglePwdVisibility"
+							@click="setPwdVisibility(!togglePwdVisibility)"
 						/>
 					</template>
 				</q-input>
@@ -81,8 +81,9 @@
 <script lang="ts">
   import { useRouter } from 'vue-router';
   import {
-    defineComponent, reactive, ref, Ref,
+    defineComponent, reactive,
   } from 'vue';
+  import { useState } from '../utils/composables';
 
   export default defineComponent({
     name: 'RegisterPage',
@@ -104,7 +105,7 @@
     },
   );
 
-  const togglePwdVisibility: Ref<boolean> = ref(false);
+  const [ togglePwdVisibility, setPwdVisibility ] = useState(false);
 
   const isValidEmail = (val: string) => {
     const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;

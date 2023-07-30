@@ -253,6 +253,7 @@
   import {
     useRouter, useRoute,
   } from 'vue-router';
+  import { useState } from '@/utils/composables';
   import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
   import TaskDialog from '../components/tasks/TaskDialog.vue';
   import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
@@ -296,7 +297,7 @@
   const { user } = storeToRefs(userStore);
 
   const leftDrawerOpen = ref(false);
-  const selectedDrawerOption = ref(0);
+  const [ selectedDrawerOption, setDrawerOption ] = useState(0);
   const isSearchDialogOpen = ref(false);
   const isSortDialogOpen = ref(false);
   const projectSelected = ref(projectOptions.value[0]);
@@ -329,7 +330,7 @@
   }
 
   function changeSelectedDrawerOption(optionIndex: number, pathToGo: string | undefined) {
-    selectedDrawerOption.value = optionIndex;
+    setDrawerOption(optionIndex);
     if (pathToGo && route.path !== pathToGo) {
       router.push(pathToGo);
     }

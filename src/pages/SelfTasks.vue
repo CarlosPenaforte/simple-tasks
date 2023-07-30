@@ -43,12 +43,14 @@
 
 <script lang="ts">
   import {
-    PropType, computed, ComputedRef, ref,
+    PropType, computed, ComputedRef,
   } from 'vue';
   import {
     Task, Urgency,
-  } from 'src/models';
-  import TaskList from '../components/tasks/TaskList.vue';
+  } from '@/models';
+  import TaskList from '@/components/tasks/TaskList.vue';
+  import { filterTasksByUrgency } from '@/utils/commonFunctions';
+  import { useState } from '@/utils/composables';
 
   export default {
     name: 'SelfTasks',
@@ -59,8 +61,6 @@
 </script>
 
 <script setup lang="ts">
-  import { filterTasksByUrgency } from '../utils/commonFunctions';
-
   const props = defineProps({
     modelValue: {
       type: Array as PropType<Task[]>,
@@ -78,15 +78,14 @@
   // 		emit('update:modelValue', newTasks);
   // 	},
   // });
-
-  const shouldShowCongratulations = ref(false);
+  const [ shouldShowCongratulations, setShowCongratulations ] = useState(false);
 
   const hideCongratulations = () => {
-    shouldShowCongratulations.value = false;
+    setShowCongratulations(false);
   };
 
   const showCongratulations = () => {
-    shouldShowCongratulations.value = true;
+    setShowCongratulations(true);
 
     setTimeout(() => {
       hideCongratulations();
