@@ -99,7 +99,7 @@
   import {
     defineComponent, PropType, computed, WritableComputedRef,
   } from 'vue';
-  import { isTask } from 'src/util/commonFunctions';
+  import { isTask } from 'src/utils/commonFunctions';
 
   export default defineComponent({
     name: 'TaskList',

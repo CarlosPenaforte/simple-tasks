@@ -1,3 +1,4 @@
+import { usePropsAndEmit } from '../util/composables';
 <template>
 	<q-dialog
 		v-model="isDialogOpen"
@@ -48,18 +49,19 @@
 </script>
 
 <script setup lang="ts">
-  const props = defineProps({
-    modelValue: {
-      type: Boolean,
-      default: false,
-    },
-    handleSave: {
-      type: Function,
-      required: true,
-    },
-  });
-
-  const emit = defineEmits([ 'update:modelValue' ]);
+  const [ props, emit ] = [
+    defineProps({
+      modelValue: {
+        type: Boolean,
+        default: false,
+      },
+      handleSave: {
+        type: Function,
+        required: true,
+      },
+    }),
+    defineEmits([ 'update:modelValue' ]),
+  ];
 
   const isDialogOpen = computed({
     get():boolean {

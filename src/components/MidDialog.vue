@@ -46,22 +46,23 @@
   });
 </script>
 <script setup lang="ts">
-  const props = defineProps({
-    modelValue: {
-      type: Boolean,
-      required: true,
-    },
-    doneFunction: {
-      type: Function,
-      required: true,
-    },
-    doneIcon: {
-      type: String,
-      default: 'done',
-    },
-  });
-
-  const emit = defineEmits([ 'update:modelValue' ]);
+  const [ props, emit ] = [
+    defineProps({
+      modelValue: {
+        type: Boolean,
+        required: true,
+      },
+      doneFunction: {
+        type: Function,
+        required: true,
+      },
+      doneIcon: {
+        type: String,
+        default: 'done',
+      },
+    }),
+    defineEmits([ 'update:modelValue' ]),
+  ];
 
   const isDialogOpen = computed({
     get():boolean {

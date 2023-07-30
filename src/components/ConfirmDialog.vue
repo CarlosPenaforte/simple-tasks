@@ -47,26 +47,27 @@
 </script>
 
 <script setup lang="ts">
-  const props = defineProps({
-    modelValue: {
-      type: Boolean,
-      required: true,
-    },
-    doneFunction: {
-      type: Function,
-      required: true,
-    },
-    doneIcon: {
-      type: String,
-      default: 'done',
-    },
-    confirmQuestion: {
-      type: String,
-      required: true,
-    },
-  });
-
-  const emit = defineEmits([ 'update:modelValue' ]);
+  const [ props, emit ] = [
+    defineProps({
+      modelValue: {
+        type: Boolean,
+        required: true,
+      },
+      doneFunction: {
+        type: Function,
+        required: true,
+      },
+      doneIcon: {
+        type: String,
+        default: 'done',
+      },
+      confirmQuestion: {
+        type: String,
+        required: true,
+      },
+    }),
+    defineEmits([ 'update:modelValue' ]),
+  ];
 
   const isDialogOpen = computed({
     get():boolean {

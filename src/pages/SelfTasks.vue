@@ -59,7 +59,7 @@
 </script>
 
 <script setup lang="ts">
-  import { filterTasksByUrgency } from '../util/commonFunctions';
+  import { filterTasksByUrgency } from '../utils/commonFunctions';
 
   const props = defineProps({
     modelValue: {
