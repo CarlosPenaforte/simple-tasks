@@ -95,11 +95,12 @@
 
 <script lang="ts">
   import {
-    defineComponent, computed, PropType, reactive,
+    defineComponent, computed, PropType, reactive, inject,
   } from 'vue';
   import {
     Urgency, Task,
   } from 'src/models';
+  import { QVueGlobals } from 'quasar';
   import BigDialog from '../BigDialog.vue';
 
   export default defineComponent({
@@ -128,8 +129,10 @@
 
   const emit = defineEmits([ 'update:modelValue' ]);
 
+  const $q = inject<QVueGlobals>('quasar');
+
   function saveTask() {
-    return 0;
+    $q?.notify('Task created successfully');
   }
 
   let newTask = reactive({

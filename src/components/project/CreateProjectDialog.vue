@@ -36,13 +36,10 @@
 
 <script lang="ts">
   import {
-    defineComponent, computed, reactive,
+    defineComponent, computed, reactive, inject,
   } from 'vue';
+  import { QVueGlobals } from 'quasar';
   import BigDialog from '../BigDialog.vue';
-
-  function saveProject() {
-    return 0;
-  }
 
   export default defineComponent({
     name: 'CreateProjectDialog',
@@ -61,6 +58,12 @@
   });
 
   const emit = defineEmits([ 'update:modelValue' ]);
+
+  const $q = inject<QVueGlobals>('quasar');
+
+  function saveProject() {
+    $q?.notify('Project created successfully');
+  }
 
   const newProject = reactive({
     name: '',

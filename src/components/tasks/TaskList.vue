@@ -100,8 +100,10 @@
     computed,
     defineComponent, PropType,
     ComputedRef,
+    inject,
   } from 'vue';
   import { useTaskStore } from 'src/stores/taskStore';
+  import { QVueGlobals } from 'quasar';
 
   export default defineComponent({
     name: 'TaskList',
@@ -116,6 +118,8 @@
     showDoneTasks: Boolean,
   });
 
+  const $q = inject<QVueGlobals>('quasar');
+
   let tasks: ComputedRef<Task[]>;
 
   if (props.urgency) {
@@ -125,6 +129,13 @@
   }
 
   const checkedTask = (task : Task, done : boolean) => {
+    if (done) {
+      $q?.notify({
+        type: 'positive',
+        message: `Task ${task.title} finished`,
+      });
+    }
+
     taskStore.updateTask({
       ...task,
       done,
