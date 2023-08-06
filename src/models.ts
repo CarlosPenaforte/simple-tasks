@@ -17,59 +17,63 @@ export enum Orientation {
   DESC = 'Descending',
 }
 
-interface SingleSortBy {
+type SingleSortBy = {
   use: boolean,
   orientation: Orientation,
 }
 
-export interface SortBy {
+export type SortBy = {
   name: SingleSortBy,
   dueDate: SingleSortBy,
 }
 
-export interface SearchFields {
+export type SearchFields = {
   name: string,
   urgency: Urgency,
   dueDate: string,
 }
 
-export interface User {
-  userId: number;
-  planId?: number;
+export type User = {
+  readonly userId: number;
   username: string;
   fullName: string;
   email: string;
   sex: Gender;
-  birthday?: Date;
+  birthday: Date;
 }
 
-export interface Plan {
-  planId: number;
-  title: string;
+export type UserPlan = {
+  readonly userId: number;
+  readonly planId: number;
+  readonly startDate: Date;
+  endDate?: Date;
+}
+
+export type Plan = {
+  readonly planId: number;
+  planTitle: string;
   taskPermission: boolean;
   sharePermission: boolean;
   coworkPermission: boolean;
-  tasksLimit?: number;
-  sharesLimit?: number;
+  readonly tasksLimit?: number;
+  readonly sharesLimit?: number;
 }
 
-export interface Task {
-  taskId: number;
-  userId: number;
-  projectId: number;
-  title: string;
-  description: string;
-  creationDate: Date;
+export type Task = {
+  readonly taskId: number;
+  readonly userId: number;
+  readonly projectId: number;
+  taskTitle: string;
+  taskDescription?: string;
+  readonly creationDate: Date;
   dueDate?: Date;
-  urgency: Urgency;
-  cowork?: boolean;
-  sharedTaskUsers?: Array<User>;
+  readonly urgency: Urgency;
   done: boolean;
 }
 
-export interface Project {
+export type Project = {
   name: string,
   description?: string,
-  userId: number,
+  readonly userId: number,
   projectId: number,
 }
