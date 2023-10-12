@@ -226,7 +226,7 @@
 		<confirm-dialog
 			v-model="isDeleteTaskOpen"
 			:done-function="deleteTask"
-			:confirmQuestion="`Do you really want to delete ${targettedTask.title}?`"
+			:confirmQuestion="`Do you really want to delete ${targettedTask.taskTitle}?`"
 		/>
 
 		<search-dialog
@@ -248,7 +248,7 @@
   import { useUserStore } from 'src/stores/userStore';
   import {
     Task, Urgency,
-  } from 'src/models';
+  } from 'src/models/mainModels.ts';
   import { storeToRefs } from 'pinia';
   import {
     useRouter, useRoute,
@@ -297,8 +297,8 @@
     taskId: 1,
     userId: 1,
     projectId: 1,
-    title: 'ct1',
-    description: 'ok',
+    taskTitle: 'ct1',
+    taskDescription: 'ok',
     creationDate: new Date(),
     urgency: Urgency.URGENT,
     done: false,

@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia';
 import {
 	User, Gender,
-} from 'src/models';
+} from 'src/models/mainModels';
 
 export const useUserStore = defineStore('user', {
 	state: () => ({

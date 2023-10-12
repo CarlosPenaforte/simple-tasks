@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { Project } from 'src/models';
+import { Project } from 'src/models/mainModels';
 
 export const useProjectStore = defineStore('project', {
 	state: () => ({

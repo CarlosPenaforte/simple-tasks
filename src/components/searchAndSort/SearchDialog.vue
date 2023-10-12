@@ -79,7 +79,7 @@
   } from 'vue';
   import {
     Urgency, SearchFields,
-  } from 'src/models';
+  } from 'src/models/mainModels.ts';
   import MidDialog from '../MidDialog.vue';
 
   export default defineComponent({

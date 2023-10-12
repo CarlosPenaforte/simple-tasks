@@ -28,7 +28,7 @@
 		</q-input>
 
 		<q-input
-			v-model="newTask.description"
+			v-model="newTask.taskDescription"
 			bottom-slots
 			counter
 			clearable
@@ -99,7 +99,7 @@
   } from 'vue';
   import {
     Urgency, Task,
-  } from 'src/models';
+  } from 'src/models/mainModels.ts';
   import { QVueGlobals } from 'quasar';
   import BigDialog from '../BigDialog.vue';
 
@@ -144,8 +144,8 @@
 
   if (props.isEdit) {
     newTask = reactive({
-      name: props.currentTask.title,
-      description: props.currentTask.description,
+      name: props.currentTask.taskTitle,
+      description: props.currentTask.taskDescription,
       urgency: props.currentTask.urgency,
       dueDate: props.currentTask.dueDate ? props.currentTask.dueDate.toLocaleDateString('pt-BR') : '',
     });

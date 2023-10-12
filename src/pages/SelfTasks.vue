@@ -45,7 +45,7 @@
 <script setup lang="ts">
   import {
     Task, Urgency,
-  } from 'src/models';
+  } from 'src/models/mainModels.ts';
 </script>
 
 <style scoped lang="scss">

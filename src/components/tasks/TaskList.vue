@@ -25,7 +25,7 @@
 							<div class="row justify-start items-center">
 								<span
 									class="text-dark fs-14"
-								>{{ task.title }}</span>
+								>{{ task.taskTitle }}</span>
 								<template v-if="task.dueDate && task.dueDate <= new Date()">
 									<q-space />
 									<span
@@ -40,7 +40,7 @@
 							</div>
 							<span
 								class="text-secondary fs-12"
-							>{{ task.description }}</span>
+							>{{ task.taskDescription }}</span>
 						</div>
 					</q-item-section>
 					<q-item-section side
@@ -95,7 +95,7 @@
 <script lang="ts">
   import {
     Task, Urgency,
-  } from 'src/models';
+  } from 'src/models/mainModels.ts';
   import {
     computed,
     defineComponent, PropType,
@@ -132,7 +132,7 @@
     if (done) {
       $q?.notify({
         type: 'positive',
-        message: `Task ${task.title} finished`,
+        message: `Task ${task.taskTitle} finished`,
       });
     }
 
