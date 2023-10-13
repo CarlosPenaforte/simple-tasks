@@ -241,7 +241,7 @@
 
 <script lang="ts">
   import {
-    defineComponent, ref, reactive, UnwrapNestedRefs,
+    defineComponent, ref, reactive, UnwrapNestedRefs, inject,
   } from 'vue';
   import { useProjectStore } from 'src/stores/projectStore';
   import { useTaskStore } from 'src/stores/taskStore';
@@ -254,6 +254,7 @@
     useRouter, useRoute,
   } from 'vue-router';
   import { useState } from 'src/utils/composables';
+  import { QVueGlobals } from 'quasar';
   import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
   import TaskDialog from '../components/tasks/TaskDialog.vue';
   import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
@@ -273,6 +274,8 @@
 </script>
 
 <script setup lang="ts">
+  const $q = inject<QVueGlobals>('quasar');
+
   const router = useRouter();
   const route = useRoute();
 
@@ -361,7 +364,16 @@
   }
 
   async function logout(): Promise<void> {
-    await userStore.logout();
+    const [ loggedOut, message ] = await userStore.logout();
+
+    if (loggedOut) {
+      $q?.notify(message);
+    } else {
+      $q?.notify({
+        type: 'negative',
+        message,
+      });
+    }
 
     router.push('/login');
   }

@@ -11,33 +11,39 @@
 				>Login to continue</span>
 			</q-card-section>
 			<q-card-section class="text-center q-mb-sm">
-				<q-input
-					v-model="email"
-					type="text"
-					name="email"
-					label="Email"
-					:rules="[val => !!val || 'Email is missing', isValidEmail]"
-					lazy-rules
+				<q-form
+					ref="loginForm"
 					autofocus
-					color="primary-main"
-					class="full-width text-dark q-mb-md"
-				/>
-				<q-input
-					v-model="password"
-					:type="togglePwdVisibility ? 'text' : 'password'"
-					name="password"
-					label="Passsword"
-					color="primary-main"
-					class="full-width text-dark"
+					@keydown.enter.stop.prevent="tryLoggingIn"
 				>
-					<template v-slot:append>
-						<q-icon
-							:name="togglePwdVisibility ? 'visibility' : 'visibility_off'"
-							class="cursor-pointer"
-							@click="setPwdVisibility(!togglePwdVisibility)"
-						/>
-					</template>
-				</q-input>
+					<q-input
+						v-model="email"
+						type="text"
+						name="email"
+						label="Email"
+						:rules="[val => !!val || 'Email is missing', isValidEmail]"
+						lazy-rules
+						autofocus
+						color="primary-main"
+						class="full-width text-dark q-mb-md"
+					/>
+					<q-input
+						v-model="password"
+						:type="togglePwdVisibility ? 'text' : 'password'"
+						name="password"
+						label="Passsword"
+						color="primary-main"
+						class="full-width text-dark"
+					>
+						<template v-slot:append>
+							<q-icon
+								:name="togglePwdVisibility ? 'visibility' : 'visibility_off'"
+								class="cursor-pointer"
+								@click="setPwdVisibility(!togglePwdVisibility)"
+							/>
+						</template>
+					</q-input>
+				</q-form>
 			</q-card-section>
 			<q-card-actions class="row">
 				<q-btn
@@ -69,7 +75,9 @@
   import { useState } from 'src/utils/composables';
   import { storeToRefs } from 'pinia';
   import { useUserStore } from 'src/stores/userStore';
-  import { QVueGlobals } from 'quasar';
+  import {
+    QForm, QVueGlobals,
+  } from 'quasar';
 
   export default defineComponent({
     name: 'LoginPage',
@@ -81,6 +89,8 @@
   const $q = inject<QVueGlobals>('quasar');
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);
+
+  const loginForm = ref<QForm|null>(null);
 
   const email: Ref<string> = ref('');
   const password: Ref<string> = ref('');
@@ -98,15 +108,30 @@
   };
 
   const tryLoggingIn = async() => {
-    const logged = await userStore.login(email.value, password.value);
-
-    if (logged && user && window.sessionStorage.getItem('simple-tasks/token')) {
+    const isValidForm = await loginForm.value?.validate();
+    if (!isValidForm) {
       $q?.notify({
-        type: 'positive',
-        message: 'Logged in successfully',
+        type: 'negative',
+        message: 'Fill all fields correctly',
       });
 
+      return;
+    }
+
+    const [ logged, message ] = await userStore.login(email.value, password.value);
+
+    if (logged && user && window.sessionStorage.getItem('simple-tasks/token')) {
+      $q?.notify(message);
+
       pushToUrl('/');
+      return;
+    }
+
+    if (!logged) {
+      $q?.notify({
+        type: 'negative',
+        message,
+      });
     }
   };
 </script>

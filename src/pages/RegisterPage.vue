@@ -49,6 +49,7 @@
 					ref="sex"
 					v-model="form.sex"
 					:options="genderOptions"
+					label="Sex"
 					behavior="menu"
 					color="primary-main"
 					transition-show="jump-down"
@@ -265,7 +266,7 @@
       return;
     }
 
-    const registered = await userStore.createUser(form);
+    const [ registered, message ] = await userStore.createUser(form);
 
     if (registered) {
       $q?.notify({
@@ -274,6 +275,13 @@
       });
 
       pushToUrl('/login');
+
+      return;
     }
+
+    $q?.notify({
+      type: 'negative',
+      message,
+    });
   };
 </script>

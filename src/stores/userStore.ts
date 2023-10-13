@@ -12,14 +12,12 @@ import {
 } from '../utils/commonFunctions';
 import { api } from '../boot/axios';
 
-const $q = inject<QVueGlobals>('quasar');
-
 export const useUserStore = defineStore('user', {
 	state: () => ({
 		user: undefined as User | undefined,
 	}),
 	actions: {
-		async createUser(userToSend : UserToSend): Promise<boolean> {
+		async createUser(userToSend : UserToSend): Promise<[boolean, string]> {
 			const filteredUser = {
 				...userToSend,
 				birthday: formatDateToIso(new Date(userToSend.birthday)),
@@ -28,20 +26,10 @@ export const useUserStore = defineStore('user', {
 			const response = await register(filteredUser);
 
 			if (response.data.hasError) {
-				$q?.notify({
-					type: 'negative',
-					message: response.data.answer,
-				});
-
-				return false;
+				return [ false, response.data.answer ];
 			}
 
-			$q?.notify({
-				type: 'positive',
-				message: response.data.answer,
-			});
-
-			return true;
+			return [ true, response.data.answer ];
 		},
 		updateUser(newUser : User) {
 			if (newUser.userId === this.user?.userId) {
@@ -53,7 +41,7 @@ export const useUserStore = defineStore('user', {
 		setUser(user: User) {
 			this.user = user;
 		},
-		async login(email: string, password: string): Promise<boolean> {
+		async login(email: string, password: string): Promise<[boolean, string]> {
 			const response = await login(email, password);
 
 			if (response.data.token) {
@@ -65,50 +53,31 @@ export const useUserStore = defineStore('user', {
 			if (response.status === 200 && response.data.user && response.data.auth) {
 				this.user = parseUser(response.data.user);
 
-				return true;
+				return [ true, 'You are logged in' ];
 			}
 
 			if (response.status === 403 && response.data.auth === false) {
-				$q?.notify({
-					type: 'negative',
-					message: 'Wrong email or password',
-				});
-
-				return false;
+				return [ false, response.data.message || '' ];
 			}
 
-			$q?.notify({
-				type: 'negative',
-				message: 'Something went wrong',
-			});
-
-			return false;
+			return [ false, response.data.message || '' ];
 		},
-		async logout(): Promise<boolean> {
+		async logout(): Promise<[boolean, string]> {
 			if (this.user) {
-				console.log(this.user?.userId);
-
 				const response = await logout(this.user?.userId);
 
 				this.user = undefined;
 
 				if (response.data.hasError) {
-					$q?.notify({
-						type: 'negative',
-						message: response.data.message,
-					});
-
-					return false;
+					return [ false, response.data.message ];
 				}
-
-				$q?.notify(response.data.message);
 			}
 
 			window.sessionStorage.removeItem('simple-tasks/token');
 
 			this.user = undefined;
 
-			return true;
+			return [ true, 'You are logged out' ];
 		},
 	},
 });
