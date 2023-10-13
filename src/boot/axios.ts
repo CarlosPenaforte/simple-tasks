@@ -19,9 +19,11 @@ const token: string = sessionStorage.getItem('simple-tasks/token') || '';
 const api = axios.create({
 	baseURL: process.env.API_BASE_URL || 'http://localhost:3000',
 	headers: {
-		token,
-		Accept: 'application/json',
-		'Content-Type': 'application/json',
+		common: {
+			token,
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
 	},
 });
 
@@ -37,4 +39,6 @@ export default boot(({ app }) => {
 	//       so you can easily perform requests against your app's API
 });
 
-export { api };
+export {
+	axios, api,
+};

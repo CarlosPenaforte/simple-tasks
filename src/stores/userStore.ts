@@ -1,28 +1,47 @@
 /* eslint-disable no-console */
+import { UserToSend } from 'src/models/apiModels';
 import { defineStore } from 'pinia';
+import { QVueGlobals } from 'quasar';
+import { User } from 'src/models/mainModels';
 import {
-	User, Gender,
-} from 'src/models/mainModels';
+	login, logout, register,
+} from 'src/services/authService';
+import { inject } from 'vue';
+import {
+	formatDateToIso, parseUser,
+} from '../utils/commonFunctions';
+import { api } from '../boot/axios';
+
+const $q = inject<QVueGlobals>('quasar');
 
 export const useUserStore = defineStore('user', {
 	state: () => ({
-		user: {
-			userId: 1,
-			username: 'ricardin09',
-			fullName: 'Ricardo Sales',
-			email: 'ricardin09@gmail.com',
-			sex: Gender.MALE,
-			birthday: new Date(Date.parse('20/12/2000')),
-		} as User | undefined,
+		user: undefined as User | undefined,
 	}),
 	actions: {
-		createUser(user : User) {
-			console.log(user);
+		async createUser(userToSend : UserToSend): Promise<boolean> {
+			const filteredUser = {
+				...userToSend,
+				birthday: formatDateToIso(new Date(userToSend.birthday)),
+			};
 
-			// aqui virá uma requisição para registrar um usuário
+			const response = await register(filteredUser);
 
-			// se der certo
-			this.user = user;
+			if (response.data.hasError) {
+				$q?.notify({
+					type: 'negative',
+					message: response.data.answer,
+				});
+
+				return false;
+			}
+
+			$q?.notify({
+				type: 'positive',
+				message: response.data.answer,
+			});
+
+			return true;
 		},
 		updateUser(newUser : User) {
 			if (newUser.userId === this.user?.userId) {
@@ -34,18 +53,62 @@ export const useUserStore = defineStore('user', {
 		setUser(user: User) {
 			this.user = user;
 		},
-		login(email: string, password: string) {
-			console.log(email, password);
-			// requisição para pegar os dados do usuário
-			// Se a combinação email-senha estiver correta, então o usuário é passado
-			// Se estiver errada, uma mensagem de erro será exposta ao usuário
-		},
-		logout() {
-			console.log('logging out');
+		async login(email: string, password: string): Promise<boolean> {
+			const response = await login(email, password);
 
-			// Requisição para logout
+			if (response.data.token) {
+				window.sessionStorage.setItem('simple-tasks/token', response.data.token);
+
+				api.defaults.headers.common.token = response.data.token;
+			}
+
+			if (response.status === 200 && response.data.user && response.data.auth) {
+				this.user = parseUser(response.data.user);
+
+				return true;
+			}
+
+			if (response.status === 403 && response.data.auth === false) {
+				$q?.notify({
+					type: 'negative',
+					message: 'Wrong email or password',
+				});
+
+				return false;
+			}
+
+			$q?.notify({
+				type: 'negative',
+				message: 'Something went wrong',
+			});
+
+			return false;
+		},
+		async logout(): Promise<boolean> {
+			if (this.user) {
+				console.log(this.user?.userId);
+
+				const response = await logout(this.user?.userId);
+
+				this.user = undefined;
+
+				if (response.data.hasError) {
+					$q?.notify({
+						type: 'negative',
+						message: response.data.message,
+					});
+
+					return false;
+				}
+
+				$q?.notify(response.data.message);
+			}
+
+			window.sessionStorage.removeItem('simple-tasks/token');
 
 			this.user = undefined;
+
+			return true;
 		},
 	},
 });

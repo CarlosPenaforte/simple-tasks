@@ -241,14 +241,14 @@
 
 <script lang="ts">
   import {
-    defineComponent, ref, reactive,
+    defineComponent, ref, reactive, UnwrapNestedRefs,
   } from 'vue';
   import { useProjectStore } from 'src/stores/projectStore';
   import { useTaskStore } from 'src/stores/taskStore';
   import { useUserStore } from 'src/stores/userStore';
   import {
     Task, Urgency,
-  } from 'src/models/mainModels.ts';
+  } from 'src/models/mainModels';
   import { storeToRefs } from 'pinia';
   import {
     useRouter, useRoute,
@@ -273,16 +273,23 @@
 </script>
 
 <script setup lang="ts">
-  const taskStore = useTaskStore();
-  const projectStore = useProjectStore();
-  const userStore = useUserStore();
-
   const router = useRouter();
   const route = useRoute();
 
+  const userStore = useUserStore();
+  const { user } = storeToRefs(userStore);
+
+  if (!user || !window.sessionStorage.getItem('simple-tasks/token')) {
+    window.sessionStorage.removeItem('simple-tasks/token');
+
+    router.push('/login');
+  }
+
+  const taskStore = useTaskStore();
+  const projectStore = useProjectStore();
+
   const projectOptions = storeToRefs(projectStore).projects;
   const { tasks } = storeToRefs(taskStore);
-  const { user } = storeToRefs(userStore);
 
   const leftDrawerOpen = ref(false);
   const [ selectedDrawerOption, setDrawerOption ] = useState(0);
@@ -293,7 +300,7 @@
   const isCreateProjectOpen = ref(false);
   const isCreateTaskOpen = ref(false);
   const isEditTaskOpen = ref(false);
-  let targettedTask = reactive({
+  let targettedTask : UnwrapNestedRefs<Task> = reactive({
     taskId: 1,
     userId: 1,
     projectId: 1,
@@ -353,7 +360,9 @@
     isDeleteTaskOpen.value = false;
   }
 
-  function logout():void {
+  async function logout(): Promise<void> {
+    await userStore.logout();
+
     router.push('/login');
   }
 

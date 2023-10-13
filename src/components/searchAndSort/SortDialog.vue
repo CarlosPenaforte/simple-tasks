@@ -67,7 +67,7 @@
   } from 'vue';
   import {
     Orientation, SortBy,
-  } from 'src/models/mainModels.ts';
+  } from 'src/models/mainModels';
   import MidDialog from '../MidDialog.vue';
 
   export default defineComponent({

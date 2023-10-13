@@ -54,7 +54,7 @@
 					color="positive"
 					text-color="whity"
 					class="col-5 no-padding no-margin text-weight-bold"
-					@click.stop.prevent="pushToUrl('/')"
+					@click.stop.prevent="tryLoggingIn"
 				/>
 			</q-card-actions>
 		</q-card>
@@ -64,9 +64,12 @@
 <script lang="ts">
   import { useRouter } from 'vue-router';
   import {
-    defineComponent, ref, Ref,
+    defineComponent, inject, ref, Ref,
   } from 'vue';
   import { useState } from 'src/utils/composables';
+  import { storeToRefs } from 'pinia';
+  import { useUserStore } from 'src/stores/userStore';
+  import { QVueGlobals } from 'quasar';
 
   export default defineComponent({
     name: 'LoginPage',
@@ -75,6 +78,10 @@
 </script>
 
 <script setup lang="ts">
+  const $q = inject<QVueGlobals>('quasar');
+  const userStore = useUserStore();
+  const { user } = storeToRefs(userStore);
+
   const email: Ref<string> = ref('');
   const password: Ref<string> = ref('');
   const [ togglePwdVisibility, setPwdVisibility ] = useState(false);
@@ -88,5 +95,18 @@
 
   const pushToUrl = (path: string) => {
     router.push(path);
+  };
+
+  const tryLoggingIn = async() => {
+    const logged = await userStore.login(email.value, password.value);
+
+    if (logged && user && window.sessionStorage.getItem('simple-tasks/token')) {
+      $q?.notify({
+        type: 'positive',
+        message: 'Logged in successfully',
+      });
+
+      pushToUrl('/');
+    }
   };
 </script>
