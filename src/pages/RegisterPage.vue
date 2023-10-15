@@ -19,7 +19,7 @@
 					lazy-rules
 					autofocus
 					color="primary-main"
-					class="full-width text-dark q-mb-md"
+					class="full-width text-dark q-mb-xs"
 				/>
 				<q-input
 					ref="fullName"
@@ -29,9 +29,8 @@
 					label="Full name"
 					:rules="[val => !!val || 'Full name is missing']"
 					lazy-rules
-					autofocus
 					color="primary-main"
-					class="full-width text-dark q-mb-md"
+					class="full-width text-dark q-mb-xs"
 				/>
 				<q-input
 					ref="email"
@@ -41,9 +40,8 @@
 					label="Email"
 					:rules="[val => !!val || 'Email is missing', isValidEmail]"
 					lazy-rules
-					autofocus
 					color="primary-main"
-					class="full-width text-dark q-mb-md"
+					class="full-width text-dark q-mb-xs"
 				/>
 				<q-select
 					ref="sex"
@@ -51,16 +49,25 @@
 					:options="genderOptions"
 					label="Sex"
 					behavior="menu"
+					:rules="[val => !!val || 'Sex is missing']"
 					color="primary-main"
 					transition-show="jump-down"
 					transition-hide="jump-up"
+					class="full-width text-dark q-mb-xs"
 				>
 					<template v-slot:selected>
 						<div
 							class="text-dark fw-medium text-capitalize"
 						>
-							{{ form.sex }}
+							{{ genderToFullString(form.sex) }}
 						</div>
+					</template>
+					<template v-slot:option="scope">
+						<q-item v-bind="scope.itemProps">
+							<q-item-section>
+								<span>{{ genderToFullString(scope.opt) }}</span>
+							</q-item-section>
+						</q-item>
 					</template>
 				</q-select>
 				<q-input
@@ -69,11 +76,11 @@
 					@update:modelValue="setBirthday"
 					name="birthday"
 					label="Birthday"
-					:rules="[val => !!val || 'Birthday is missing']"
+					:mask="localeMask"
+					:rules="[val => !!val || 'Birthday is missing', val => val.length == 10 || 'Invalid date']"
 					lazy-rules
-					autofocus
 					color="primary-main"
-					class="full-width text-dark q-mb-md"
+					class="full-width text-dark q-mb-xs"
 				>
 					<template v-slot:append>
 						<q-icon name="event"
@@ -111,7 +118,7 @@
 					]"
 					lazy-rules
 					color="primary-main"
-					class="full-width text-dark q-mb-md"
+					class="full-width text-dark q-mb-xs"
 				>
 					<template v-slot:append>
 						<q-icon
@@ -172,7 +179,13 @@
   import { useUserStore } from 'src/stores/userStore';
   import { UserToSend } from 'src/models/apiModels';
   import { Gender } from 'src/models/mainModels';
-  import { formatDateToLocale } from 'src/utils/commonFunctions';
+  import {
+    formatDateToLocale,
+    getLocaleMask,
+    getLocaleFormat,
+    genderToFullString,
+  } from 'src/utils/commonFunctions';
+  import { DateTime } from 'luxon';
   import {
     QInput, QSelect, QVueGlobals,
   } from 'quasar';
@@ -184,8 +197,17 @@
 </script>
 
 <script setup lang="ts">
+  // BASICS
+
   const $q = inject<QVueGlobals>('quasar');
   const userStore = useUserStore();
+
+  const router = useRouter();
+  const pushToUrl = (path: string) => {
+    router.push(path);
+  };
+
+  // FORM
 
   const form: UnwrapNestedRefs<UserToSend> = reactive(
     {
@@ -193,30 +215,54 @@
       user_password: '',
       full_name: '',
       email: '',
-      sex: '',
-      birthday: '',
+      sex: Gender.NOT_INFORMED,
+      birthday: '2020-12-31',
       confirm_password: '',
     },
   );
 
-  const setBirthday = (birthday: string|number|null) => {
-    if (typeof birthday !== 'string') return;
-    form.birthday = birthday;
-  };
+  // UTILS
 
   const locale = navigator.language;
 
-  const birthdayStrToDate = (birthday: string) => {
+  const localeFormat = getLocaleFormat(locale);
+
+  const localeMask = getLocaleMask(locale);
+
+  const birthdayStrToDate = (birthday: string): Date | undefined => {
     if (!birthday) return undefined;
 
-    return new Date(birthday);
+    if (birthday.indexOf('/') === 4) return DateTime.fromFormat(birthday, 'yyyy/MM/dd').toJSDate();
+
+    return DateTime.fromFormat(birthday, localeFormat).toJSDate();
+  };
+
+  // BIRTHDAY SETTER AND GETTER
+
+  const setBirthday = (birthday: string|number|null) => {
+    if (typeof birthday !== 'string') return;
+
+    if (birthday.length > 10) {
+      form.birthday = birthday.slice(0, 10);
+      return;
+    }
+
+    form.birthday = birthday;
   };
 
   const formattedBirthday = ref(formatDateToLocale(birthdayStrToDate(form.birthday), locale));
 
   watch(() => form.birthday, (newValue) => {
+    if (newValue.length < 10) {
+      formattedBirthday.value = newValue;
+
+      return;
+    }
+
     formattedBirthday.value = formatDateToLocale(birthdayStrToDate(newValue), locale);
   });
+
+  // INPUT INFO AND STATES
 
   const genderOptions: Gender[] = [
     Gender.MALE, Gender.FEMALE, Gender.NON_BINARY, Gender.NOT_INFORMED,
@@ -229,11 +275,6 @@
     return emailPattern.test(val) || 'Invalid email';
   };
 
-  const router = useRouter();
-  const pushToUrl = (path: string) => {
-    router.push(path);
-  };
-
   const username = ref<QInput|null>(null);
   const fullName = ref<QInput|null>(null);
   const email = ref<QInput|null>(null);
@@ -241,6 +282,8 @@
   const birthday = ref<QInput|null>(null);
   const password = ref<QInput|null>(null);
   const confirmPassword = ref<QInput|null>(null);
+
+  // ERROR CHECK
 
   const hasErrors = () => {
     const errorsCheckList = [
@@ -255,6 +298,8 @@
 
     return errorsCheckList.some((hasError) => hasError);
   };
+
+  // ACTIONS
 
   const tryRegistering = async() => {
     if (hasErrors()) {

@@ -1,14 +1,13 @@
 /* eslint-disable no-console */
 import { UserToSend } from 'src/models/apiModels';
 import { defineStore } from 'pinia';
-import { QVueGlobals } from 'quasar';
 import { User } from 'src/models/mainModels';
 import {
 	login, logout, register,
 } from 'src/services/authService';
-import { inject } from 'vue';
+import { DateTime } from 'luxon';
 import {
-	formatDateToIso, parseUser,
+	formatDateToIso, getLocaleFormat, parseUser,
 } from '../utils/commonFunctions';
 import { api } from '../boot/axios';
 
@@ -18,9 +17,12 @@ export const useUserStore = defineStore('user', {
 	}),
 	actions: {
 		async createUser(userToSend : UserToSend): Promise<[boolean, string]> {
+			const localeFormat = getLocaleFormat(navigator.language);
+			const parsedDate = DateTime.fromFormat(userToSend.birthday, localeFormat).toJSDate();
+
 			const filteredUser = {
 				...userToSend,
-				birthday: formatDateToIso(new Date(userToSend.birthday)),
+				birthday: formatDateToIso(parsedDate),
 			};
 
 			const response = await register(filteredUser);
