@@ -1,11 +1,16 @@
 /* eslint-disable no-console */
-import { UserToSend } from 'src/models/apiModels';
+import {
+	ReceivedUser, CreateUserToSend, UpdateUserToSend,
+} from 'src/models/apiModels';
 import { defineStore } from 'pinia';
 import { User } from 'src/models/mainModels';
 import {
-	login, logout, register,
+	login, logout,
 } from 'src/services/authService';
 import { DateTime } from 'luxon';
+import {
+	update, register,
+} from '../services/userService';
 import {
 	formatDateToIso, getLocaleFormat, parseUser,
 } from '../utils/commonFunctions';
@@ -16,9 +21,9 @@ export const useUserStore = defineStore('user', {
 		user: undefined as User | undefined,
 	}),
 	actions: {
-		async createUser(userToSend : UserToSend): Promise<[boolean, string]> {
+		async createUser(userToSend: CreateUserToSend): Promise<[boolean, string]> {
 			const localeFormat = getLocaleFormat(navigator.language);
-			const parsedDate = DateTime.fromFormat(userToSend.birthday, localeFormat).toJSDate();
+			const parsedDate = DateTime.fromFormat(userToSend.birthday, localeFormat).setZone('utc').toJSDate();
 
 			const filteredUser = {
 				...userToSend,
@@ -33,12 +38,24 @@ export const useUserStore = defineStore('user', {
 
 			return [ true, response.data.answer ];
 		},
-		updateUser(newUser : User) {
-			if (newUser.userId === this.user?.userId) {
-				this.user = newUser;
-				return;
+		async updateUser(userId: number, userToSend: UpdateUserToSend): Promise<[boolean, string | ReceivedUser]> {
+			const localeFormat = getLocaleFormat(navigator.language);
+			const parsedDate = DateTime.fromFormat(userToSend.birthday, localeFormat).setZone('utc').toJSDate();
+
+			const filteredUser = {
+				...userToSend,
+				birthday: formatDateToIso(parsedDate),
+			};
+
+			const response = await update(userId, filteredUser);
+
+			if (response.data.hasError) {
+				return [ false, response.data?.answer || '' ];
 			}
-			console.log('Different user was passed. To update, use the same used loggedIn');
+
+			if (!response.data?.user) return [ false, 'Internal error' ];
+
+			return [ true, response.data.user ];
 		},
 		setUser(user: User) {
 			this.user = user;

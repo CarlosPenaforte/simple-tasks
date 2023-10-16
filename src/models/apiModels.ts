@@ -1,5 +1,5 @@
 // MODELS TO SEND
-export type UserToSend = {
+export type CreateUserToSend = {
     username: string;
     user_password: string;
     full_name: string;
@@ -7,6 +7,14 @@ export type UserToSend = {
     sex: string;
     birthday: string;
     confirm_password: string;
+}
+
+export type UpdateUserToSend = {
+    username: string;
+    full_name: string;
+    email: string;
+    sex: string;
+    birthday: string;
 }
 
 // MODELS TO RECEIVE
@@ -37,4 +45,10 @@ export type LogoutResponse = {
 export type RegisterResponse = {
     readonly hasError: boolean;
     answer: string;
+}
+
+export type UpdateUserResponse = {
+    readonly hasError: boolean;
+    user?: ReceivedUser;
+    answer?: string;
 }

@@ -3,11 +3,6 @@
 		<q-card bordered
 			class="w-300 q-ma-md bg-white q-py-lg q-px-md"
 		>
-			<q-card-section horizontal
-				class="text-center q-mb-sm"
-			>
-				<span class="full-width text-h5 text-weight-medium text-dark text-uppercase">Create an account</span>
-			</q-card-section>
 			<q-card-section class="text-center q-mb-sm">
 				<q-input
 					ref="username"
@@ -91,6 +86,11 @@
 								transition-hide="scale"
 							>
 								<q-date
+									:mask="localeMask"
+									color="primary-main"
+									title="Birthday"
+									subtitle="Select your birthday"
+									class="text-dark"
 									:modelValue="form.birthday"
 									@update:modelValue="setBirthday"
 								>
@@ -111,7 +111,7 @@
 					v-model="form.user_password"
 					:type="togglePwdVisibility ? 'text' : 'password'"
 					name="password"
-					label="Passsword"
+					label="Password"
 					:rules="[
 						val => !!val || 'Password is missing',
 						val => val.length >= 6 || 'Password length must be at least 6'
@@ -133,7 +133,7 @@
 					v-model="form.confirm_password"
 					:type="togglePwdVisibility ? 'text' : 'password'"
 					name="confirmPassword"
-					label="Confirm Passsword"
+					label="Confirm Password"
 					:rules="[val => !!val || 'Confirm the password', val => val == form.user_password || 'Passwords not match']"
 					lazy-rules
 					color="primary-main"
@@ -177,15 +177,15 @@
     defineComponent, reactive, watch, ref, inject,
   } from 'vue';
   import { useUserStore } from 'src/stores/userStore';
-  import { UserToSend } from 'src/models/apiModels';
+  import { CreateUserToSend } from 'src/models/apiModels';
   import { Gender } from 'src/models/mainModels';
   import {
     formatDateToLocale,
     getLocaleMask,
     getLocaleFormat,
     genderToFullString,
+    birthdayStrToDate,
   } from 'src/utils/commonFunctions';
-  import { DateTime } from 'luxon';
   import {
     QInput, QSelect, QVueGlobals,
   } from 'quasar';
@@ -209,7 +209,7 @@
 
   // FORM
 
-  const form: UnwrapNestedRefs<UserToSend> = reactive(
+  const form: UnwrapNestedRefs<CreateUserToSend> = reactive(
     {
       username: '',
       user_password: '',
@@ -229,14 +229,6 @@
 
   const localeMask = getLocaleMask(locale);
 
-  const birthdayStrToDate = (birthday: string): Date | undefined => {
-    if (!birthday) return undefined;
-
-    if (birthday.indexOf('/') === 4) return DateTime.fromFormat(birthday, 'yyyy/MM/dd').toJSDate();
-
-    return DateTime.fromFormat(birthday, localeFormat).toJSDate();
-  };
-
   // BIRTHDAY SETTER AND GETTER
 
   const setBirthday = (birthday: string|number|null) => {
@@ -250,7 +242,7 @@
     form.birthday = birthday;
   };
 
-  const formattedBirthday = ref(formatDateToLocale(birthdayStrToDate(form.birthday), locale));
+  const formattedBirthday = ref(formatDateToLocale(birthdayStrToDate(form.birthday, localeFormat), locale));
 
   watch(() => form.birthday, (newValue) => {
     if (newValue.length < 10) {
@@ -259,7 +251,7 @@
       return;
     }
 
-    formattedBirthday.value = formatDateToLocale(birthdayStrToDate(newValue), locale);
+    formattedBirthday.value = formatDateToLocale(birthdayStrToDate(newValue, localeFormat), locale);
   });
 
   // INPUT INFO AND STATES

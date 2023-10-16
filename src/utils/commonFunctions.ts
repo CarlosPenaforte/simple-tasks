@@ -32,7 +32,7 @@ export const parseUser = (receivedUser : ReceivedUser): User => {
 		default:
 	}
 
-	const parsedBirthday = new Date(receivedUser.birthday);
+	const parsedBirthday = DateTime.fromISO(receivedUser.birthday, { zone: 'utc' }).toJSDate();
 
 	return {
 		userId: receivedUser.user_id,
@@ -53,8 +53,8 @@ export const getLocaleFormat = (locale: string): string => {
 
 export const getLocaleMask = (locale: string): string => getLocaleFormat(locale).replace(/[a-z]/gi, '#');
 
-export const formatDateToIso = (date: Date): string => DateTime.fromJSDate(date).toISODate()
-	|| date.toISOString().slice(0, 10);
+export const formatDateToIso = (date: Date): string => DateTime.fromJSDate(date).setZone('utc').toISODate()
+	|| date.toUTCString().slice(0, 10);
 
 export const formatDateToLocale = (
 	date: Date | undefined,
@@ -62,8 +62,18 @@ export const formatDateToLocale = (
 ): string => {
 	if (!date) return '';
 
-	return DateTime.fromJSDate(date).setLocale(locale).toLocaleString();
+	return DateTime.fromJSDate(date).setZone('utc').setLocale(locale).toLocaleString();
 };
+
+export const birthdayStrToDate = (birthday: string, localeFormat: string): Date | undefined => {
+    if (!birthday) return undefined;
+
+    if (birthday.indexOf('/') === 4) return DateTime.fromFormat(birthday, 'yyyy/MM/dd').setZone('utc').toJSDate();
+
+    const dateStr = DateTime.fromFormat(birthday, localeFormat).setZone('utc').toJSDate();
+
+    return dateStr;
+  };
 
 // GENDER
 

@@ -9,6 +9,10 @@ const routes: RouteRecordRaw[] = [
 				path: '',
 				component: () => import('src/pages/SelfTasks.vue'),
 			},
+			{
+				path: 'profile',
+				component: () => import('src/pages/ProfilePage.vue'),
+			},
 		],
 	},
 

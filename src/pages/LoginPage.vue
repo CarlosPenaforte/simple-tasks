@@ -3,13 +3,6 @@
 		<q-card bordered
 			class="w-300 q-ma-md bg-white q-py-lg q-px-md"
 		>
-			<q-card-section horizontal
-				class="text-center q-mb-sm"
-			>
-				<span
-					class="full-width text-h5 text-weight-medium text-dark text-uppercase"
-				>Login to continue</span>
-			</q-card-section>
 			<q-card-section class="text-center q-mb-sm">
 				<q-form
 					ref="loginForm"
@@ -31,7 +24,7 @@
 						v-model="password"
 						:type="togglePwdVisibility ? 'text' : 'password'"
 						name="password"
-						label="Passsword"
+						label="Password"
 						color="primary-main"
 						class="full-width text-dark"
 					>

@@ -31,6 +31,12 @@
   .bg-#{$color-name} {
     background-color: #{$color} !important;
   }
+  .hover-text-#{$color-name} :hover {
+    color: #{$color} !important;
+  }
+  .hover-bg-#{$color-name} :hover {
+    background-color: #{$color} !important;
+  }
 }
 
 @each $opacity in $opacities {
@@ -79,4 +85,8 @@
   .min-h-#{$i * 10} {
     min-height: $height;
   }
+}
+
+.hover-cursor-pointer :hover {
+  cursor: pointer;
 }

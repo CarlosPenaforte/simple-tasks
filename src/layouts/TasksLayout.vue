@@ -74,32 +74,41 @@
 							horizontal
 							class="justify-end q-pa-md q-pb-sm"
 						>
-							<q-icon
-								name="close"
-								size="26px"
+							<q-btn
+								icon="close"
+								flat
+								style="width: 26px; height: 26px;"
 								color="secondary"
-								@click="toggleLeftDrawer(false)"
+								@click.stop.prevent="toggleLeftDrawer(false)"
 							/>
 						</q-card-section>
 						<q-card-section
 							v-if="!!user"
 							horizontal
-							class="justify-start items-center q-px-sm q-pb-lg q-pt-none"
 						>
-							<q-icon
-								name="circle"
-								size="54px"
-								color="secondary"
-								class="q-pr-lg"
-							/>
-							<div class="column q-pl-xs">
-								<span
-									class="fs-22 q-mb-none q-pb-none lh-20 text-secondary"
-								>{{ user.fullName }}</span>
-								<span
-									class="fs-11 q-mt-none q-pt-none lh-11 text-secondary"
-								>{{ user.email }}</span>
-							</div>
+							<q-btn
+								id="btn-user-info"
+								flat
+								square
+								style="text-transform: none;"
+								class="flex row justify-start items-center q-px-sm q-py-md q-pt-none no-wrap"
+								@click.stop.prevent="goToProfilePage"
+							>
+								<q-icon
+									left
+									name="account_circle"
+									size="54px"
+									color="secondary"
+								/>
+								<div class="column text-secondary">
+									<span
+										class="fs-22 q-mb-none q-pb-none lh-20"
+									>{{ user.fullName }}</span>
+									<span
+										class="fs-11 q-mt-none q-pt-none lh-11"
+									>{{ user.email }}</span>
+								</div>
+							</q-btn>
 						</q-card-section>
 					</q-card>
 				</q-item>
@@ -274,6 +283,8 @@
 </script>
 
 <script setup lang="ts">
+  // BASICS
+
   const $q = inject<QVueGlobals>('quasar');
 
   const router = useRouter();
@@ -282,7 +293,7 @@
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);
 
-  if (!user || !window.sessionStorage.getItem('simple-tasks/token')) {
+  if (!user.value?.userId || !user.value?.username || !window.sessionStorage.getItem('simple-tasks/token')) {
     window.sessionStorage.removeItem('simple-tasks/token');
 
     router.push('/login');
@@ -294,8 +305,13 @@
   const projectOptions = storeToRefs(projectStore).projects;
   const { tasks } = storeToRefs(taskStore);
 
+  // DRAWER
+
   const leftDrawerOpen = ref(false);
   const [ selectedDrawerOption, setDrawerOption ] = useState(0);
+
+  // MODELS
+
   const isSearchDialogOpen = ref(false);
   const isSortDialogOpen = ref(false);
   const projectSelected = ref(projectOptions.value[0]);
@@ -314,6 +330,8 @@
     done: false,
   });
   const isDeleteTaskOpen = ref(false);
+
+  // ACTIONS
 
   function toggleLeftDrawer(shouldOpen: boolean) {
     leftDrawerOpen.value = shouldOpen;
@@ -363,6 +381,15 @@
     isDeleteTaskOpen.value = false;
   }
 
+  // ROUTE RELATED
+
+  function goToProfilePage(): void {
+    setDrawerOption(-1);
+    toggleLeftDrawer(false);
+
+    router.push('/profile');
+  }
+
   async function logout(): Promise<void> {
     const [ loggedOut, message ] = await userStore.logout();
 
@@ -374,6 +401,9 @@
         message,
       });
     }
+
+    setDrawerOption(-1);
+    toggleLeftDrawer(false);
 
     router.push('/login');
   }
@@ -390,6 +420,7 @@
       action: logout,
     },
   ];
+
 </script>
 
 <style>
@@ -403,5 +434,9 @@
 
   .header-shadow {
     box-shadow: 0 4px 4px rgba(0,0,0,0.1);
+  }
+
+  #btn-user-info .q-btn__content {
+	flex-wrap: nowrap;
   }
 </style>
