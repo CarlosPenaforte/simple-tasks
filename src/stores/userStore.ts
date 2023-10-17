@@ -9,7 +9,7 @@ import {
 } from 'src/services/authService';
 import { DateTime } from 'luxon';
 import {
-	update, register,
+	update, register, getById,
 } from '../services/userService';
 import {
 	formatDateToIso, getLocaleFormat, parseUser,
@@ -55,6 +55,21 @@ export const useUserStore = defineStore('user', {
 
 			if (!response.data?.user) return [ false, 'Internal error' ];
 
+			this.user = parseUser(response.data.user);
+
+			return [ true, response.data.user ];
+		},
+		async getUser(userId: number): Promise<[boolean, string | ReceivedUser]> {
+			const response = await getById(userId);
+
+			if (response.data.hasError) {
+				return [ false, response.data?.message || '' ];
+			}
+
+			if (!response.data?.user) return [ false, 'Internal error' ];
+
+			this.user = parseUser(response.data.user);
+
 			return [ true, response.data.user ];
 		},
 		setUser(user: User) {
@@ -71,6 +86,7 @@ export const useUserStore = defineStore('user', {
 
 			if (response.status === 200 && response.data.user && response.data.auth) {
 				this.user = parseUser(response.data.user);
+				window.sessionStorage.setItem('simple-tasks/user_id', `${this.user.userId}`);
 
 				return [ true, 'You are logged in' ];
 			}
@@ -93,6 +109,7 @@ export const useUserStore = defineStore('user', {
 			}
 
 			window.sessionStorage.removeItem('simple-tasks/token');
+			window.sessionStorage.removeItem('simple-tasks/user_id');
 
 			this.user = undefined;
 

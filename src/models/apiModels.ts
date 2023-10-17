@@ -52,3 +52,9 @@ export type UpdateUserResponse = {
     user?: ReceivedUser;
     answer?: string;
 }
+
+export type GetUserResponse = {
+    readonly hasError: boolean;
+    user?: ReceivedUser;
+    message?: string;
+}

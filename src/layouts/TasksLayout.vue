@@ -100,9 +100,9 @@
 									size="54px"
 									color="secondary"
 								/>
-								<div class="column text-secondary">
+								<div class="column text-secondary text-left">
 									<span
-										class="fs-22 q-mb-none q-pb-none lh-20"
+										class="fs-20 q-mb-none q-pb-none lh-18"
 									>{{ user.fullName }}</span>
 									<span
 										class="fs-11 q-mt-none q-pt-none lh-11"
@@ -279,6 +279,23 @@
       SortDialog,
       ConfirmDialog,
     },
+    async beforeRouteEnter(__to, __from, next) {
+      const userStore = useUserStore();
+      const [ storedId, storedToken ] = [
+        window.sessionStorage.getItem('simple-tasks/user_id'),
+        window.sessionStorage.getItem('simple-tasks/token'),
+      ];
+
+      if (storedId && storedToken) {
+        await userStore.getUser(Number(storedId));
+
+        next();
+      } else {
+        await userStore.logout();
+
+        next('/login');
+      }
+    },
   });
 </script>
 
@@ -292,12 +309,6 @@
 
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);
-
-  if (!user.value?.userId || !user.value?.username || !window.sessionStorage.getItem('simple-tasks/token')) {
-    window.sessionStorage.removeItem('simple-tasks/token');
-
-    router.push('/login');
-  }
 
   const taskStore = useTaskStore();
   const projectStore = useProjectStore();

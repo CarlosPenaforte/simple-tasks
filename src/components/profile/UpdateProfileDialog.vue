@@ -137,18 +137,17 @@
   import {
     QInput, QSelect, QVueGlobals,
   } from 'quasar';
-  import { DateTime } from 'luxon';
   import { useRouter } from 'vue-router';
   import { useUserStore } from '../../stores/userStore';
   import {
-    Gender, User,
+    Gender,
   } from '../../models/mainModels';
   import {
     UpdateUserToSend,
   } from '../../models/apiModels';
   import BigDialog from '../BigDialog.vue';
   import {
-    formatDateToLocale, genderToFullString, birthdayStrToDate, getLocaleFormat, getLocaleMask, parseUser,
+    formatDateToLocale, genderToFullString, birthdayStrToDate, getLocaleFormat, getLocaleMask,
   } from '../../utils/commonFunctions';
 
   export default defineComponent({
@@ -196,10 +195,10 @@
   // MODELS
 
   const newProfile = reactive<UpdateUserToSend>({
-    username: user.value?.username,
-    full_name: user.value?.fullName,
-    email: user.value?.email,
-    sex: user.value?.sex,
+    username: user.value?.username || '',
+    full_name: user.value?.fullName || '',
+    email: user.value?.email || '',
+    sex: user.value?.sex || '',
     birthday: formatDateToLocale(user.value?.birthday, locale),
   });
   const username = ref<QInput|null>(null);
@@ -278,13 +277,20 @@
       return;
     }
 
+    if (!user.value?.userId) {
+      $q?.notify({
+        type: 'negative',
+        message: 'Internal Error',
+      });
+
+      return;
+    }
+
     const [ updated, messageOrUser ] = await userStore.updateUser(user.value.userId, newProfile);
 
     if (updated && typeof messageOrUser !== 'string') {
       $q?.notify('Profile updated successfully');
 
-      const parsedUser: User = parseUser(messageOrUser);
-      userStore.setUser(parsedUser);
       isUpdateProfileOpen.value = false;
     } else if (typeof messageOrUser === 'string') {
       $q?.notify({
