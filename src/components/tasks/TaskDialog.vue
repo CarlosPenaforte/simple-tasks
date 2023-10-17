@@ -13,12 +13,12 @@
 		</h1>
 
 		<q-input
-			v-model="newTask.name"
+			v-model="newTask.task_title"
 			bottom-slots
 			counter
 			clearable
 			maxlength="20"
-			label="Task name"
+			label="Task title"
 			color="primary-main"
 			class="q-mb-md text-dark"
 		>
@@ -28,7 +28,7 @@
 		</q-input>
 
 		<q-input
-			v-model="newTask.description"
+			v-model="newTask.task_description"
 			bottom-slots
 			counter
 			clearable
@@ -66,7 +66,7 @@
 
 		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">Due date</span>
 		<q-input
-			v-model="newTask.dueDate"
+			v-model="newTask.due_date"
 			mask="####-##-##"
 			placeholder="YYYY-MM-DD"
 			color="primary-main"
@@ -78,7 +78,7 @@
 				>
 					<q-popup-proxy>
 						<q-date
-							v-model="newTask.dueDate"
+							v-model="newTask.due_date"
 							mask="YYYY-MM-DD"
 							color="primary-main"
 							title="Due date"
@@ -101,6 +101,11 @@
     Urgency, Task,
   } from 'src/models/mainModels';
   import { QVueGlobals } from 'quasar';
+  import { DateTime } from 'luxon';
+  import { useTaskStore } from 'src/stores/taskStore';
+  import { CreateTaskToSend } from 'src/models/apiModels';
+  import { useUserStore } from 'src/stores/userStore';
+  import { useProjectStore } from 'src/stores/projectStore';
   import BigDialog from '../BigDialog.vue';
 
   export default defineComponent({
@@ -112,6 +117,8 @@
 </script>
 
 <script setup lang="ts">
+  // PROPS AND EMIT
+
   const props = defineProps({
     modelValue: {
       type: Boolean,
@@ -128,25 +135,36 @@
 
   const emit = defineEmits([ 'update:modelValue' ]);
 
+  // BASICS
+
   const $q = inject<QVueGlobals>('quasar');
+  const taskStore = useTaskStore();
 
-  function saveTask() {
-    $q?.notify('Task created successfully');
-  }
+  const userStore = useUserStore();
+  const user = computed(() => userStore.$state.user);
 
-  let newTask = reactive({
-    name: '',
-    description: '',
+  const projectStore = useProjectStore();
+  const currentProject = computed(() => projectStore.$state.currentProject);
+
+  // MODELS
+
+  let newTask = ({
+    task_title: '',
+    task_description: '',
     urgency: Urgency.URGENT,
-    dueDate: '',
+    creation_date: DateTime.now().setZone('utc').toISODate() || new Date().toISOString(),
+    due_date: '',
+    done: 0,
   });
 
   if (props.isEdit) {
     newTask = reactive({
-      name: props.currentTask?.taskTitle || '',
-      description: props.currentTask?.taskDescription || '',
+      task_title: props.currentTask?.taskTitle || '',
+      task_description: props.currentTask?.taskDescription || '',
       urgency: props.currentTask?.urgency || Urgency.COMMON,
-      dueDate: props.currentTask?.dueDate ? props.currentTask.dueDate.toLocaleDateString('pt-BR') : '',
+      creation_date: props.currentTask?.creationDate ? props.currentTask.creationDate.toLocaleDateString('pt-BR') : '',
+      due_date: props.currentTask?.dueDate ? props.currentTask.dueDate.toLocaleDateString('pt-BR') : '',
+      done: +(props.currentTask?.done || false),
     });
   }
 
@@ -158,4 +176,56 @@
       emit('update:modelValue', newState);
     },
   });
+
+  // ACTIONS
+
+  async function saveTask() {
+    try {
+      const [ userId, projectId ] = [ user.value?.userId, currentProject.value?.projectId ];
+      console.log(userId, projectId);
+
+      if (!userId || !projectId) {
+        $q?.notify({
+          type: 'negative',
+          message: 'Not possible to find user or project',
+        });
+        return;
+      }
+
+      const taskToSend: CreateTaskToSend = {
+        ...newTask,
+        user_id: userId,
+        project_id: projectId,
+      };
+      const [ success, result ] = await taskStore.createTask(userId as number, taskToSend);
+
+      if (!success) {
+        $q?.notify({
+          type: 'negative',
+          message: result,
+        });
+
+        return;
+      }
+
+      isCreateTaskOpen.value = false;
+      newTask = ({
+        task_title: '',
+        task_description: '',
+        urgency: Urgency.URGENT,
+        creation_date: DateTime.now().setZone('utc').toISODate() || new Date().toISOString(),
+        due_date: '',
+        done: 0,
+      });
+      $q?.notify({
+        type: 'positive',
+        message: result,
+      });
+    } catch (e) {
+      $q?.notify({
+        type: 'negative',
+        message: 'Error while creating task',
+      });
+    }
+  }
 </script>

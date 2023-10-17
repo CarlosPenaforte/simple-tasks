@@ -5,7 +5,12 @@ import {
 import {
 	filterTasksByUrgency, parseTask,
 } from 'src/utils/commonFunctions';
-import { getAll } from '../services/taskService';
+import { CreateTaskToSend } from 'src/models/apiModels';
+import {
+	create, getAll,
+} from '../services/taskService';
+import { useUserStore } from './userStore';
+import { useProjectStore } from './projectStore';
 
 export const useTaskStore = defineStore('task', {
 	state: () => ({
@@ -30,10 +35,25 @@ export const useTaskStore = defineStore('task', {
 
 			return [ true, 'Success getting tasks' ];
 		},
-		createTask(task : Task) {
-			this.tasks.push(task);
+		async createTask(userId: number, taskToSend: CreateTaskToSend): Promise<[boolean, string]> {
+			const response = await create(userId, taskToSend);
 
-			this.tasks = this.tasks.sort((a, b) => a.taskId - b.taskId);
+			if (response.data.hasError) {
+				if (!response.data?.message) {
+					return [ false, 'Error while creating task' ];
+				}
+				return [ false, response.data.message ];
+			}
+
+			if (response.data.tasks === undefined) {
+				return [ false, 'No tasks found' ];
+			}
+
+			this.tasks = response.data.tasks.map(parseTask);
+
+			this.tasks = this.tasks.sort((a, b) => a.taskId - b.projectId);
+
+			return [ true, 'Success creating project' ];
 		},
 		updateTask(newTask : Task) {
 			this.tasks = this.tasks.map((task) => {
@@ -52,21 +72,43 @@ export const useTaskStore = defineStore('task', {
 	},
 	getters: {
 		undoneTasks(): Task[] {
-			return this.tasks.filter((task) => !task.done);
+			return this.tasks.filter((task) => !task.done
+				&& useUserStore().$state.user?.userId === task.userId
+				&& useProjectStore().$state.currentProject?.projectId === task.projectId);
 		},
 
 		doneTasks(): Task[] {
-			return this.tasks.filter((task) => task.done);
+			return this.tasks.filter((task) => task.done
+				&& useUserStore().$state.user?.userId === task.userId
+				&& useProjectStore().$state.currentProject?.projectId === task.projectId);
 		},
 
 		urgentTasks(): Task[] {
-			return filterTasksByUrgency(this.tasks, Urgency.URGENT);
+			const userId = useUserStore().$state.user?.userId;
+			if (!userId) return [];
+
+			const projectId = useProjectStore().$state.currentProject?.projectId;
+			if (!projectId) return [];
+
+			return filterTasksByUrgency(userId, projectId, this.tasks, Urgency.URGENT);
 		},
 		importantTasks(): Task[] {
-			return filterTasksByUrgency(this.tasks, Urgency.IMPORTANT);
+			const userId = useUserStore().$state.user?.userId;
+			if (!userId) return [];
+
+			const projectId = useProjectStore().$state.currentProject?.projectId;
+			if (!projectId) return [];
+
+			return filterTasksByUrgency(userId, projectId, this.tasks, Urgency.IMPORTANT);
 		},
 		commonTasks(): Task[] {
-			return filterTasksByUrgency(this.tasks, Urgency.COMMON);
+			const userId = useUserStore().$state.user?.userId;
+			if (!userId) return [];
+
+			const projectId = useProjectStore().$state.currentProject?.projectId;
+			if (!projectId) return [];
+
+			return filterTasksByUrgency(userId, projectId, this.tasks, Urgency.COMMON);
 		},
 	},
 });

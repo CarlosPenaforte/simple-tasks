@@ -10,8 +10,11 @@ import {
 	Task, Urgency, User,
 } from '../models/mainModels';
 
-export function filterTasksByUrgency(tasks: Task[], urgency: Urgency): Task[] {
-	return tasks.filter((task) => task.urgency === urgency);
+export function filterTasksByUrgency(userId: number, projectId: number, tasks: Task[], urgency: Urgency): Task[] {
+	return tasks.filter((task) => !task.done
+		&& task.urgency === urgency
+		&& task.userId === userId
+		&& task.projectId === projectId);
 }
 
 // TYPE CHECK

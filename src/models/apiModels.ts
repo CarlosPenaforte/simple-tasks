@@ -61,7 +61,8 @@ export type CreateTaskToSend = Omit<ReceivedTask, 'task_id'>;
 
 export type CreateTaskResponse = {
     readonly hasError: boolean;
-    message: string;
+    tasks?: ReceivedTask[];
+    message?: string;
 };
 
 export type UpdateTaskResponse = {

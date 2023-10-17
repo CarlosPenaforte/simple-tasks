@@ -18,7 +18,7 @@
 				<template v-if="isMainTasksRoute">
 					<q-select
 						v-if="projectStore.hasProjects"
-						v-model="projectSelected"
+						modelValue="currentProject"
 						:options="projects"
 						borderless
 						behavior="menu"
@@ -28,12 +28,13 @@
 						class="q-ml-lg q-px-sm w-200"
 						transition-show="jump-down"
 						transition-hide="jump-up"
+						@update:model-value="projectStore.setCurrentProject"
 					>
 						<template v-slot:selected>
 							<div
 								class="text-whity fw-medium"
 							>
-								{{ projectSelected?.name }}
+								{{ currentProject?.name }}
 							</div>
 						</template>
 
@@ -266,7 +267,6 @@
   import { useTaskStore } from 'src/stores/taskStore';
   import { useUserStore } from 'src/stores/userStore';
   import {
-    Project,
     Task,
   } from 'src/models/mainModels';
   import { storeToRefs } from 'pinia';
@@ -338,7 +338,9 @@
   const { user } = storeToRefs(userStore);
 
   const projectStore = useProjectStore();
-  const { projects } = storeToRefs(projectStore);
+  const {
+    projects, currentProject,
+  } = storeToRefs(projectStore);
 
   const taskStore = useTaskStore();
   const { tasks } = storeToRefs(taskStore);
@@ -377,7 +379,6 @@
 
   const isSearchDialogOpen = ref(false);
   const isSortDialogOpen = ref(false);
-  const projectSelected = ref<Project | undefined>(projects.value[0]);
   const isCreateProjectOpen = ref<boolean>(false);
   const isCreateTaskOpen = ref(false);
   const isEditTaskOpen = ref(false);
@@ -385,8 +386,8 @@
   const isDeleteTaskOpen = ref(false);
 
   watch(() => projects.value, (newProjects) => {
-    if (!projectSelected.value || newProjects.length === 1) {
-      projectSelected.value = newProjects[0];
+    if (!currentProject.value || newProjects.length === 1) {
+      projectStore.setCurrentProject(newProjects[0]);
     }
   }, { immediate: true });
 

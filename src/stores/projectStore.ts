@@ -9,6 +9,7 @@ import { CreateProjectToSend } from 'src/models/apiModels';
 export const useProjectStore = defineStore('project', {
 	state: () => ({
 		projects: [] as Project[],
+		currentProject: undefined as Project | undefined,
 	}),
 	actions: {
 		async getProjects(userId: number): Promise<[boolean, string]> {
@@ -64,6 +65,10 @@ export const useProjectStore = defineStore('project', {
 		},
 		removeProject(projectId: number) {
 			this.projects = this.projects.filter((project) => !(project.projectId === projectId));
+		},
+		setCurrentProject(project: Project | undefined) {
+			this.currentProject = project;
+			console.log(this.currentProject);
 		},
 	},
 	getters: {
