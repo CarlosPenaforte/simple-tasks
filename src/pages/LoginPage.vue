@@ -111,19 +111,26 @@
       return;
     }
 
-    const [ logged, message ] = await userStore.login(email.value, password.value);
+    try {
+      const [ logged, message ] = await userStore.login(email.value, password.value);
 
-    if (logged && user && window.sessionStorage.getItem('simple-tasks/token')) {
-      $q?.notify(message);
+      if (logged && user && window.sessionStorage.getItem('simple-tasks/token')) {
+        $q?.notify(message);
 
-      pushToUrl('/');
-      return;
-    }
+        pushToUrl('/');
+        return;
+      }
 
-    if (!logged) {
+      if (!logged) {
+        $q?.notify({
+          type: 'negative',
+          message,
+        });
+      }
+    } catch (e) {
       $q?.notify({
         type: 'negative',
-        message,
+        message: 'Wrong email or password',
       });
     }
   };

@@ -1,34 +1,55 @@
+import {
+	create, getAll,
+} from 'src/services/projectService';
+import { parseProject } from 'src/utils/commonFunctions';
 import { defineStore } from 'pinia';
 import { Project } from 'src/models/mainModels';
+import { CreateProjectToSend } from 'src/models/apiModels';
 
 export const useProjectStore = defineStore('project', {
 	state: () => ({
-		projects: [
-			{
-				name: 'MyProject',
-				description: '',
-				userId: 1,
-				projectId: 1,
-			},
-			{
-				name: 'Second',
-				description: '',
-				userId: 1,
-				projectId: 2,
-			},
-			{
-				name: 'Party',
-				description: '',
-				userId: 1,
-				projectId: 3,
-			},
-		] as Project[],
+		projects: [] as Project[],
 	}),
 	actions: {
-		createProject(project : Project) {
-			this.projects.push(project);
+		async getProjects(userId: number): Promise<[boolean, string]> {
+			const response = await getAll(userId);
+
+			if (response.data.hasError) {
+				if (!response.data.message) {
+					return [ false, 'Error while getting projects' ];
+				}
+				return [ false, response.data.message ];
+			}
+
+			if (response.data.projects === undefined) {
+				return [ false, 'No projects found' ];
+			}
+
+			this.projects = response.data.projects.map(parseProject);
 
 			this.projects = this.projects.sort((a, b) => a.projectId - b.projectId);
+
+			return [ true, 'Success getting projects' ];
+		},
+		async createProject(userId: number, projectToSend: CreateProjectToSend): Promise<[boolean, string]> {
+			const response = await create(userId, projectToSend);
+
+			if (response.data.hasError) {
+				if (!response.data?.message) {
+					return [ false, 'Error while creating project' ];
+				}
+				return [ false, response.data.message ];
+			}
+
+			if (response.data.projects === undefined) {
+				return [ false, 'No projects found' ];
+			}
+
+			this.projects = response.data.projects.map(parseProject);
+
+			this.projects = this.projects.sort((a, b) => a.projectId - b.projectId);
+
+			return [ true, 'Success creating project' ];
 		},
 		updateProject(newProject : Project) {
 			this.projects = this.projects.map((project) => {
@@ -43,6 +64,11 @@ export const useProjectStore = defineStore('project', {
 		},
 		removeProject(projectId: number) {
 			this.projects = this.projects.filter((project) => !(project.projectId === projectId));
+		},
+	},
+	getters: {
+		hasProjects(): boolean {
+			return this.projects.length > 0;
 		},
 	},
 });

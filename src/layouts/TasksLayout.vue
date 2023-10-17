@@ -15,44 +15,49 @@
 					@click="toggleLeftDrawer(true)"
 				/>
 
-				<q-select
-					v-model="projectSelected"
-					:options="projectOptions"
-					borderless
-					behavior="menu"
-					label="Project"
-					label-color="whity"
-					color="primary-main"
-					class="q-ml-lg q-px-sm w-200"
-					transition-show="jump-down"
-					transition-hide="jump-up"
-				>
-					<template v-slot:selected>
-						<div
-							class="text-whity fw-medium"
-						>
-							{{ projectSelected?.name }}
-						</div>
-					</template>
+				<template v-if="isMainTasksRoute">
+					<q-select
+						v-if="projectStore.hasProjects"
+						v-model="projectSelected"
+						:options="projects"
+						borderless
+						behavior="menu"
+						label="Project"
+						label-color="whity"
+						color="primary-main"
+						class="q-ml-lg q-px-sm w-200"
+						transition-show="jump-down"
+						transition-hide="jump-up"
+					>
+						<template v-slot:selected>
+							<div
+								class="text-whity fw-medium"
+							>
+								{{ projectSelected?.name }}
+							</div>
+						</template>
 
-					<template v-slot:option="scope">
-						<q-item v-bind="scope.itemProps">
-							<q-item-section>
-								<span>{{ scope.opt.name }}</span>
-							</q-item-section>
-						</q-item>
-					</template>
-				</q-select>
+						<template v-slot:option="scope">
+							<q-item v-bind="scope.itemProps">
+								<q-item-section>
+									<span>{{ scope.opt.name }}</span>
+								</q-item-section>
+							</q-item>
+						</template>
+					</q-select>
 
-				<q-btn
-					flat
-					dense
-					round
-					icon="add"
-					aria-label="Add"
-					class="q-ml-xs"
-					@click="openCreateProjectDialog"
-				/>
+					<q-btn
+						flat
+						dense
+						:round="projectStore.hasProjects"
+						icon="add"
+						aria-label="Add"
+						class="q-ml-xs items-center fs-14 lh-10"
+						@click="openCreateProjectDialog"
+					>
+						{{ projectStore.hasProjects? '' : 'Click here to create a project' }}
+					</q-btn>
+				</template>
 			</q-toolbar>
 		</q-header>
 
@@ -148,13 +153,15 @@
 
 		<q-page-container>
 			<router-view
-				v-model="reactiveTasks"
 				@open-edit-task="openEditTaskDialog"
 				@open-delete-task="openDeleteTaskDialog"
 			/>
 		</q-page-container>
 
-		<q-footer class="bg-secondary-filter">
+		<q-footer
+			v-if="isMainTasksRoute"
+			class="bg-secondary-filter"
+		>
 			<q-toolbar class="row no-padding fit">
 				<q-btn
 					flat
@@ -227,12 +234,15 @@
 			v-model="isCreateTaskOpen"
 		/>
 
-		<task-dialog is-edit
+		<task-dialog
+			v-if="targettedTask"
+			is-edit
 			:current-task="targettedTask"
 			v-model="isEditTaskOpen"
 		/>
 
 		<confirm-dialog
+			v-if="targettedTask"
 			v-model="isDeleteTaskOpen"
 			:done-function="deleteTask"
 			:confirmQuestion="`Do you really want to delete ${targettedTask.taskTitle}?`"
@@ -250,13 +260,14 @@
 
 <script lang="ts">
   import {
-    defineComponent, ref, reactive, UnwrapNestedRefs, inject,
+    defineComponent, ref, inject, computed, onBeforeMount, watch,
   } from 'vue';
   import { useProjectStore } from 'src/stores/projectStore';
   import { useTaskStore } from 'src/stores/taskStore';
   import { useUserStore } from 'src/stores/userStore';
   import {
-    Task, Urgency,
+    Project,
+    Task,
   } from 'src/models/mainModels';
   import { storeToRefs } from 'pinia';
   import {
@@ -286,14 +297,28 @@
         window.sessionStorage.getItem('simple-tasks/token'),
       ];
 
-      if (storedId && storedToken) {
-        await userStore.getUser(Number(storedId));
+      if (!userStore.$state.user?.userId && storedId && storedToken) {
+        try {
+          const [ success ] = await userStore.getUser(Number(storedId));
 
-        next();
-      } else {
+          if (!success) {
+            await userStore.logout();
+
+            next('/login');
+          } else {
+            next();
+          }
+        } catch (e) {
+          await userStore.logout();
+
+          next('/login');
+        }
+      } else if (!userStore.$state.user?.userId) {
         await userStore.logout();
 
         next('/login');
+      } else {
+        next();
       }
     },
   });
@@ -307,14 +332,41 @@
   const router = useRouter();
   const route = useRoute();
 
+  const isMainTasksRoute = computed(() => route.path === '/');
+
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);
 
-  const taskStore = useTaskStore();
   const projectStore = useProjectStore();
+  const { projects } = storeToRefs(projectStore);
 
-  const projectOptions = storeToRefs(projectStore).projects;
+  const taskStore = useTaskStore();
   const { tasks } = storeToRefs(taskStore);
+
+  onBeforeMount(async() => {
+    const userId = user.value?.userId;
+    if (!userId) {
+      await userStore.logout();
+
+      router.push('/login');
+    }
+
+    try {
+      const [ success, result ] = await projectStore.getProjects(userId as number);
+
+      if (!success) {
+        $q?.notify({
+          type: 'negative',
+          message: result,
+        });
+      }
+    } catch (e) {
+      $q?.notify({
+        type: 'negative',
+        message: 'Error while getting projects',
+      });
+    }
+  });
 
   // DRAWER
 
@@ -325,22 +377,18 @@
 
   const isSearchDialogOpen = ref(false);
   const isSortDialogOpen = ref(false);
-  const projectSelected = ref(projectOptions.value[0]);
-  const reactiveTasks = reactive(tasks);
-  const isCreateProjectOpen = ref(false);
+  const projectSelected = ref<Project | undefined>(projects.value[0]);
+  const isCreateProjectOpen = ref<boolean>(false);
   const isCreateTaskOpen = ref(false);
   const isEditTaskOpen = ref(false);
-  let targettedTask : UnwrapNestedRefs<Task> = reactive({
-    taskId: 1,
-    userId: 1,
-    projectId: 1,
-    taskTitle: 'ct1',
-    taskDescription: 'ok',
-    creationDate: new Date(),
-    urgency: Urgency.URGENT,
-    done: false,
-  });
+  const targettedTask = ref<Task | undefined>(tasks.value[0]);
   const isDeleteTaskOpen = ref(false);
+
+  watch(() => projects.value, (newProjects) => {
+    if (!projectSelected.value || newProjects.length === 1) {
+      projectSelected.value = newProjects[0];
+    }
+  }, { immediate: true });
 
   // ACTIONS
 
@@ -380,12 +428,12 @@
 
   function openEditTaskDialog(task: Task): void {
     isEditTaskOpen.value = true;
-    targettedTask = task;
+    targettedTask.value = task;
   }
 
   function openDeleteTaskDialog(task: Task): void {
     isDeleteTaskOpen.value = true;
-    targettedTask = task;
+    targettedTask.value = task;
   }
 
   function deleteTask(): void {

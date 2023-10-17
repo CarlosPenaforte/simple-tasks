@@ -123,7 +123,6 @@
     },
     currentTask: {
       type: Object as PropType<Task>,
-      required: true,
     },
   });
 
@@ -144,10 +143,10 @@
 
   if (props.isEdit) {
     newTask = reactive({
-      name: props.currentTask.taskTitle,
-      description: props.currentTask.taskDescription || '',
-      urgency: props.currentTask.urgency,
-      dueDate: props.currentTask.dueDate ? props.currentTask.dueDate.toLocaleDateString('pt-BR') : '',
+      name: props.currentTask?.taskTitle || '',
+      description: props.currentTask?.taskDescription || '',
+      urgency: props.currentTask?.urgency || Urgency.COMMON,
+      dueDate: props.currentTask?.dueDate ? props.currentTask.dueDate.toLocaleDateString('pt-BR') : '',
     });
   }
 

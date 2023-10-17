@@ -36,9 +36,15 @@
 
 <script lang="ts">
   import {
-    defineComponent, computed, reactive, inject,
+    defineComponent, computed, reactive, inject, onBeforeMount,
   } from 'vue';
-  import { QVueGlobals } from 'quasar';
+  import {
+    QVueGlobals,
+  } from 'quasar';
+  import { useProjectStore } from 'src/stores/projectStore';
+  import { useUserStore } from 'src/stores/userStore';
+  import { CreateProjectToSend } from 'src/models/apiModels';
+  import { useRouter } from 'vue-router';
   import BigDialog from '../BigDialog.vue';
 
   export default defineComponent({
@@ -50,6 +56,8 @@
 </script>
 
 <script setup lang="ts">
+  // PROPS AND EMIT
+
   const props = defineProps({
     modelValue: {
       type: Boolean,
@@ -59,13 +67,29 @@
 
   const emit = defineEmits([ 'update:modelValue' ]);
 
+  // BASICS
+
   const $q = inject<QVueGlobals>('quasar');
 
-  function saveProject() {
-    $q?.notify('Project created successfully');
-  }
+  const router = useRouter();
 
-  const newProject = reactive({
+  const projectStore = useProjectStore();
+  const userStore = useUserStore();
+
+  const userId = userStore.user?.userId;
+
+  onBeforeMount(async() => {
+    if (!userId) {
+      await userStore.logout();
+
+      router.push('/login');
+    }
+  });
+
+  // MODELS
+
+  const newProject = reactive<CreateProjectToSend>({
+    user_id: userId as number,
     name: '',
     description: '',
   });
@@ -78,4 +102,32 @@
       emit('update:modelValue', newState);
     },
   });
+
+  // ACTIONS
+
+  async function saveProject() {
+    try {
+      const [ success, result ] = await projectStore.createProject(userId as number, newProject);
+
+      if (!success) {
+        $q?.notify({
+          type: 'negative',
+          message: result,
+        });
+
+        return;
+      }
+
+      isCreateProjectOpen.value = false;
+      $q?.notify({
+        type: 'positive',
+        message: result,
+      });
+    } catch (e) {
+      $q?.notify({
+        type: 'negative',
+        message: 'Error while creating project',
+      });
+    }
+  }
 </script>

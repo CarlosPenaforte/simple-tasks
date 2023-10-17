@@ -1,8 +1,12 @@
 /* eslint-disable indent */
 import { DateTime } from 'luxon';
-import { ReceivedUser } from 'src/models/apiModels';
+import {
+	ReceivedProject,
+ ReceivedTask, ReceivedUser,
+} from 'src/models/apiModels';
 import {
 	Gender,
+	Project,
 	Task, Urgency, User,
 } from '../models/mainModels';
 
@@ -43,6 +47,42 @@ export const parseUser = (receivedUser : ReceivedUser): User => {
 		birthday: parsedBirthday,
 	};
 };
+
+export const parseTask = (receivedTask : ReceivedTask): Task => {
+	const parsedCreationDate = DateTime.fromISO(receivedTask.creation_date, { zone: 'utc' }).toJSDate();
+	const parsedDueDate = receivedTask.due_date ? DateTime.fromISO(receivedTask.due_date, { zone: 'utc' }).toJSDate() : undefined;
+
+	let parsedUrgency: Urgency = Urgency.COMMON;
+
+	switch (receivedTask.urgency) {
+		case 'urgent':
+			parsedUrgency = Urgency.URGENT;
+			break;
+		case 'important':
+			parsedUrgency = Urgency.IMPORTANT;
+			break;
+		default:
+	}
+
+	return {
+		taskId: receivedTask.task_id,
+		userId: receivedTask.user_id,
+		projectId: receivedTask.project_id,
+		taskTitle: receivedTask.task_title,
+		taskDescription: receivedTask.task_description,
+		urgency: parsedUrgency,
+		creationDate: parsedCreationDate,
+		dueDate: parsedDueDate,
+		done: receivedTask.done !== 0,
+	};
+};
+
+export const parseProject = (receivedProject : ReceivedProject): Project => ({
+		userId: receivedProject.user_id,
+		projectId: receivedProject.project_id,
+		name: receivedProject.name,
+		description: receivedProject.description,
+	});
 
 // DATE
 

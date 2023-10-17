@@ -2,65 +2,34 @@ import { defineStore } from 'pinia';
 import {
 	Task, Urgency,
 } from 'src/models/mainModels';
-import { filterTasksByUrgency } from 'src/utils/commonFunctions';
+import {
+	filterTasksByUrgency, parseTask,
+} from 'src/utils/commonFunctions';
+import { getAll } from '../services/taskService';
 
 export const useTaskStore = defineStore('task', {
 	state: () => ({
-		tasks: [
-			{
-				taskId: 1,
-				userId: 1,
-				projectId: 1,
-				taskTitle: 'ct1',
-				taskDescription: 'ok',
-				creationDate: new Date(),
-				urgency: Urgency.URGENT,
-				done: false,
-			},
-			{
-				taskId: 2,
-				userId: 1,
-				projectId: 2,
-				taskTitle: 'ct1',
-				taskDescription: 'ok',
-				creationDate: new Date(),
-				dueDate: new Date('2022-11-30'),
-				urgency: Urgency.URGENT,
-				done: false,
-			},
-			{
-				taskId: 3,
-				userId: 1,
-				projectId: 1,
-				taskTitle: 'ct1',
-				taskDescription: 'ok',
-				creationDate: new Date(),
-				urgency: Urgency.IMPORTANT,
-				done: false,
-			},
-			{
-				taskId: 4,
-				userId: 1,
-				projectId: 3,
-				taskTitle: 'ct1',
-				taskDescription: 'ok',
-				creationDate: new Date(),
-				urgency: Urgency.IMPORTANT,
-				done: false,
-			},
-			{
-				taskId: 5,
-				userId: 1,
-				projectId: 1,
-				taskTitle: 'ct1',
-				taskDescription: 'ok',
-				creationDate: new Date(),
-				urgency: Urgency.COMMON,
-				done: false,
-			},
-		] as Task[],
+		tasks: [] as Task[],
 	}),
 	actions: {
+		async getTasks(userId: number): Promise<[boolean, string]> {
+			const response = await getAll(userId);
+
+			if (response.data.hasError) {
+				if (!response.data.message) {
+					return [ false, 'Error while getting tasks' ];
+				}
+				return [ false, response.data.message ];
+			}
+
+			if (response.data.tasks === undefined) {
+				return [ false, 'No tasks found' ];
+			}
+
+			this.tasks = response.data.tasks.map(parseTask);
+
+			return [ true, 'Success getting tasks' ];
+		},
 		createTask(task : Task) {
 			this.tasks.push(task);
 

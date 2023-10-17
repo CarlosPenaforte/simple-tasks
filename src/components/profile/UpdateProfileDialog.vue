@@ -137,7 +137,6 @@
   import {
     QInput, QSelect, QVueGlobals,
   } from 'quasar';
-  import { useRouter } from 'vue-router';
   import { useUserStore } from '../../stores/userStore';
   import {
     Gender,
@@ -173,16 +172,8 @@
 
   const $q = inject<QVueGlobals>('quasar');
 
-  const router = useRouter();
-
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);
-
-  if (!user.value?.userId || !user.value?.username || !window.sessionStorage.getItem('simple-tasks/token')) {
-    window.sessionStorage.removeItem('simple-tasks/token');
-
-    router.push('/login');
-  }
 
   // UTILS
 
