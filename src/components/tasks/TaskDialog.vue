@@ -148,7 +148,7 @@
 
   // MODELS
 
-  let newTask = ({
+  let newTask = reactive({
     task_title: '',
     task_description: '',
     urgency: Urgency.URGENT,
@@ -182,7 +182,6 @@
   async function saveTask() {
     try {
       const [ userId, projectId ] = [ user.value?.userId, currentProject.value?.projectId ];
-      console.log(userId, projectId);
 
       if (!userId || !projectId) {
         $q?.notify({

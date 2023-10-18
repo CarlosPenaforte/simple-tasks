@@ -351,6 +351,8 @@
       await userStore.logout();
 
       router.push('/login');
+
+      return;
     }
 
     try {
@@ -437,8 +439,45 @@
     targettedTask.value = task;
   }
 
-  function deleteTask(): void {
-    isDeleteTaskOpen.value = false;
+  async function deleteTask(): Promise<void> {
+    const userId = user.value?.userId;
+    if (!userId) {
+      await userStore.logout();
+
+      router.push('/login');
+
+      return;
+    }
+
+    if (!targettedTask.value?.taskId) {
+      $q?.notify({
+        type: 'negative',
+        message: 'Task not found',
+      });
+
+      return;
+    }
+
+    try {
+      const [ success, message ] = await taskStore.deleteTask(userId, targettedTask.value.taskId);
+
+      if (!success) {
+        $q?.notify({
+          type: 'negative',
+          message,
+        });
+
+        return;
+      }
+
+      $q?.notify(message);
+      isDeleteTaskOpen.value = false;
+    } catch (e) {
+      $q?.notify({
+        type: 'negative',
+        message: 'Error while deleting task',
+      });
+    }
   }
 
   // ROUTE RELATED
@@ -473,6 +512,11 @@
       title: 'Your Tasks',
       icon: 'checklist',
       path: '/',
+    },
+    {
+      title: 'Projects',
+      icon: 'emoji_events',
+      path: '/projects',
     },
     {
       title: 'Logout',

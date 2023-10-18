@@ -7,7 +7,7 @@ import {
 } from 'src/utils/commonFunctions';
 import { CreateTaskToSend } from 'src/models/apiModels';
 import {
-	create, getAll,
+	create, deleteById, getAll,
 } from '../services/taskService';
 import { useUserStore } from './userStore';
 import { useProjectStore } from './projectStore';
@@ -66,8 +66,19 @@ export const useTaskStore = defineStore('task', {
 		setTasks(tasks: Task[]) {
 			this.tasks = tasks;
 		},
-		removeTask(taskId: number) {
-			this.tasks = this.tasks.filter((task) => !(task.taskId === taskId));
+		async deleteTask(userId: number, taskId: number): Promise<[boolean, string]> {
+			const response = await deleteById(userId, taskId);
+
+			if (response.data.hasError) {
+				if (!response.data.message) {
+					return [ false, 'Error while deleting task' ];
+				}
+				return [ false, response.data.message ];
+			}
+
+			this.tasks = this.tasks.filter((task) => task.taskId !== taskId);
+
+			return [ true, response.data.message ];
 		},
 	},
 	getters: {

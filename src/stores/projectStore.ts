@@ -1,10 +1,11 @@
 import {
-	create, getAll,
+	create, deleteById, getAll,
 } from 'src/services/projectService';
 import { parseProject } from 'src/utils/commonFunctions';
 import { defineStore } from 'pinia';
 import { Project } from 'src/models/mainModels';
 import { CreateProjectToSend } from 'src/models/apiModels';
+import { useTaskStore } from './taskStore';
 
 export const useProjectStore = defineStore('project', {
 	state: () => ({
@@ -63,12 +64,30 @@ export const useProjectStore = defineStore('project', {
 		setProjects(projects: Project[]) {
 			this.projects = projects;
 		},
-		removeProject(projectId: number) {
-			this.projects = this.projects.filter((project) => !(project.projectId === projectId));
+		async deleteProject(userId: number, projectId: number): Promise<[boolean, string]> {
+			const taskStore = useTaskStore();
+
+			await taskStore.$state.tasks.reduce(async(promise, task) => {
+				await promise;
+				if (task.projectId === projectId) {
+					await taskStore.deleteTask(userId, task.taskId);
+				}
+			}, Promise.resolve());
+
+			const { data } = await deleteById(userId, projectId);
+
+			if (data.hasError) {
+				if (!data.message) return [ false, 'Error while deleting project' ];
+
+				return [ false, data.message ];
+			}
+
+			this.projects = this.projects.filter((project) => project.projectId !== projectId);
+
+			return [ true, data.message ];
 		},
 		setCurrentProject(project: Project | undefined) {
 			this.currentProject = project;
-			console.log(this.currentProject);
 		},
 	},
 	getters: {
