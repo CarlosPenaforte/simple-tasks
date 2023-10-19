@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia';
 import {
+	Orientation,
 	Task, Urgency,
 } from 'src/models/mainModels';
 import {
 	filterTasksByUrgency, parseTask,
 } from 'src/utils/commonFunctions';
 import { CreateTaskToSend } from 'src/models/apiModels';
+import { SortBy } from '../models/mainModels';
 import { parseTaskToSend } from '../utils/commonFunctions';
 import {
 	create, deleteById, getAll, update,
@@ -138,6 +140,32 @@ export const useTaskStore = defineStore('task', {
 			});
 
 			return this.searchedTasks.length > 0;
+		},
+		sortTasks(sortBy: SortBy) {
+			this.searchedTasks = [];
+			this.tasks = this.tasks.sort((a, b) => {
+				if (sortBy.dueDate.use) {
+					if (a.dueDate && b.dueDate) {
+						if (a.dueDate.getTime() > b.dueDate.getTime()) {
+							return sortBy.dueDate.orientation === Orientation.ASC ? 1 : -1;
+						}
+						if (a.dueDate.getTime() < b.dueDate.getTime()) {
+							return sortBy.dueDate.orientation === Orientation.ASC ? -1 : 1;
+						}
+					}
+				}
+
+				if (sortBy.name.use) {
+					if (a.taskTitle > b.taskTitle) {
+						return sortBy.name.orientation === Orientation.ASC ? 1 : -1;
+					}
+					if (a.taskTitle < b.taskTitle) {
+						return sortBy.name.orientation === Orientation.ASC ? -1 : 1;
+					}
+				}
+
+				return 0;
+			});
 		},
 		clearSearchedTasks() {
 			this.searchedTasks = [];
