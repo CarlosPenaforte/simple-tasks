@@ -221,7 +221,7 @@
 						<div
 							class="fs-12 lh-20 fw-regular text-secondary"
 						>
-							search
+							Search
 						</div>
 					</div>
 				</q-btn>

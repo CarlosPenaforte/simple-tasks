@@ -16,6 +16,7 @@ import { useProjectStore } from './projectStore';
 export const useTaskStore = defineStore('task', {
 	state: () => ({
 		tasks: [] as Task[],
+		searchedTasks: [] as Task[],
 	}),
 	actions: {
 		async getTasks(userId: number): Promise<[boolean, string]> {
@@ -118,6 +119,28 @@ export const useTaskStore = defineStore('task', {
 		},
 		setTasks(tasks: Task[]) {
 			this.tasks = tasks;
+		},
+		searchTasks(name: string, urgency: Urgency, date: Date | undefined): boolean {
+			this.searchedTasks = this.tasks.filter((task) => {
+				if (name && !task.taskTitle.includes(name)) {
+					return false;
+				}
+
+				if (date && task.dueDate && task.dueDate.getTime() !== date.getTime()) {
+					return false;
+				}
+
+				if (task.urgency !== urgency) {
+					return false;
+				}
+
+				return true;
+			});
+
+			return this.searchedTasks.length > 0;
+		},
+		clearSearchedTasks() {
+			this.searchedTasks = [];
 		},
 		async deleteTask(userId: number, taskId: number): Promise<[boolean, string]> {
 			const response = await deleteById(userId, taskId);

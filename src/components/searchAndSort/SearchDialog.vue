@@ -47,9 +47,13 @@
 
 		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">Search by due date</span>
 		<q-input
-			v-model="searchFields.dueDate"
-			mask="####-##-##"
-			placeholder="YYYY-MM-DD"
+			:modelValue="formattedDueDate"
+			@update:modelValue="setDueDate"
+			name="dueDate"
+			:mask="localeMask"
+			:placeholder="localeFormat"
+			:rules="[val => val.length == 10 || 'Invalid date']"
+			lazy-rules
 			color="primary-main"
 			class="q-mb-md"
 		>
@@ -59,13 +63,21 @@
 				>
 					<q-popup-proxy>
 						<q-date
-							v-model="searchFields.dueDate"
-							mask="YYYY-MM-DD"
+							:mask="qDateMask"
 							color="primary-main"
 							title="Due date"
 							subtitle="Select a due date to the new task"
-							v-close-popup
-						/>
+							:modelValue="formattedDueDate"
+							@update:modelValue="setDueDate"
+						>
+							<div class="row items-center justify-end">
+								<q-btn v-close-popup
+									label="Close"
+									color="primary"
+									flat
+								/>
+							</div>
+						</q-date>
 					</q-popup-proxy>
 				</q-icon>
 			</template>
@@ -75,11 +87,16 @@
 
 <script lang="ts">
   import {
-    defineComponent, computed, WritableComputedRef, reactive,
+    defineComponent, computed, WritableComputedRef, reactive, watch, ref, inject,
   } from 'vue';
   import {
     Urgency, SearchFields,
   } from 'src/models/mainModels';
+  import { useTaskStore } from 'src/stores/taskStore';
+  import {
+    dateStrToDate, formatDateToLocale, getLocaleFormat, getLocaleMask,
+  } from 'src/utils/commonFunctions';
+  import { QVueGlobals } from 'quasar';
   import MidDialog from '../MidDialog.vue';
 
   export default defineComponent({
@@ -91,6 +108,7 @@
 </script>
 
 <script setup lang="ts">
+  // PROPS AND EMIT
   const props = defineProps({
     modelValue: {
       type: Boolean,
@@ -100,7 +118,21 @@
 
   const emit = defineEmits([ 'update:modelValue' ]);
 
-  const searchFields : SearchFields = reactive({
+  // BASICS
+
+  const $q = inject<QVueGlobals>('quasar');
+
+  const taskStore = useTaskStore();
+
+  // MODELS
+
+  const locale = navigator.language;
+
+  const localeFormat = getLocaleFormat(locale);
+  const qDateMask = localeFormat.toUpperCase();
+  const localeMask = getLocaleMask(locale);
+
+  const searchFields: SearchFields = reactive({
     name: '',
     urgency: Urgency.URGENT,
     dueDate: '',
@@ -115,7 +147,47 @@
     },
   });
 
+  // DUE DATE SETTER AND GETTER
+
+  const setDueDate = (dueDate: string|number|null) => {
+    if (typeof dueDate !== 'string') return;
+
+    if (dueDate.length > 10) {
+      searchFields.dueDate = dueDate.slice(0, 10);
+      return;
+    }
+
+    searchFields.dueDate = dueDate;
+  };
+
+  const formattedDueDate = ref(formatDateToLocale(dateStrToDate(searchFields.dueDate, localeFormat), locale));
+
+  watch(() => searchFields.dueDate, (newValue) => {
+    if (newValue.length < 10) {
+      formattedDueDate.value = newValue;
+
+      return;
+    }
+
+    formattedDueDate.value = formatDateToLocale(dateStrToDate(newValue, localeFormat), locale);
+  });
+
+  // ACTIONS
+
   function searchTasks(): void {
+    const parsedDueDate = dateStrToDate(searchFields.dueDate, localeFormat);
+
+    const success = taskStore.searchTasks(searchFields.name, searchFields.urgency, parsedDueDate);
+
+    if (!success) {
+      $q?.notify({
+        type: 'negative',
+        message: 'Nothing found',
+      });
+
+      return;
+    }
+
     isSearchDialogOpen.value = false;
   }
 </script>

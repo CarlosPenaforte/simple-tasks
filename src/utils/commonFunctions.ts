@@ -41,9 +41,9 @@ export const formatDateToLocale = (
 export const dateStrToDate = (dateStr: string, localeFormat: string): Date | undefined => {
     if (!dateStr) return undefined;
 
-    if (dateStr.indexOf('/') === 4) return DateTime.fromFormat(dateStr, 'yyyy/MM/dd').setZone('utc').toJSDate();
+    if (dateStr.indexOf('/') === 4) return DateTime.fromFormat(dateStr, 'yyyy/MM/dd', { zone: 'utc' }).toJSDate();
 
-    const date = DateTime.fromFormat(dateStr, localeFormat).setZone('utc').toJSDate();
+    const date = DateTime.fromFormat(dateStr, localeFormat, { zone: 'utc' }).toJSDate();
 
     return date;
   };

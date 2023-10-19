@@ -207,12 +207,10 @@
     },
   });
 
-  // DUE DATA SETTER AND GETTER
+  // DUE DATE SETTER AND GETTER
 
   const setDueDate = (dueDate: string|number|null) => {
     if (typeof dueDate !== 'string') return;
-
-    console.log(dueDate);
 
     if (dueDate.length > 10) {
       newTask.due_date = dueDate.slice(0, 10);
