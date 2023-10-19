@@ -40,7 +40,7 @@
 			</q-card-section>
 			<q-card-actions class="row">
 				<q-btn
-					:label="$t('AUTH.FORM.BUTTONS.REGISTER')"
+					:label="$t('FORM.BUTTONS.REGISTER')"
 					outline
 					color="negative"
 					class="col-5 no-padding no-margin text-weight-bold"
@@ -48,7 +48,7 @@
 				/>
 				<q-space />
 				<q-btn
-					:label="$t('AUTH.FORM.BUTTONS.LOGIN')"
+					:label="$t('FORM.BUTTONS.LOGIN')"
 					unelevated
 					color="positive"
 					text-color="whity"
@@ -107,7 +107,7 @@
     if (!isValidForm) {
       $q?.notify({
         type: 'negative',
-        message: $t('AUTH.FORM.INVALID_FIELDS'),
+        message: $t('FORM.INVALID_FIELDS'),
       });
 
       return;

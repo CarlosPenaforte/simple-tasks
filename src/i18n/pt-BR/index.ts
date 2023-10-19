@@ -10,18 +10,34 @@ export default {
 		PASSWORD: {
 			VALIDATE: {
 				EMPTY: 'O campo senha é obrigatório',
-				INVALID: 'A senha informada é inválida',
-				CONFIRM_INVALID: 'As senhas informadas não conferem',
+				LENGTH: 'A senha deve ter pelo menos 6 caracteres',
 			},
 			NAME: 'Senha',
 		},
+		WRONG_CREDENTIALS: 'Email e/ou senha incorreto(s)',
+	},
+	FORM: {
+		INVALID_FIELDS: 'Existem campos inválidos',
+		BUTTONS: {
+			LOGIN: 'Login',
+			REGISTER: 'Cadastrar',
+		},
+	},
+	REGISTER: {
+		SUCCESS: 'Usuário cadastrado com sucesso',
 		USERNAME: {
 			VALIDATE: {
-				EMPTY: 'O campo usuário é obrigatório',
+				EMPTY: 'O campo nome de usuário é obrigatório',
 			},
-			NAME: 'Usuário',
+			NAME: 'Nome de usuário',
 		},
-		SEX: {
+		FULL_NAME: {
+			VALIDATE: {
+				EMPTY: 'O campo nome completo é obrigatório',
+			},
+			NAME: 'Nome completo',
+		},
+		GENDER: {
 			VALIDATE: {
 				EMPTY: 'O campo sexo é obrigatório',
 			},
@@ -33,14 +49,22 @@ export default {
 				INVALID: 'A data de nascimento informada é inválida',
 			},
 			NAME: 'Data de nascimento',
+			SUBTITLE: 'Selecione sua data de nascimento',
 		},
-		FORM: {
-			INVALID_FIELDS: 'Existem campos inválidos',
-			BUTTONS: {
-				LOGIN: 'Login',
-				REGISTER: 'Cadastrar',
+		CONFIRM_PASSWORD: {
+			VALIDATE: {
+				EMPTY: 'O campo confirmar senha é obrigatório',
+				MATCH: 'As senhas informadas não conferem',
 			},
+			NAME: 'Confirmar senha',
 		},
-		WRONG_CREDENTIALS: 'Email e/ou senha incorreto(s)',
+	},
+	USER: {
+		GENDER: {
+			NOT_INFORMED: 'Não informado',
+			NON_BINARY: 'Não-binário',
+			MALE: 'Masculino',
+			FEMALE: 'Feminino',
+		},
 	},
 };

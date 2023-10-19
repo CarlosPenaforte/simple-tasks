@@ -9,8 +9,8 @@
 					v-model="form.username"
 					type="text"
 					name="username"
-					label="Username"
-					:rules="[val => !!val || 'Username is missing']"
+					:label="$t('REGISTER.USERNAME.NAME')"
+					:rules="[val => !!val || $t('REGISTER.USERNAME.VALIDATE.EMPTY')]"
 					lazy-rules
 					autofocus
 					color="primary-main"
@@ -21,8 +21,8 @@
 					v-model="form.full_name"
 					type="text"
 					name="full_name"
-					label="Full name"
-					:rules="[val => !!val || 'Full name is missing']"
+					:label="$t('REGISTER.FULL_NAME.NAME')"
+					:rules="[val => !!val || $t('REGISTER.FULL_NAME.VALIDATE.EMPTY')]"
 					lazy-rules
 					color="primary-main"
 					class="full-width text-dark q-mb-xs"
@@ -32,8 +32,8 @@
 					v-model="form.email"
 					type="text"
 					name="email"
-					label="Email"
-					:rules="[val => !!val || 'Email is missing', isValidEmail]"
+					:label="$t('AUTH.EMAIL.NAME')"
+					:rules="[val => !!val || $t('AUTH.EMAIL.VALIDATE.EMPTY'), isValidEmail]"
 					lazy-rules
 					color="primary-main"
 					class="full-width text-dark q-mb-xs"
@@ -42,9 +42,9 @@
 					ref="sex"
 					v-model="form.sex"
 					:options="genderOptions"
-					label="Sex"
+					:label="$t('REGISTER.GENDER.NAME')"
 					behavior="menu"
-					:rules="[val => !!val || 'Sex is missing']"
+					:rules="[val => !!val || $t('REGISTER.GENDER.VALIDATE.EMPTY')]"
 					color="primary-main"
 					transition-show="jump-down"
 					transition-hide="jump-up"
@@ -54,13 +54,13 @@
 						<div
 							class="text-dark fw-medium text-capitalize"
 						>
-							{{ genderToFullString(form.sex) }}
+							{{ genderToFullString($t,form.sex) }}
 						</div>
 					</template>
 					<template v-slot:option="scope">
 						<q-item v-bind="scope.itemProps">
 							<q-item-section>
-								<span>{{ genderToFullString(scope.opt) }}</span>
+								<span>{{ genderToFullString($t,scope.opt) }}</span>
 							</q-item-section>
 						</q-item>
 					</template>
@@ -70,9 +70,11 @@
 					:modelValue="formattedBirthday"
 					@update:modelValue="setBirthday"
 					name="birthday"
-					label="Birthday"
+					:label="$t('REGISTER.BIRTHDAY.NAME')"
 					:mask="localeMask"
-					:rules="[val => !!val || 'Birthday is missing', val => val.length == 10 || 'Invalid date']"
+					:rules="[val => !!val || $t('REGISTER.BIRTHDAY.VALIDATE.EMPTY'),
+						val => val.length == 10 || $t('REGISTER.BIRTHDAY.VALIDATE.INVALID')
+					]"
 					lazy-rules
 					color="primary-main"
 					class="full-width text-dark q-mb-xs"
@@ -88,8 +90,8 @@
 								<q-date
 									:mask="qDateMask"
 									color="primary-main"
-									title="Birthday"
-									subtitle="Select your birthday"
+									:title="$t('REGISTER.BIRTHDAY.NAME')"
+									:subtitle="$t('REGISTER.BIRTHDAY.SUBTITLE')"
 									class="text-dark"
 									:modelValue="form.birthday"
 									@update:modelValue="setBirthday"
@@ -111,10 +113,10 @@
 					v-model="form.user_password"
 					:type="togglePwdVisibility ? 'text' : 'password'"
 					name="password"
-					label="Password"
+					:label="$t('AUTH.PASSWORD.NAME')"
 					:rules="[
-						val => !!val || 'Password is missing',
-						val => val.length >= 6 || 'Password length must be at least 6'
+						val => !!val || $t('AUTH.PASSWORD.VALIDATE.EMPTY'),
+						val => val.length >= 6 || $t('AUTH.PASSWORD.VALIDATE.LENGTH'),
 					]"
 					lazy-rules
 					color="primary-main"
@@ -133,8 +135,10 @@
 					v-model="form.confirm_password"
 					:type="togglePwdVisibility ? 'text' : 'password'"
 					name="confirmPassword"
-					label="Confirm Password"
-					:rules="[val => !!val || 'Confirm the password', val => val == form.user_password || 'Passwords not match']"
+					:label="$t('REGISTER.CONFIRM_PASSWORD.NAME')"
+					:rules="[val => !!val || $t('REGISTER.CONFIRM_PASSWORD.VALIDATE.EMPTY'),
+						val => val == form.user_password || $t('REGISTER.CONFIRM_PASSWORD.VALIDATE.MATCH')
+					]"
 					lazy-rules
 					color="primary-main"
 					class="full-width text-dark"
@@ -150,7 +154,7 @@
 			</q-card-section>
 			<q-card-actions class="row">
 				<q-btn
-					label="Login"
+					:label="$t('FORM.BUTTONS.LOGIN')"
 					outline
 					color="negative"
 					class="col-5 no-padding no-margin text-weight-bold"
@@ -158,7 +162,7 @@
 				/>
 				<q-space />
 				<q-btn
-					label="Register"
+					:label="$t('FORM.BUTTONS.REGISTER')"
 					unelevated
 					color="positive"
 					text-color="whity"
@@ -189,6 +193,7 @@
   import {
     QInput, QSelect, QVueGlobals,
   } from 'quasar';
+  import { useI18n } from 'vue-i18n';
   import { useState } from '../utils/composables';
 
   export default defineComponent({
@@ -199,6 +204,7 @@
 <script setup lang="ts">
   // BASICS
 
+  const $t = useI18n().t;
   const $q = inject<QVueGlobals>('quasar');
   const userStore = useUserStore();
 
@@ -265,7 +271,7 @@
 
   const isValidEmail = (val: string) => {
     const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-    return emailPattern.test(val) || 'Invalid email';
+    return emailPattern.test(val) || $t('AUTH.EMAIL.VALIDATE.INVALID');
   };
 
   const username = ref<QInput|null>(null);
@@ -298,7 +304,7 @@
     if (hasErrors()) {
       $q?.notify({
         type: 'negative',
-        message: 'Please, fill all the fields correctly',
+        message: $t('FORM.INVALID_FIELDS'),
       });
 
       return;
@@ -309,7 +315,7 @@
     if (registered) {
       $q?.notify({
         type: 'positive',
-        message: 'Success! Use your credentials to login',
+        message: $t('REGISTER.SUCCESS'),
       });
 
       pushToUrl('/login');

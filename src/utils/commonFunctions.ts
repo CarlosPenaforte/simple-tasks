@@ -4,6 +4,7 @@ import {
 	ReceivedProject,
  ReceivedTask, ReceivedUser, CreateTaskToSend,
 } from 'src/models/apiModels';
+import { ComposerTranslation } from 'vue-i18n';
 import {
 	Gender,
 	Project,
@@ -148,9 +149,9 @@ export const parseProject = (receivedProject : ReceivedProject): Project => ({
 
 // GENDER
 
-export const genderToFullString = (gender: string): string => {
-	if (gender === Gender.MALE) return 'Male';
-	if (gender === Gender.FEMALE) return 'Female';
-	if (gender === Gender.NON_BINARY) return 'Non-Binary';
-	return 'Not Informed';
+export const genderToFullString = (i18n: ComposerTranslation, gender: string): string => {
+	if (gender === Gender.MALE) return i18n('USER.GENDER.MALE');
+	if (gender === Gender.FEMALE) return i18n('USER.GENDER.FEMALE');
+	if (gender === Gender.NON_BINARY) return i18n('USER.GENDER.NON_BINARY');
+	return i18n('USER.GENDER.NOT_INFORMED');
 };

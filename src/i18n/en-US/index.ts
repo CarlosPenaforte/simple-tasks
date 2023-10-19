@@ -10,16 +10,32 @@ export default {
 		PASSWORD: {
 			VALIDATE: {
 				EMPTY: 'The password field is required',
-				INVALID: 'The password entered is invalid',
-				CONFIRM_INVALID: 'The passwords entered do not match',
+				LENGTH: 'The password must be at least 6 characters',
 			},
 			NAME: 'Password',
 		},
+		FORM: {
+			INVALID_FIELDS: 'There are invalid fields',
+			BUTTONS: {
+				LOGIN: 'Login',
+				REGISTER: 'Register',
+			},
+		},
+		WRONG_CREDENTIALS: 'Wrong email or password',
+	},
+	REGISTER: {
+		SUCCESS: 'User registered successfully',
 		USERNAME: {
 			VALIDATE: {
 				EMPTY: 'The username field is required',
 			},
 			NAME: 'Username',
+		},
+		FULL_NAME: {
+			VALIDATE: {
+				EMPTY: 'The full name field is required',
+			},
+			NAME: 'Full name',
 		},
 		GENDER: {
 			VALIDATE: {
@@ -33,14 +49,22 @@ export default {
 				INVALID: 'The birthday entered is invalid',
 			},
 			NAME: 'Birthday',
+			SUBTITLE: 'Select your birthday',
 		},
-		FORM: {
-			INVALID_FIELDS: 'There are invalid fields',
-			BUTTONS: {
-				LOGIN: 'Login',
-				REGISTER: 'Register',
+		CONFIRM_PASSWORD: {
+			VALIDATE: {
+				EMPTY: 'The confirm password field is required',
+				MATCH: 'The passwords entered do not match',
 			},
+			NAME: 'Confirm Password',
 		},
-		WRONG_CREDENTIALS: 'Wrong email or password',
+	},
+	USER: {
+		GENDER: {
+			NOT_INFORMED: 'Not informed',
+			NON_BINARY: 'Non-binary',
+			MALE: 'Male',
+			FEMALE: 'Female',
+		},
 	},
 };
