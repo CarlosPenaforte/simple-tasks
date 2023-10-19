@@ -13,8 +13,8 @@
 						v-model="email"
 						type="text"
 						name="email"
-						label="Email"
-						:rules="[val => !!val || 'Email is missing', isValidEmail]"
+						:label="$t('AUTH.EMAIL.NAME')"
+						:rules="[val => !!val || $t('AUTH.EMAIL.VALIDATE.EMPTY'), isValidEmail]"
 						lazy-rules
 						autofocus
 						color="primary-main"
@@ -24,7 +24,7 @@
 						v-model="password"
 						:type="togglePwdVisibility ? 'text' : 'password'"
 						name="password"
-						label="Password"
+						:label="$t('AUTH.PASSWORD.NAME')"
 						color="primary-main"
 						class="full-width text-dark"
 					>
@@ -40,7 +40,7 @@
 			</q-card-section>
 			<q-card-actions class="row">
 				<q-btn
-					label="Register"
+					:label="$t('AUTH.FORM.BUTTONS.REGISTER')"
 					outline
 					color="negative"
 					class="col-5 no-padding no-margin text-weight-bold"
@@ -48,7 +48,7 @@
 				/>
 				<q-space />
 				<q-btn
-					label="Login"
+					:label="$t('AUTH.FORM.BUTTONS.LOGIN')"
 					unelevated
 					color="positive"
 					text-color="whity"
@@ -71,6 +71,7 @@
   import {
     QForm, QVueGlobals,
   } from 'quasar';
+  import { useI18n } from 'vue-i18n';
 
   export default defineComponent({
     name: 'LoginPage',
@@ -79,6 +80,7 @@
 </script>
 
 <script setup lang="ts">
+  const $t = useI18n().t;
   const $q = inject<QVueGlobals>('quasar');
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);
@@ -91,7 +93,7 @@
 
   const isValidEmail = (val: string) => {
     const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-    return emailPattern.test(val) || 'Invalid email';
+    return emailPattern.test(val) || $t('AUTH.EMAIL.VALIDATE.INVALID');
   };
 
   const router = useRouter();
@@ -105,7 +107,7 @@
     if (!isValidForm) {
       $q?.notify({
         type: 'negative',
-        message: 'Fill all fields correctly',
+        message: $t('AUTH.FORM.INVALID_FIELDS'),
       });
 
       return;
@@ -130,7 +132,7 @@
     } catch (e) {
       $q?.notify({
         type: 'negative',
-        message: 'Wrong email or password',
+        message: $t('AUTH.WRONG_CREDENTIALS'),
       });
     }
   };

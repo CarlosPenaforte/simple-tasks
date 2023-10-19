@@ -119,9 +119,10 @@
 					</q-card>
 				</q-item>
 				<q-item
-					v-for="({ title, icon, path, action}, index) in drawerOptions"
+					v-for="({ isBelow, title, icon, path, action}, index) in drawerOptions"
 					:key="index"
 					class="no-padding no-margin"
+					:style="isBelow? 'position: fixed; width: 100%; bottom: 28px;' : ''"
 				>
 					<q-btn
 						flat
@@ -149,7 +150,7 @@
 			<q-space />
 			<span
 				class="no-margin full-width text-right q-pr-md q-pb-sm text-dark fs-11 lh-12"
-			>Simple Tasks v0.1.0</span>
+			>Simple Tasks</span>
 		</q-drawer>
 
 		<q-page-container>
@@ -354,7 +355,6 @@
 
 <script setup lang="ts">
   // BASICS
-
   const $q = inject<QVueGlobals>('quasar');
 
   const router = useRouter();
@@ -539,16 +539,19 @@
 
   const drawerOptions = [
     {
+      isBelow: false,
       title: 'Your Tasks',
       icon: 'checklist',
       path: '/',
     },
     {
+      isBelow: false,
       title: 'Projects',
       icon: 'emoji_events',
       path: '/projects',
     },
     {
+      isBelow: true,
       title: 'Logout',
       icon: 'logout',
       action: logout,
