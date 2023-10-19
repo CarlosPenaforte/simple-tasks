@@ -6,8 +6,9 @@ import {
 	filterTasksByUrgency, parseTask,
 } from 'src/utils/commonFunctions';
 import { CreateTaskToSend } from 'src/models/apiModels';
+import { parseTaskToSend } from '../utils/commonFunctions';
 import {
-	create, deleteById, getAll,
+	create, deleteById, getAll, update,
 } from '../services/taskService';
 import { useUserStore } from './userStore';
 import { useProjectStore } from './projectStore';
@@ -51,17 +52,69 @@ export const useTaskStore = defineStore('task', {
 
 			this.tasks = response.data.tasks.map(parseTask);
 
-			this.tasks = this.tasks.sort((a, b) => a.taskId - b.projectId);
+			this.tasks = this.tasks.sort((a, b) => a.taskId - b.taskId);
 
-			return [ true, 'Success creating project' ];
+			return [ true, 'Success creating task' ];
 		},
-		updateTask(newTask : Task) {
-			this.tasks = this.tasks.map((task) => {
-				if (task.taskId === newTask.taskId) {
-					return newTask;
+		async updateTask(userId: number, taskId: number, taskToSend: CreateTaskToSend): Promise<[boolean, string]> {
+			const response = await update(userId, taskId, taskToSend);
+
+			if (response.data.hasError) {
+				if (!response.data?.message) {
+					return [ false, 'Error while updating task' ];
 				}
+				return [ false, response.data.message ];
+			}
+
+			if (response.data.task === undefined) {
+				return [ false, 'No tasks found' ];
+			}
+
+			this.tasks = this.tasks.map((task) => {
+				if (task.taskId === response.data.task?.task_id) {
+					return parseTask(response.data.task);
+				}
+
 				return task;
 			});
+
+			this.tasks = this.tasks.sort((a, b) => a.taskId - b.taskId);
+
+			return [ true, 'Success updating task' ];
+		},
+		async checkTask(userId: number, taskId: number, checked: boolean): Promise<[boolean, string]> {
+			const foundTask = this.tasks.find((task) => task.taskId === taskId);
+
+			if (!foundTask) {
+				return [ false, 'Task not found' ];
+			}
+
+			foundTask.done = checked;
+
+			const response = await update(userId, taskId, parseTaskToSend(foundTask));
+
+			if (response.data.hasError) {
+				if (!response.data?.message) {
+					return [ false, 'Error while checking task' ];
+				}
+				return [ false, response.data.message ];
+			}
+
+			if (response.data.task === undefined) {
+				return [ false, 'No tasks found' ];
+			}
+
+			this.tasks = this.tasks.map((task) => {
+				if (task.taskId === response.data.task?.task_id) {
+					return parseTask(response.data.task);
+				}
+
+				return task;
+			});
+
+			this.tasks = this.tasks.sort((a, b) => a.taskId - b.taskId);
+
+			return [ true, 'Success checking task' ];
 		},
 		setTasks(tasks: Task[]) {
 			this.tasks = tasks;

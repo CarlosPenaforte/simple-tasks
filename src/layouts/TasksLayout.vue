@@ -160,10 +160,12 @@
 		</q-page-container>
 
 		<q-footer
-			v-if="isMainTasksRoute"
+			v-if="isNotProfileRoute"
 			class="bg-secondary-filter"
 		>
-			<q-toolbar class="row no-padding fit">
+			<q-toolbar v-if="isMainTasksRoute"
+				class="row no-padding fit"
+			>
 				<q-btn
 					flat
 					no-caps
@@ -223,6 +225,32 @@
 						</div>
 					</div>
 				</q-btn>
+			</q-toolbar>
+			<q-toolbar v-if="isProjectsRoute"
+				class="row no-padding fit justify-center"
+			>
+				<q-space />
+				<q-btn
+					flat
+					no-caps
+					no-wrap
+					aria-label="AddCircle"
+					class="col-4 q-py-xs"
+					@click="openCreateProjectDialog"
+				>
+					<div class="column items-center justify-center">
+						<q-icon name="add_circle_outline"
+							size="30px"
+							color="primary-main"
+						/>
+						<div
+							class="fs-14 lh-20 fw-medium text-primary-lighter"
+						>
+							Create Project
+						</div>
+					</div>
+				</q-btn>
+				<q-space />
 			</q-toolbar>
 		</q-footer>
 
@@ -332,7 +360,9 @@
   const router = useRouter();
   const route = useRoute();
 
+  const isNotProfileRoute = computed(() => route.path !== '/profile');
   const isMainTasksRoute = computed(() => route.path === '/');
+  const isProjectsRoute = computed(() => route.path === '/projects');
 
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);

@@ -86,7 +86,7 @@
 								transition-hide="scale"
 							>
 								<q-date
-									:mask="localeMask"
+									:mask="qDateMask"
 									color="primary-main"
 									title="Birthday"
 									subtitle="Select your birthday"
@@ -184,7 +184,7 @@
     getLocaleMask,
     getLocaleFormat,
     genderToFullString,
-    birthdayStrToDate,
+    dateStrToDate,
   } from 'src/utils/commonFunctions';
   import {
     QInput, QSelect, QVueGlobals,
@@ -226,6 +226,7 @@
   const locale = navigator.language;
 
   const localeFormat = getLocaleFormat(locale);
+  const qDateMask = localeFormat.toUpperCase();
 
   const localeMask = getLocaleMask(locale);
 
@@ -242,7 +243,7 @@
     form.birthday = birthday;
   };
 
-  const formattedBirthday = ref(formatDateToLocale(birthdayStrToDate(form.birthday, localeFormat), locale));
+  const formattedBirthday = ref(formatDateToLocale(dateStrToDate(form.birthday, localeFormat), locale));
 
   watch(() => form.birthday, (newValue) => {
     if (newValue.length < 10) {
@@ -251,7 +252,7 @@
       return;
     }
 
-    formattedBirthday.value = formatDateToLocale(birthdayStrToDate(newValue, localeFormat), locale);
+    formattedBirthday.value = formatDateToLocale(dateStrToDate(newValue, localeFormat), locale);
   });
 
   // INPUT INFO AND STATES

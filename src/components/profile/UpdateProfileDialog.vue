@@ -106,7 +106,7 @@
 						transition-hide="scale"
 					>
 						<q-date
-							:mask="localeMask"
+							:mask="qDateFormat"
 							color="primary-main"
 							title="Birthday"
 							subtitle="Select your birthday"
@@ -146,7 +146,7 @@
   } from '../../models/apiModels';
   import BigDialog from '../BigDialog.vue';
   import {
-    formatDateToLocale, genderToFullString, birthdayStrToDate, getLocaleFormat, getLocaleMask,
+    formatDateToLocale, genderToFullString, getLocaleFormat, getLocaleMask, dateStrToDate,
   } from '../../utils/commonFunctions';
 
   export default defineComponent({
@@ -180,6 +180,7 @@
   const locale = navigator.language;
 
   const localeFormat = getLocaleFormat(locale);
+  const qDateFormat = localeFormat.toUpperCase();
 
   const localeMask = getLocaleMask(locale);
 
@@ -223,7 +224,7 @@
     newProfile.birthday = birthday;
   };
 
-  const formattedBirthday = ref(formatDateToLocale(birthdayStrToDate(newProfile.birthday, localeFormat), locale));
+  const formattedBirthday = ref(formatDateToLocale(dateStrToDate(newProfile.birthday, localeFormat), locale));
 
   watch(() => newProfile.birthday, (newValue) => {
     if (newValue.length < 10) {
@@ -232,7 +233,7 @@
       return;
     }
 
-    formattedBirthday.value = formatDateToLocale(birthdayStrToDate(newValue, localeFormat), locale);
+    formattedBirthday.value = formatDateToLocale(dateStrToDate(newValue, localeFormat), locale);
   });
 
   // VALIDATION

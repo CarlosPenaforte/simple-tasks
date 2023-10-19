@@ -66,9 +66,13 @@
 
 		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">Due date</span>
 		<q-input
-			v-model="newTask.due_date"
-			mask="####-##-##"
-			placeholder="YYYY-MM-DD"
+			:modelValue="formattedDueDate"
+			@update:modelValue="setDueDate"
+			name="dueDate"
+			:mask="localeMask"
+			:placeholder="localeFormat"
+			:rules="[val => val.length == 10 || 'Invalid date']"
+			lazy-rules
 			color="primary-main"
 			class="q-mb-md"
 		>
@@ -78,14 +82,22 @@
 				>
 					<q-popup-proxy>
 						<q-date
-							v-model="newTask.due_date"
-							mask="YYYY-MM-DD"
+							:mask="qDateMask"
 							color="primary-main"
 							title="Due date"
 							subtitle="Select a due date to the new task"
 							class="text-dark"
-							v-close-popup
-						/>
+							:modelValue="formattedDueDate"
+							@update:modelValue="setDueDate"
+						>
+							<div class="row items-center justify-end">
+								<q-btn v-close-popup
+									label="Close"
+									color="primary"
+									flat
+								/>
+							</div>
+						</q-date>
 					</q-popup-proxy>
 				</q-icon>
 			</template>
@@ -95,7 +107,7 @@
 
 <script lang="ts">
   import {
-    defineComponent, computed, PropType, reactive, inject,
+    defineComponent, computed, PropType, reactive, inject, watch, ref,
   } from 'vue';
   import {
     Urgency, Task,
@@ -106,6 +118,9 @@
   import { CreateTaskToSend } from 'src/models/apiModels';
   import { useUserStore } from 'src/stores/userStore';
   import { useProjectStore } from 'src/stores/projectStore';
+  import {
+    dateStrToDate, formatDateToIso, formatDateToLocale, getLocaleFormat, getLocaleMask,
+  } from 'src/utils/commonFunctions';
   import BigDialog from '../BigDialog.vue';
 
   export default defineComponent({
@@ -146,7 +161,16 @@
   const projectStore = useProjectStore();
   const currentProject = computed(() => projectStore.$state.currentProject);
 
+  // PARSERS
+
+  const parseDateToUTCString = (date: Date) => DateTime.fromJSDate(date, { zone: 'utc' }).toISODate() || date.toLocaleDateString('utc');
+
   // MODELS
+  const locale = navigator.language;
+
+  const localeFormat = getLocaleFormat(locale);
+  const qDateMask = localeFormat.toUpperCase();
+  const localeMask = getLocaleMask(locale);
 
   let newTask = reactive({
     task_title: '',
@@ -157,16 +181,22 @@
     done: 0,
   });
 
-  if (props.isEdit) {
-    newTask = reactive({
-      task_title: props.currentTask?.taskTitle || '',
-      task_description: props.currentTask?.taskDescription || '',
-      urgency: props.currentTask?.urgency || Urgency.COMMON,
-      creation_date: props.currentTask?.creationDate ? props.currentTask.creationDate.toLocaleDateString('pt-BR') : '',
-      due_date: props.currentTask?.dueDate ? props.currentTask.dueDate.toLocaleDateString('pt-BR') : '',
-      done: +(props.currentTask?.done || false),
-    });
-  }
+  watch(() => props.currentTask, (newValue, oldValue) => {
+    if (props.isEdit && newValue && newValue !== oldValue) {
+      newTask = reactive({
+        task_title: newValue.taskTitle,
+        task_description: newValue.taskDescription || '',
+        urgency: newValue.urgency,
+        creation_date: parseDateToUTCString(newValue.creationDate),
+        due_date: newValue.dueDate
+          ? formatDateToLocale(newValue.dueDate, locale)
+          : '',
+        done: +(newValue.done || false),
+      });
+    }
+  }, {
+    deep: true, immediate: true,
+  });
 
   const isCreateTaskOpen = computed({
     get():boolean {
@@ -175,6 +205,33 @@
     set(newState: boolean) {
       emit('update:modelValue', newState);
     },
+  });
+
+  // DUE DATA SETTER AND GETTER
+
+  const setDueDate = (dueDate: string|number|null) => {
+    if (typeof dueDate !== 'string') return;
+
+    console.log(dueDate);
+
+    if (dueDate.length > 10) {
+      newTask.due_date = dueDate.slice(0, 10);
+      return;
+    }
+
+    newTask.due_date = dueDate;
+  };
+
+  const formattedDueDate = ref(formatDateToLocale(dateStrToDate(newTask.due_date, localeFormat), locale));
+
+  watch(() => newTask.due_date, (newValue) => {
+    if (newValue.length < 10) {
+      formattedDueDate.value = newValue;
+
+      return;
+    }
+
+    formattedDueDate.value = formatDateToLocale(dateStrToDate(newValue, localeFormat), locale);
   });
 
   // ACTIONS
@@ -191,12 +248,41 @@
         return;
       }
 
+      const parsedDueDate = dateStrToDate(newTask.due_date, localeFormat);
+
+      if (newTask.due_date && !parsedDueDate) {
+        $q?.notify({
+          type: 'negative',
+          message: 'Invalid due date',
+        });
+
+        return;
+      }
+
       const taskToSend: CreateTaskToSend = {
         ...newTask,
+        due_date: parsedDueDate ? formatDateToIso(parsedDueDate) : undefined,
         user_id: userId,
         project_id: projectId,
       };
-      const [ success, result ] = await taskStore.createTask(userId as number, taskToSend);
+
+      let [ success, result ] = [ false, '' ];
+
+      if (props.isEdit) {
+        const taskId = props.currentTask?.taskId;
+        if (!taskId) {
+          $q?.notify({
+            type: 'negative',
+            message: 'Task not found',
+          });
+
+          return;
+        }
+
+        [ success, result ] = await taskStore.updateTask(userId as number, taskId, taskToSend);
+      } else {
+        [ success, result ] = await taskStore.createTask(userId as number, taskToSend);
+      }
 
       if (!success) {
         $q?.notify({

@@ -106,6 +106,15 @@
   // ACTIONS
 
   async function saveProject() {
+    if (projectStore.$state.projects?.some((project) => project.name === newProject.name)) {
+      $q?.notify({
+        type: 'negative',
+        message: 'Project with this name already exists',
+      });
+
+      return;
+    }
+
     try {
       const [ success, result ] = await projectStore.createProject(userId as number, newProject);
 

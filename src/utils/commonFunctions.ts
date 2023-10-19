@@ -2,7 +2,7 @@
 import { DateTime } from 'luxon';
 import {
 	ReceivedProject,
- ReceivedTask, ReceivedUser,
+ ReceivedTask, ReceivedUser, CreateTaskToSend,
 } from 'src/models/apiModels';
 import {
 	Gender,
@@ -16,6 +16,37 @@ export function filterTasksByUrgency(userId: number, projectId: number, tasks: T
 		&& task.userId === userId
 		&& task.projectId === projectId);
 }
+
+// DATE
+
+export const getLocaleFormat = (locale: string): string => {
+	if (locale === 'en-US') return 'MM-dd-yyyy';
+	return 'dd/MM/yyyy';
+};
+
+export const getLocaleMask = (locale: string): string => getLocaleFormat(locale).replace(/[a-z]/gi, '#');
+
+export const formatDateToIso = (date: Date): string => DateTime.fromJSDate(date, { zone: 'utc' }).toISODate()
+	|| date.toUTCString().slice(0, 10);
+
+export const formatDateToLocale = (
+	date: Date | undefined,
+	locale: string,
+): string => {
+	if (!date) return '';
+
+	return DateTime.fromJSDate(date).setZone('utc').setLocale(locale).toLocaleString();
+};
+
+export const dateStrToDate = (dateStr: string, localeFormat: string): Date | undefined => {
+    if (!dateStr) return undefined;
+
+    if (dateStr.indexOf('/') === 4) return DateTime.fromFormat(dateStr, 'yyyy/MM/dd').setZone('utc').toJSDate();
+
+    const date = DateTime.fromFormat(dateStr, localeFormat).setZone('utc').toJSDate();
+
+    return date;
+  };
 
 // TYPE CHECK
 
@@ -80,43 +111,40 @@ export const parseTask = (receivedTask : ReceivedTask): Task => {
 	};
 };
 
+export const parseTaskToSend = (receivedTask: Task): CreateTaskToSend => {
+	const parsedCreationDate = formatDateToIso(receivedTask.creationDate);
+	const parsedDueDate = receivedTask.dueDate ? formatDateToIso(receivedTask.dueDate) : undefined;
+
+	let parsedUrgency: Urgency = Urgency.COMMON;
+
+	switch (receivedTask.urgency) {
+		case 'urgent':
+			parsedUrgency = Urgency.URGENT;
+			break;
+		case 'important':
+			parsedUrgency = Urgency.IMPORTANT;
+			break;
+		default:
+	}
+
+	return {
+		user_id: receivedTask.userId,
+		project_id: receivedTask.projectId,
+		task_title: receivedTask.taskTitle,
+		task_description: receivedTask.taskDescription,
+		urgency: parsedUrgency,
+		creation_date: parsedCreationDate,
+		due_date: parsedDueDate,
+		done: +receivedTask.done,
+	};
+};
+
 export const parseProject = (receivedProject : ReceivedProject): Project => ({
 		userId: receivedProject.user_id,
 		projectId: receivedProject.project_id,
 		name: receivedProject.name,
 		description: receivedProject.description,
 	});
-
-// DATE
-
-export const getLocaleFormat = (locale: string): string => {
-	if (locale === 'en-US') return 'MM-dd-yyyy';
-	return 'dd/MM/yyyy';
-};
-
-export const getLocaleMask = (locale: string): string => getLocaleFormat(locale).replace(/[a-z]/gi, '#');
-
-export const formatDateToIso = (date: Date): string => DateTime.fromJSDate(date).setZone('utc').toISODate()
-	|| date.toUTCString().slice(0, 10);
-
-export const formatDateToLocale = (
-	date: Date | undefined,
-	locale: string,
-): string => {
-	if (!date) return '';
-
-	return DateTime.fromJSDate(date).setZone('utc').setLocale(locale).toLocaleString();
-};
-
-export const birthdayStrToDate = (birthday: string, localeFormat: string): Date | undefined => {
-    if (!birthday) return undefined;
-
-    if (birthday.indexOf('/') === 4) return DateTime.fromFormat(birthday, 'yyyy/MM/dd').setZone('utc').toJSDate();
-
-    const dateStr = DateTime.fromFormat(birthday, localeFormat).setZone('utc').toJSDate();
-
-    return dateStr;
-  };
 
 // GENDER
 

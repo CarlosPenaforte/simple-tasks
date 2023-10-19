@@ -2,57 +2,53 @@
 	<q-page class="column justify-start fit">
 		<q-list
 			dense
-			separator
 			class="fit q-mt-md"
 		>
-			<template v-for="(project) in projects"
+			<template v-for="(project, index) in projects"
 				:key="project.projectId"
 			>
 				<q-item>
 					<q-item-section>
-						<q-item-label
-							class="text-weight-medium"
-							@click.stop.prevent="toggleProject(project.projectId)"
+						<q-btn-dropdown
+							:label="`${index + 1} - ${project.name}`"
+							color="primary-lighter"
+							align="between"
+							transition-show="fade"
+							transition-hide="fade"
 						>
-							{{ project.name }}
-						</q-item-label>
-					</q-item-section>
-				</q-item>
-				<q-item v-if="isOpen(project.projectId)">
-					<q-item-section>
-						<q-list
-							dense
-							separator
-							class="fit q-mt-md"
-						>
-							<q-item v-for="(keyValueArrays, key) in keyValueProject(project)"
-								:key="key"
+							<q-list
+								dense
+								class="fit q-mt-md text-center"
 							>
-								<q-item-section>
-									<q-item-label class="text-weight-medium">
-										{{ keyValueArrays.key }}
-									</q-item-label>
-								</q-item-section>
-								<q-item-section>
-									<q-item-label>
-										{{ keyValueArrays.text }}
-									</q-item-label>
-								</q-item-section>
-							</q-item>
-							<q-item>
-								<q-item-section>
-									<q-btn
-										flat
-										dense
-										icon="delete"
-										color="negative"
-										@click.stop.prevent="openDeleteProjectDialog(project.projectId, project.name)"
-									>
-										Delete Project
-									</q-btn>
-								</q-item-section>
-							</q-item>
-						</q-list>
+								<q-item v-for="(keyValueArrays, key) in keyValueProject(project)"
+									:key="key"
+								>
+									<q-item-section>
+										<q-item-label class="text-weight-medium">
+											{{ keyValueArrays.key }}
+										</q-item-label>
+									</q-item-section>
+									<q-item-section>
+										<q-item-label>
+											{{ keyValueArrays.text }}
+										</q-item-label>
+									</q-item-section>
+								</q-item>
+								<q-item>
+									<q-item-section>
+										<q-btn
+											flat
+											dense
+											icon="delete"
+											color="negative"
+											@click.stop.prevent="openDeleteProjectDialog(project.projectId, project.name)"
+										>
+											Delete Project
+										</q-btn>
+									</q-item-section>
+								</q-item>
+							</q-list>
+						</q-btn-dropdown>
 					</q-item-section>
 				</q-item>
 			</template>
@@ -100,13 +96,8 @@
   const projects = computed(() => projectStore.$state.projects);
 
   // MODELS
-  const openProjects = ref<Record<number, boolean>>({});
-  projects.value.forEach(((project) => {
-    openProjects.value[project.projectId] = false;
-  }));
-
   const keyValueProject = (project: Project) => [ {
-    key: 'description', text: project.description,
+    key: 'Description', text: project.description,
   } ];
 
   const isDeleteProjectOpen = ref<boolean>(false);
@@ -115,12 +106,6 @@
   });
 
   // ACTIONS
-
-  const toggleProject = (projectId: number) => {
-    openProjects.value[projectId] = !openProjects.value[projectId];
-  };
-
-  const isOpen = (projectId: number) => openProjects.value[projectId];
 
   const openDeleteProjectDialog = (projectId: number, projectName: string) => {
     projectToDelete.value = {

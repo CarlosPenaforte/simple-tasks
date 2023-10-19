@@ -30,7 +30,7 @@
 									<q-space />
 									<span
 										class="text-negative fs-12 q-mr-xs"
-									> {{ 'Until ' + task.dueDate.toLocaleDateString() }}</span>
+									> {{ 'Until ' + formatDateToLocale(task.dueDate, locale) }}</span>
 									<q-icon
 										name="info"
 										color="negative"
@@ -101,9 +101,12 @@
     defineComponent, PropType,
     ComputedRef,
     inject,
+    ref,
   } from 'vue';
   import { useTaskStore } from 'src/stores/taskStore';
   import { QVueGlobals } from 'quasar';
+  import { useUserStore } from 'src/stores/userStore';
+  import { formatDateToLocale } from 'src/utils/commonFunctions';
 
   export default defineComponent({
     name: 'TaskList',
@@ -111,14 +114,21 @@
 </script>
 
 <script setup lang="ts">
-  const taskStore = useTaskStore();
+  // PROPS AND EMIT
 
   const props = defineProps({
     urgency: String as PropType<Urgency>,
     showDoneTasks: Boolean,
   });
 
+  // BASICS
+
   const $q = inject<QVueGlobals>('quasar');
+
+  const taskStore = useTaskStore();
+  const userStore = useUserStore();
+
+  // MODELS
 
   let tasks: ComputedRef<Task[]>;
 
@@ -128,17 +138,48 @@
     tasks = computed(() => taskStore.doneTasks);
   }
 
-  const checkedTask = (task : Task, done : boolean) => {
-    if (done) {
+  const locale = ref(navigator.language);
+
+  // ACTIONS
+
+  const checkedTask = async(task : Task, done : boolean) => {
+    const userId = userStore.$state.user?.userId;
+    if (!userId) {
+      $q?.notify({
+        type: 'negative',
+        message: 'User not found',
+      });
+
+      return;
+    }
+
+    const [ success, message ] = await taskStore.checkTask(
+      userId,
+      task.taskId,
+      done,
+    );
+
+    if (success && done) {
       $q?.notify({
         type: 'positive',
         message: `Task ${task.taskTitle} finished`,
       });
+
+      return;
     }
 
-    taskStore.updateTask({
-      ...task,
-      done,
+    if (success && !done) {
+      $q?.notify({
+        type: 'positive',
+        message: `Task ${task.taskTitle} returned to undone`,
+      });
+
+      return;
+    }
+
+    $q?.notify({
+      type: 'negative',
+      message: message || 'Error checking task',
     });
   };
 </script>
