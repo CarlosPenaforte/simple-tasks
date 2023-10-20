@@ -111,8 +111,6 @@
   });
 
   watch(() => props.baseProject, (newVal) => {
-    console.log(newVal?.description);
-
     newProject = reactive<CreateProjectToSend>({
       user_id: userId as number,
       name: newVal?.name || '',

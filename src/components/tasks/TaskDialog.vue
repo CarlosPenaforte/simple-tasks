@@ -233,7 +233,6 @@
   const formattedDueDate = ref(formatDateToLocale(dateStrToDate(newTask.value.due_date, localeFormat), locale));
 
   watch(newTask, (newValue) => {
-    console.log(newValue.due_date);
     if (newValue.due_date.length < 10) {
       formattedDueDate.value = newValue.due_date;
 

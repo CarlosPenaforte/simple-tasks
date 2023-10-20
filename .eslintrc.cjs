@@ -17,6 +17,7 @@ module.exports = {
 		es2021: true,
 		node: true,
 		'vue/setup-compiler-macros': true,
+		'cypress/globals': true,
 	},
 
 	// Rules order is important, please avoid shuffling them
@@ -47,6 +48,8 @@ module.exports = {
 		// required to lint *.vue files
 		'vue',
 
+		'cypress',
+
 	],
 
 	globals: {
@@ -60,6 +63,7 @@ module.exports = {
 		process: 'readonly',
 		Capacitor: 'readonly',
 		chrome: 'readonly',
+		cy: 'readonly',
 	},
 
 	// add your custom rules here

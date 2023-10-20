@@ -46,6 +46,7 @@
 			</q-card-section>
 			<q-card-actions class="row gap-3">
 				<q-btn
+					id="btn-register-route"
 					:label="$t('FORM.BUTTONS.REGISTER')"
 					outline
 					color="negative"
@@ -54,6 +55,7 @@
 				/>
 				<q-space />
 				<q-btn
+					id="btn-login-action"
 					:label="$t('FORM.BUTTONS.LOGIN')"
 					unelevated
 					color="positive"
