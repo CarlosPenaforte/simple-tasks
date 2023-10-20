@@ -56,6 +56,17 @@ export const isTask = (task: Task | undefined): task is Task => !!task;
 
 // TYPE PARSE
 
+export const parseUrgency = (urgency: string): Urgency => {
+	switch (urgency) {
+		case 'urgent':
+			return Urgency.URGENT;
+		case 'important':
+			return Urgency.IMPORTANT;
+		default:
+			return Urgency.COMMON;
+	}
+};
+
 export const parseUser = (receivedUser : ReceivedUser): User => {
 	let parsedSex: Gender = Gender.NOT_INFORMED;
 
@@ -87,17 +98,7 @@ export const parseTask = (receivedTask : ReceivedTask): Task => {
 	const parsedCreationDate = DateTime.fromISO(receivedTask.creation_date, { zone: 'utc' }).toJSDate();
 	const parsedDueDate = receivedTask.due_date ? DateTime.fromISO(receivedTask.due_date, { zone: 'utc' }).toJSDate() : undefined;
 
-	let parsedUrgency: Urgency = Urgency.COMMON;
-
-	switch (receivedTask.urgency) {
-		case 'urgent':
-			parsedUrgency = Urgency.URGENT;
-			break;
-		case 'important':
-			parsedUrgency = Urgency.IMPORTANT;
-			break;
-		default:
-	}
+	const parsedUrgency: Urgency = parseUrgency(receivedTask.urgency);
 
 	return {
 		taskId: receivedTask.task_id,

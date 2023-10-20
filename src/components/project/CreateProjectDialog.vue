@@ -3,6 +3,15 @@
 		v-model="isCreateProjectOpen"
 		:handle-save="saveProject"
 	>
+		<h1 class="text-secondary fs-20 lh-22 ls-1 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
+			<template v-if="!baseProject?.projectId">
+				{{ $t('PROJECT.CREATE') }}
+			</template>
+			<template v-else>
+				{{ $t('PROJECT.EDIT') }}
+			</template>
+		</h1>
+
 		<q-input
 			v-model="newProject.name"
 			bottom-slots
@@ -142,6 +151,15 @@
       if (!props.baseProject?.projectId) {
         [ success, result ] = await projectStore.createProject($t, userId as number, newProject);
       } else {
+        if (newProject.name === props.baseProject.name && newProject.description === props.baseProject.description) {
+          $q?.notify({
+            type: 'negative',
+            message: $t('PROJECT.ERROR.NO_CHANGES'),
+          });
+
+          return;
+        }
+
         [ success, result ] = await projectStore.updateProject(
           $t,
           userId as number,

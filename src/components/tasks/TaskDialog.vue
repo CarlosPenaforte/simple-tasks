@@ -3,7 +3,7 @@
 		v-model="isCreateTaskOpen"
 		:handle-save="saveTask"
 	>
-		<h1 class="text-secondary fs-20 lh-22 ls-2 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
+		<h1 class="text-secondary fs-20 lh-22 ls-1 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
 			<template v-if="isEdit">
 				{{ $t('TASK.EDIT') }}
 			</template>
@@ -107,7 +107,7 @@
 
 <script lang="ts">
   import {
-    defineComponent, computed, PropType, reactive, inject, watch, ref,
+    defineComponent, computed, PropType, inject, watch, ref,
   } from 'vue';
   import {
     Urgency, Task,
@@ -119,7 +119,13 @@
   import { useUserStore } from 'src/stores/userStore';
   import { useProjectStore } from 'src/stores/projectStore';
   import {
-    dateStrToDate, urgencyToTranslation, formatDateToIso, formatDateToLocale, getLocaleFormat, getLocaleMask,
+    dateStrToDate,
+    urgencyToTranslation,
+    formatDateToIso,
+    formatDateToLocale,
+    getLocaleFormat,
+    getLocaleMask,
+    parseUrgency,
   } from 'src/utils/commonFunctions';
   import { useI18n } from 'vue-i18n';
   import BigDialog from '../BigDialog.vue';
@@ -176,7 +182,7 @@
   const qDateMask = localeFormat.toUpperCase();
   const localeMask = getLocaleMask(locale);
 
-  let newTask = reactive({
+  const newTask = ref({
     task_title: '',
     task_description: '',
     urgency: Urgency.URGENT,
@@ -187,7 +193,7 @@
 
   watch(() => props.currentTask, (newValue, oldValue) => {
     if (props.isEdit && newValue && newValue !== oldValue) {
-      newTask = reactive({
+      newTask.value = {
         task_title: newValue.taskTitle,
         task_description: newValue.taskDescription || '',
         urgency: newValue.urgency,
@@ -196,7 +202,7 @@
           ? formatDateToLocale(newValue.dueDate, locale)
           : '',
         done: +(newValue.done || false),
-      });
+      };
     }
   }, {
     deep: true, immediate: true,
@@ -217,23 +223,24 @@
     if (typeof dueDate !== 'string') return;
 
     if (dueDate.length > 10) {
-      newTask.due_date = dueDate.slice(0, 10);
+      newTask.value.due_date = dueDate.slice(0, 10);
       return;
     }
 
-    newTask.due_date = dueDate;
+    newTask.value.due_date = dueDate;
   };
 
-  const formattedDueDate = ref(formatDateToLocale(dateStrToDate(newTask.due_date, localeFormat), locale));
+  const formattedDueDate = ref(formatDateToLocale(dateStrToDate(newTask.value.due_date, localeFormat), locale));
 
-  watch(() => newTask.due_date, (newValue) => {
-    if (newValue.length < 10) {
-      formattedDueDate.value = newValue;
+  watch(newTask, (newValue) => {
+    console.log(newValue.due_date);
+    if (newValue.due_date.length < 10) {
+      formattedDueDate.value = newValue.due_date;
 
       return;
     }
 
-    formattedDueDate.value = formatDateToLocale(dateStrToDate(newValue, localeFormat), locale);
+    formattedDueDate.value = formatDateToLocale(dateStrToDate(newValue.due_date, localeFormat), locale);
   });
 
   // ACTIONS
@@ -250,9 +257,9 @@
         return;
       }
 
-      const parsedDueDate = dateStrToDate(newTask.due_date, localeFormat);
+      const parsedDueDate = dateStrToDate(newTask.value.due_date, localeFormat);
 
-      if (newTask.due_date && !parsedDueDate) {
+      if (newTask.value.due_date && !parsedDueDate) {
         $q?.notify({
           type: 'negative',
           message: $t('TASK.ERROR.INVALID_DUE_DATE'),
@@ -262,7 +269,7 @@
       }
 
       const taskToSend: CreateTaskToSend = {
-        ...newTask,
+        ...newTask.value,
         due_date: parsedDueDate ? formatDateToIso(parsedDueDate) : undefined,
         user_id: userId,
         project_id: projectId,
@@ -276,6 +283,19 @@
           $q?.notify({
             type: 'negative',
             message: $t('TASK.ERROR.NOT_FOUND'),
+          });
+
+          return;
+        }
+        if (taskToSend.task_title === props.currentTask.taskTitle
+          && taskToSend.task_description === props.currentTask.taskDescription
+          && parseUrgency(taskToSend.urgency) === props.currentTask.urgency
+          && parsedDueDate?.getTime() === props.currentTask.dueDate?.getTime()
+          && taskToSend.done === +props.currentTask.done
+        ) {
+          $q?.notify({
+            type: 'negative',
+            message: $t('TASK.ERROR.NO_CHANGES'),
           });
 
           return;
@@ -296,14 +316,14 @@
       }
       isCreateTaskOpen.value = false;
 
-      newTask = reactive({
+      newTask.value = {
         task_title: '',
         task_description: '',
         urgency: Urgency.URGENT,
         creation_date: DateTime.now().setZone('utc').toISODate() || new Date().toISOString(),
         due_date: '',
         done: 0,
-      });
+      };
 
       $q?.notify({
         type: 'positive',
