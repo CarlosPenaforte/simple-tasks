@@ -12,7 +12,7 @@
 					round
 					icon="menu"
 					aria-label="Menu"
-					@click="toggleLeftDrawer(true)"
+					@click="toggleLeftDrawer(!leftDrawerOpen)"
 				/>
 
 				<template v-if="isMainTasksRoute">
@@ -64,7 +64,10 @@
 
 		<q-drawer
 			v-model="leftDrawerOpen"
+			:overlay="!drawerBP"
+			:breakpoint="1100"
 			show-if-above
+			elevated
 			bordered
 			class="column"
 		>
@@ -157,6 +160,7 @@
 
 		<q-page-container>
 			<router-view
+				:left-drawer-open="leftDrawerOpen"
 				@open-edit-task="openEditTaskDialog"
 				@open-delete-task="openDeleteTaskDialog"
 			/>
@@ -307,6 +311,7 @@
   import { useState } from 'src/utils/composables';
   import { QVueGlobals } from 'quasar';
   import { useI18n } from 'vue-i18n';
+  import { useWindowSize } from '@vueuse/core';
   import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
   import TaskDialog from '../components/tasks/TaskDialog.vue';
   import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
@@ -412,6 +417,9 @@
   const [ selectedDrawerOption, setDrawerOption ] = useState(0);
 
   // MODELS
+
+  const { width: windowWidth } = useWindowSize();
+  const drawerBP = computed(() => windowWidth.value > 1100);
 
   const isSearchDialogOpen = ref(false);
   const isSortDialogOpen = ref(false);

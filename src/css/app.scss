@@ -95,7 +95,7 @@
 .rolling-bg {
   background: linear-gradient(-45deg, map.get($colors, "positive"), map.get($colors, "primary-main"), map.get($colors, "negative"));
   background-size: 400% 400%;
-  animation: backgroundTransition 8s ease-in-out infinite ;
+  animation: backgroundTransition 8s ease infinite ;
 }
 
 @keyframes backgroundTransition {

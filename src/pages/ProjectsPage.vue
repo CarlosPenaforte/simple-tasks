@@ -1,5 +1,7 @@
 <template>
-	<q-page class="column items-center justify-start fit">
+	<q-page class="column items-center justify-start fit"
+		:style="shrinkIfNeeded"
+	>
 		<q-list
 			v-if="projects.length > 0"
 			dense
@@ -36,8 +38,20 @@
 										</q-item-label>
 									</q-item-section>
 								</q-item>
-								<q-item>
-									<q-item-section>
+								<q-item class="row justify-around align-center">
+									<q-item-section class="col-5">
+										<q-btn
+											flat
+											dense
+											icon="update"
+											color="primary"
+											class="fs-12 lh-14 text-capitalize"
+											@click.stop.prevent="openUpdateProjectDialog(project.projectId, project.name, project.description)"
+										>
+											{{ $t('PROJECT.UPDATE') }}
+										</q-btn>
+									</q-item-section>
+									<q-item-section class="col-5">
 										<q-btn
 											flat
 											dense
@@ -68,6 +82,11 @@
 			:done-function="deleteProject"
 			:confirmQuestion="$t('PROJECT.CONFIRM_DELETE', {name: projectToDelete.name})"
 		/>
+
+		<create-project-dialog
+			v-model="isUpdateProjectOpen"
+			:base-project="projectToUpdate"
+		/>
 	</q-page>
 </template>
 
@@ -82,12 +101,15 @@
   import { storeToRefs } from 'pinia';
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
+  import { useWindowSize } from '@vueuse/core';
   import ConfirmDialog from '../components/ConfirmDialog.vue';
+  import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
 
   export default {
     name: 'ProjectsPage',
     components: {
       ConfirmDialog,
+      CreateProjectDialog,
     },
   };
 </script>
@@ -108,6 +130,13 @@
   const projects = computed(() => projectStore.$state.projects);
 
   // MODELS
+
+  const { width: windowWidth } = useWindowSize();
+  const isWideScreen = computed(() => windowWidth.value > 800);
+  const shrinkIfNeeded = computed(() => (isWideScreen.value
+    ? 'width: 800px !important; margin: 0 auto;'
+    : ''));
+
   const keyValueProject = (project: Project) => [ {
     key: $t('PROJECT.FORM.DESCRIPTION_SHORT'), text: project.description,
   } ];
@@ -115,6 +144,11 @@
   const isDeleteProjectOpen = ref<boolean>(false);
   const projectToDelete = ref({
     name: '', id: -1,
+  });
+
+  const isUpdateProjectOpen = ref<boolean>(false);
+  const projectToUpdate = ref<Project>({
+    name: '', description: '', projectId: -1, userId: -1,
   });
 
   // ACTIONS
@@ -125,6 +159,17 @@
       id: projectId,
     };
     isDeleteProjectOpen.value = true;
+  };
+
+  const openUpdateProjectDialog = (projectId: number, projectName: string, projectDescription?:string) => {
+    projectToUpdate.value = {
+      description: projectDescription || '',
+      name: projectName,
+      projectId,
+      userId: user.value?.userId || -1,
+    };
+
+    isUpdateProjectOpen.value = true;
   };
 
   async function deleteProject(): Promise<void> {

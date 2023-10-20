@@ -72,6 +72,7 @@ export default {
 	PROJECT: {
 		ERROR: {
 			CREATE: 'Erro ao criar projeto',
+			UPDATE: 'Erro ao atualizar projeto',
 			DELETE: 'Erro ao deletar projeto',
 			NOT_FOUND: 'Projeto não encontrado',
 			GET_PROJECTS: 'Erro ao obter projetos',
@@ -89,6 +90,7 @@ export default {
 		LABEL: 'Projeto',
 		CLICK_TO_CREATE: 'Clique aqui para criar um projeto',
 		CREATE: 'Criar Projeto',
+		UPDATE: 'Atualizar Projeto',
 		DELETE: 'Excluir Projeto',
 		CONFIRM_DELETE: 'Tem certeza que deseja deletar o projeto {name}?',
 		NOTHING: 'Não há nenhum projeto criado. Crie um para começar a usar o app',

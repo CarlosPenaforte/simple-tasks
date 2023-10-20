@@ -1,5 +1,8 @@
 <template>
-	<q-page class="column items-center justify-start fit">
+	<q-page
+		:style="shrinkIfNeeded"
+		class="column items-center justify-start fit"
+	>
 		<template v-if="projectStore.hasProjects">
 			<q-list dense
 				separator
@@ -55,6 +58,7 @@
   import { QVueGlobals } from 'quasar';
   import { useProjectStore } from 'src/stores/projectStore';
   import { useI18n } from 'vue-i18n';
+  import { useWindowSize } from '@vueuse/core';
 
   export default {
     name: 'SelfTasks',
@@ -107,6 +111,12 @@
   });
 
   // MODELS
+
+  const { width: windowWidth } = useWindowSize();
+  const isWideScreen = computed(() => windowWidth.value > 800);
+  const shrinkIfNeeded = computed(() => (isWideScreen.value
+    ? 'width: 800px !important; margin: 0 auto;'
+    : ''));
 
   const hasSearchedTasks = computed(() => taskStore.$state.searchedTasks.length > 0);
   const searchedUrgency = computed<[boolean, Urgency] | undefined>(() => {

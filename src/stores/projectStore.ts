@@ -1,6 +1,6 @@
 import { ComposerTranslation } from 'vue-i18n';
 import {
-	create, deleteById, getAll,
+	create, deleteById, getAll, update,
 } from 'src/services/projectService';
 import { parseProject } from 'src/utils/commonFunctions';
 import { defineStore } from 'pinia';
@@ -58,13 +58,36 @@ export const useProjectStore = defineStore('project', {
 
 			return [ true, $t('PROJECT.SUCCESS.CREATE') ];
 		},
-		updateProject(newProject : Project) {
-			this.projects = this.projects.map((project) => {
-				if (project.projectId === newProject.projectId) {
-					return newProject;
+		async updateProject(
+			$t: ComposerTranslation,
+			userId: number,
+			projectId: number,
+			newProject : CreateProjectToSend,
+		): Promise<[boolean, string]> {
+			const response = await update(userId, projectId, newProject);
+
+			if (response.data.hasError) {
+				if (!response.data?.message) {
+					return [ false, $t('PROJECT.ERROR.UPDATE') ];
 				}
+				return [ false, response.data.message ];
+			}
+
+			if (response.data.project === undefined) {
+				return [ false, $t('PROJECT.ERROR.NOTHING_FOUND') ];
+			}
+
+			this.projects = this.projects.map((project) => {
+				if (project.projectId === response.data.project?.project_id) {
+					return parseProject(response.data.project);
+				}
+
 				return project;
 			});
+
+			this.projects = this.projects.sort((a, b) => a.projectId - b.projectId);
+
+			return [ true, $t('PROJECT.SUCCESS.UPDATE') ];
 		},
 		setProjects(projects: Project[]) {
 			this.projects = projects;

@@ -36,7 +36,7 @@
 
 <script lang="ts">
   import {
-    defineComponent, computed, reactive, inject, onBeforeMount,
+    defineComponent, computed, reactive, inject, onBeforeMount, PropType, watch,
   } from 'vue';
   import {
     QVueGlobals,
@@ -46,6 +46,7 @@
   import { CreateProjectToSend } from 'src/models/apiModels';
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
+  import { Project } from 'src/models/mainModels';
   import BigDialog from '../BigDialog.vue';
 
   export default defineComponent({
@@ -63,6 +64,9 @@
     modelValue: {
       type: Boolean,
       default: false,
+    },
+    baseProject: {
+      type: Object as PropType<Project>,
     },
   });
 
@@ -93,8 +97,20 @@
 
   let newProject = reactive<CreateProjectToSend>({
     user_id: userId as number,
-    name: '',
-    description: '',
+    name: props.baseProject?.name || '',
+    description: props.baseProject?.description || '',
+  });
+
+  watch(() => props.baseProject, (newVal) => {
+    console.log(newVal?.description);
+
+    newProject = reactive<CreateProjectToSend>({
+      user_id: userId as number,
+      name: newVal?.name || '',
+      description: newVal?.description || '',
+    });
+  }, {
+    immediate: true, deep: true,
   });
 
   const isCreateProjectOpen = computed({
@@ -109,7 +125,9 @@
   // ACTIONS
 
   async function saveProject() {
-    if (projectStore.$state.projects?.some((project) => project.name === newProject.name)) {
+    if (!props.baseProject?.projectId
+      && projectStore.$state.projects?.some((project) => project.name === newProject.name)
+    ) {
       $q?.notify({
         type: 'negative',
         message: $t('PROJECT.ERROR.NAME_ALREADY_EXISTS', { name: newProject.name }),
@@ -119,7 +137,18 @@
     }
 
     try {
-      const [ success, result ] = await projectStore.createProject($t, userId as number, newProject);
+      let [ success, result ] = [ false, '' ];
+
+      if (!props.baseProject?.projectId) {
+        [ success, result ] = await projectStore.createProject($t, userId as number, newProject);
+      } else {
+        [ success, result ] = await projectStore.updateProject(
+          $t,
+          userId as number,
+          props.baseProject.projectId,
+          newProject,
+        );
+      }
 
       if (!success) {
         $q?.notify({

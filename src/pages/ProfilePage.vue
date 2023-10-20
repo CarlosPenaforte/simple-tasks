@@ -1,5 +1,7 @@
 <template>
-	<q-page class="column justify-start fit">
+	<q-page class="column justify-start fit"
+		:style="shrinkIfNeeded"
+	>
 		<q-list
 			dense
 			separator
@@ -49,6 +51,7 @@
   import { genderToFullString } from 'src/utils/commonFunctions';
   import UpdateProfileDialog from 'src/components/profile/UpdateProfileDialog.vue';
   import { useI18n } from 'vue-i18n';
+  import { useWindowSize } from '@vueuse/core';
 
   export default {
     name: 'ProfilePage',
@@ -67,6 +70,13 @@
   const user = computed(() => userStore.$state.user);
 
   // MODELS
+
+  const { width: windowWidth } = useWindowSize();
+  const isWideScreen = computed(() => windowWidth.value > 800);
+  const shrinkIfNeeded = computed(() => (isWideScreen.value
+    ? 'width: 800px !important; margin: 0 auto;'
+    : ''));
+
   const profileInfo = computed(() => [
     {
       key: $t('REGISTER.FULL_NAME.NAME'), text: user.value?.fullName,
