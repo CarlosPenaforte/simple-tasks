@@ -5,7 +5,9 @@
 	>
 		<template v-slot:header>
 			<q-item-section>
-				<span class="expansion-header-label text-dark"> {{ props.urgency || 'DONE' }} </span>
+				<span class="expansion-header-label text-dark">
+					{{ props.urgency ? urgencyToTranslation($t, props.urgency) : $t('TASK.DONE') }}
+				</span>
 			</q-item-section>
 
 			<q-item-section side>
@@ -30,7 +32,7 @@
 									<q-space />
 									<span
 										class="text-negative fs-12 q-mr-xs"
-									> {{ 'Until ' + formatDateToLocale(task.dueDate, locale) }}</span>
+									> {{ $t('TASK.UNTIL', { dateStr: formatDateToLocale(task.dueDate, locale) }) }}</span>
 									<q-icon
 										name="info"
 										color="negative"
@@ -64,7 +66,7 @@
 											<q-item-section>
 												<span
 													class="text-dark"
-												>Edit</span>
+												> {{ $t('COMMON.EDIT') }}</span>
 											</q-item-section>
 										</q-item>
 										<q-item clickable
@@ -74,7 +76,7 @@
 											<q-item-section>
 												<span
 													class="text-negative"
-												>Delete</span>
+												> {{ $t('COMMON.DELETE') }} </span>
 											</q-item-section>
 										</q-item>
 									</q-list>
@@ -106,7 +108,10 @@
   import { useTaskStore } from 'src/stores/taskStore';
   import { QVueGlobals } from 'quasar';
   import { useUserStore } from 'src/stores/userStore';
-  import { formatDateToLocale } from 'src/utils/commonFunctions';
+  import {
+    formatDateToLocale, urgencyToTranslation,
+  } from 'src/utils/commonFunctions';
+  import { useI18n } from 'vue-i18n';
 
   export default defineComponent({
     name: 'TaskList',
@@ -122,6 +127,8 @@
   });
 
   // BASICS
+
+  const $t = useI18n().t;
 
   const $q = inject<QVueGlobals>('quasar');
 
@@ -147,7 +154,7 @@
     if (!userId) {
       $q?.notify({
         type: 'negative',
-        message: 'User not found',
+        message: $t('USER.ERROR.NOT_FOUND'),
       });
 
       return;
@@ -162,7 +169,7 @@
     if (success && done) {
       $q?.notify({
         type: 'positive',
-        message: `Task ${task.taskTitle} finished`,
+        message: $t('TASK.FINISHED', { title: task.taskTitle }),
       });
 
       return;
@@ -171,7 +178,7 @@
     if (success && !done) {
       $q?.notify({
         type: 'positive',
-        message: `Task ${task.taskTitle} returned to undone`,
+        message: $t('TASK.UNDONE', { title: task.taskTitle }),
       });
 
       return;
@@ -179,7 +186,7 @@
 
     $q?.notify({
       type: 'negative',
-      message: message || 'Error checking task',
+      message: message || $t('TASK.ERROR.CHECK'),
     });
   };
 </script>

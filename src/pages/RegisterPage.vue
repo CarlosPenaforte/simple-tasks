@@ -13,6 +13,7 @@
 					v-model="form.email"
 					type="text"
 					name="email"
+					max-length="255"
 					:label="$t('AUTH.EMAIL.NAME')"
 					:rules="[val => !!val || $t('AUTH.EMAIL.VALIDATE.EMPTY'), isValidEmail]"
 					lazy-rules
@@ -24,6 +25,7 @@
 					v-model="form.full_name"
 					type="text"
 					name="full_name"
+					max-length="255"
 					:label="$t('REGISTER.FULL_NAME.NAME')"
 					:rules="[val => !!val || $t('REGISTER.FULL_NAME.VALIDATE.EMPTY')]"
 					lazy-rules
@@ -110,6 +112,7 @@
 						val => !!val || $t('AUTH.PASSWORD.VALIDATE.EMPTY'),
 						val => val.length >= 6 || $t('AUTH.PASSWORD.VALIDATE.LENGTH'),
 					]"
+					max-length="50"
 					lazy-rules
 					color="primary-main"
 					class="full-width text-dark q-mb-xs"
@@ -131,6 +134,7 @@
 					:rules="[val => !!val || $t('REGISTER.CONFIRM_PASSWORD.VALIDATE.EMPTY'),
 						val => val == form.user_password || $t('REGISTER.CONFIRM_PASSWORD.VALIDATE.MATCH')
 					]"
+					max-length="50"
 					lazy-rules
 					color="primary-main"
 					class="full-width text-dark"

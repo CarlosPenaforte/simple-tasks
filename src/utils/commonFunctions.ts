@@ -7,6 +7,7 @@ import {
 import { ComposerTranslation } from 'vue-i18n';
 import {
 	Gender,
+	Orientation,
 	Project,
 	Task, Urgency, User,
 } from '../models/mainModels';
@@ -146,11 +147,35 @@ export const parseProject = (receivedProject : ReceivedProject): Project => ({
 		description: receivedProject.description,
 	});
 
-// GENDER
+// TRANSLATIONS
 
 export const genderToFullString = (i18n: ComposerTranslation, gender: string): string => {
 	if (gender === Gender.MALE) return i18n('USER.GENDER.MALE');
 	if (gender === Gender.FEMALE) return i18n('USER.GENDER.FEMALE');
 	if (gender === Gender.NON_BINARY) return i18n('USER.GENDER.NON_BINARY');
 	return i18n('USER.GENDER.NOT_INFORMED');
+};
+
+export const urgencyToTranslation = ($t: ComposerTranslation, urgency: Urgency): string => {
+    switch (urgency) {
+		case Urgency.URGENT:
+			return $t('TASK.URGENCY.URGENT');
+		case Urgency.IMPORTANT:
+			return $t('TASK.URGENCY.IMPORTANT');
+		case Urgency.COMMON:
+			return $t('TASK.URGENCY.COMMON');
+		default:
+			return '';
+    }
+};
+
+export const orientationToTranslation = ($t: ComposerTranslation, orientation: Orientation): string => {
+	switch (orientation) {
+		case Orientation.ASC:
+			return $t('SORT.ASC');
+		case Orientation.DESC:
+			return $t('SORT.DESC');
+		default:
+			return '';
+	}
 };

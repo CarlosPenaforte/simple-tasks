@@ -12,7 +12,7 @@
 					<q-checkbox
 						v-model="sortBy.dueDate.use"
 						color="primary-main"
-						label="Due date"
+						:label="$t('TASK.FORM.DUE_DATE')"
 					/>
 				</q-item-section>
 				<q-item-section>
@@ -30,8 +30,15 @@
 							<div
 								class="text-dark fw-medium text-capitalize"
 							>
-								{{ sortBy.dueDate.orientation }}
+								{{ orientationToTranslation($t, sortBy.dueDate.orientation) }}
 							</div>
+						</template>
+						<template v-slot:option="scope">
+							<q-item v-bind="scope.itemProps">
+								<q-item-section>
+									<span>{{ orientationToTranslation($t, scope.opt) }}</span>
+								</q-item-section>
+							</q-item>
 						</template>
 					</q-select>
 				</q-item-section>
@@ -41,7 +48,7 @@
 					<q-checkbox
 						v-model="sortBy.name.use"
 						color="primary-main"
-						label="Name"
+						:label="$t('TASK.FORM.TITLE')"
 					/>
 				</q-item-section>
 				<q-item-section>
@@ -59,8 +66,15 @@
 							<div
 								class="text-dark fw-medium text-capitalize"
 							>
-								{{ sortBy.name.orientation }}
+								{{ orientationToTranslation($t, sortBy.name.orientation) }}
 							</div>
+						</template>
+						<template v-slot:option="scope">
+							<q-item v-bind="scope.itemProps">
+								<q-item-section>
+									<span>{{ orientationToTranslation($t, scope.opt) }}</span>
+								</q-item-section>
+							</q-item>
 						</template>
 					</q-select>
 				</q-item-section>
@@ -77,6 +91,7 @@
     Orientation, SortBy,
   } from 'src/models/mainModels';
   import { useTaskStore } from 'src/stores/taskStore';
+  import { orientationToTranslation } from 'src/utils/commonFunctions';
   import MidDialog from '../MidDialog.vue';
 
   export default defineComponent({

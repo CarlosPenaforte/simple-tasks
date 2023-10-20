@@ -1,6 +1,7 @@
 <template>
 	<q-page class="column justify-start fit">
 		<q-list
+			v-if="projects.length > 0"
 			dense
 			class="fit q-mt-md"
 		>
@@ -53,6 +54,12 @@
 				</q-item>
 			</template>
 		</q-list>
+		<p v-else
+			class="fs-20 lh-16 flex jusitfy-center items-center text-center text-primary-darker"
+			style="flex: 1 0 auto;"
+		>
+			There is no project created, click the button below to create a new one
+		</p>
 
 		<confirm-dialog
 			v-model="isDeleteProjectOpen"

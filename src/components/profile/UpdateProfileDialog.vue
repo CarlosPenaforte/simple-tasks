@@ -4,7 +4,7 @@
 		:handle-save="updateProfile"
 	>
 		<h1 class="text-secondary fs-20 lh-22 ls-2 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
-			UpdateProfile
+			{{ $t('USER.PROFILE.UPDATE') }}
 		</h1>
 
 		<q-input
@@ -13,7 +13,7 @@
 			bottom-slots
 			clearable
 			name="email"
-			label="Email"
+			:label="$t('AUTH.EMAIL.NAME')"
 			:rules="[val => !!val || 'Email is missing', isValidEmail]"
 			lazy-rules
 			color="primary-main"
@@ -27,8 +27,8 @@
 			clearable
 			maxlength="500"
 			name="full_name"
-			label="Full Name"
-			:rules="[val => !!val || 'Full name is missing']"
+			:label="$t('REGISTER.FULL_NAME.NAME')"
+			:rules="[val => !!val || $t('REGISTER.FULL_NAME.VALIDATE.EMPTY')]"
 			lazy-rules
 			color="primary-main"
 			class="q-mb-md text-dark"
@@ -42,9 +42,9 @@
 			ref="sex"
 			v-model="newProfile.sex"
 			:options="genderOptions"
-			label="Sex"
+			:label="$t('REGISTER.GENDER.NAME')"
 			behavior="menu"
-			:rules="[val => !!val || 'Sex is missing']"
+			:rules="[val => !!val || $t('REGISTER.GENDER.VALIDATE.EMPTY')]"
 			color="primary-main"
 			transition-show="jump-down"
 			transition-hide="jump-up"
@@ -71,9 +71,11 @@
 			:modelValue="formattedBirthday"
 			@update:modelValue="setBirthday"
 			name="birthday"
-			label="Birthday"
+			:label="$t('REGISTER.BIRTHDAY.NAME')"
 			:mask="localeMask"
-			:rules="[val => !!val || 'Birthday is missing', val => val.length == 10 || 'Invalid date']"
+			:rules="[val => !!val || $t('REGISTER.BIRTHDAY.VALIDATE.EMPTY'),
+				val => val.length == 10 || $t('REGISTER.BIRTHDAY.VALIDATE.INVALID')
+			]"
 			lazy-rules
 			color="primary-main"
 			class="full-width text-dark q-mb-xs"
@@ -89,8 +91,8 @@
 						<q-date
 							:mask="qDateFormat"
 							color="primary-main"
-							title="Birthday"
-							subtitle="Select your birthday"
+							:title="$t('REGISTER.BIRTHDAY.NAME')"
+							:subtitle="$t('REGISTER.BIRTHDAY.SUBTITLE')"
 							class="text-dark"
 							:modelValue="newProfile.birthday"
 							@update:modelValue="setBirthday"
@@ -118,6 +120,7 @@
   import {
     QInput, QSelect, QVueGlobals,
   } from 'quasar';
+  import { useI18n } from 'vue-i18n';
   import { useUserStore } from '../../stores/userStore';
   import {
     Gender,
@@ -150,6 +153,8 @@
   const emit = defineEmits([ 'update:modelValue' ]);
 
   // BASICS
+
+  const $t = useI18n().t;
 
   const $q = inject<QVueGlobals>('quasar');
 
@@ -219,7 +224,7 @@
 
   const isValidEmail = (val: string) => {
     const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-    return emailPattern.test(val) || 'Invalid email';
+    return emailPattern.test(val) || $t('REGISTER.EMAIL.VALIDATE.INVALID');
   };
 
   // ERROR CHECK
@@ -241,7 +246,7 @@
     if (hasErrors()) {
       $q?.notify({
         type: 'negative',
-        message: 'Please fill all the fields correctly',
+        message: $t('FORM.INVALID_FIELDS'),
       });
 
       return;
@@ -250,7 +255,7 @@
     if (!user.value?.userId) {
       $q?.notify({
         type: 'negative',
-        message: 'Internal Error',
+        message: $t('COMMON.INTERNAL_ERROR'),
       });
 
       return;
@@ -259,7 +264,7 @@
     const [ updated, messageOrUser ] = await userStore.updateUser(user.value.userId, newProfile);
 
     if (updated && typeof messageOrUser !== 'string') {
-      $q?.notify('Profile updated successfully');
+      $q?.notify($t('USER.PROFILE.UPDATE_SUCCESS'));
 
       isUpdateProfileOpen.value = false;
     } else if (typeof messageOrUser === 'string') {
@@ -270,7 +275,7 @@
     } else {
       $q?.notify({
         type: 'negative',
-        message: 'Intenal Error',
+        message: $t('COMMON.INTERNAL_ERROR'),
       });
     }
   }

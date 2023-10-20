@@ -5,10 +5,10 @@
 	>
 		<h1 class="text-secondary fs-20 lh-22 ls-2 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
 			<template v-if="isEdit">
-				Edit the Task
+				{{ $t('TASK.EDIT') }}
 			</template>
 			<template v-else>
-				Create a Task
+				{{ $t('TASK.CREATE') }}
 			</template>
 		</h1>
 
@@ -18,7 +18,7 @@
 			counter
 			clearable
 			maxlength="20"
-			label="Task title"
+			:label="$t('TASK.FORM.TITLE')"
 			color="primary-main"
 			class="q-mb-md text-dark"
 		>
@@ -33,7 +33,7 @@
 			counter
 			clearable
 			maxlength="50"
-			label="Description"
+			:label="$t('TASK.FORM.DESCRIPTION')"
 			color="primary-main"
 			class="q-mb-md text-dark"
 		>
@@ -42,29 +42,29 @@
 			</template>
 		</q-input>
 
-		<span class="q-mt-md q-mb-sm text-secondary fs-12 lh-16">Urgency</span>
+		<span class="q-mt-md q-mb-sm text-secondary fs-12 lh-16">{{ $t('TASK.FORM.URGENCY') }}</span>
 		<div class="q-pl-none q-pr-sm text-capitalize fs-13 lh-16 text-dark flex justify-between">
 			<q-radio
 				v-model="newTask.urgency"
 				:val="Urgency.URGENT"
-				:label="Urgency.URGENT"
+				:label="urgencyToTranslation($t, Urgency.URGENT)"
 				color="negative"
 			/>
 			<q-radio
 				v-model="newTask.urgency"
 				:val="Urgency.IMPORTANT"
-				:label="Urgency.IMPORTANT"
+				:label="urgencyToTranslation($t, Urgency.IMPORTANT)"
 				color="warning"
 			/>
 			<q-radio
 				v-model="newTask.urgency"
 				:val="Urgency.COMMON"
-				:label="Urgency.COMMON"
+				:label="urgencyToTranslation($t, Urgency.COMMON)"
 				color="positive"
 			/>
 		</div>
 
-		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">Due date</span>
+		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">{{ $t('TASK.FORM.DUE_DATE') }}</span>
 		<q-input
 			:modelValue="formattedDueDate"
 			@update:modelValue="setDueDate"
@@ -84,8 +84,8 @@
 						<q-date
 							:mask="qDateMask"
 							color="primary-main"
-							title="Due date"
-							subtitle="Select a due date to the new task"
+							:title="$t('TASK.FORM.DUE_DATE')"
+							:subtitle="$t('TASK.FORM.DUE_DATE_SUBTITLE')"
 							class="text-dark"
 							:modelValue="formattedDueDate"
 							@update:modelValue="setDueDate"
@@ -119,8 +119,9 @@
   import { useUserStore } from 'src/stores/userStore';
   import { useProjectStore } from 'src/stores/projectStore';
   import {
-    dateStrToDate, formatDateToIso, formatDateToLocale, getLocaleFormat, getLocaleMask,
+    dateStrToDate, urgencyToTranslation, formatDateToIso, formatDateToLocale, getLocaleFormat, getLocaleMask,
   } from 'src/utils/commonFunctions';
+  import { useI18n } from 'vue-i18n';
   import BigDialog from '../BigDialog.vue';
 
   export default defineComponent({
@@ -152,7 +153,10 @@
 
   // BASICS
 
+  const $t = useI18n().t;
+
   const $q = inject<QVueGlobals>('quasar');
+
   const taskStore = useTaskStore();
 
   const userStore = useUserStore();
@@ -241,7 +245,7 @@
       if (!userId || !projectId) {
         $q?.notify({
           type: 'negative',
-          message: 'Not possible to find user or project',
+          message: $t('TASK.ERROR.NOT_POSSIBLE_TO_FIND_PROJECT_OR_USER'),
         });
         return;
       }
@@ -251,7 +255,7 @@
       if (newTask.due_date && !parsedDueDate) {
         $q?.notify({
           type: 'negative',
-          message: 'Invalid due date',
+          message: $t('TASK.ERROR.INVALID_DUE_DATE'),
         });
 
         return;
@@ -271,7 +275,7 @@
         if (!taskId) {
           $q?.notify({
             type: 'negative',
-            message: 'Task not found',
+            message: $t('TASK.ERROR.NOT_FOUND'),
           });
 
           return;
@@ -290,9 +294,9 @@
 
         return;
       }
-
       isCreateTaskOpen.value = false;
-      newTask = ({
+
+      newTask = reactive({
         task_title: '',
         task_description: '',
         urgency: Urgency.URGENT,
@@ -300,6 +304,7 @@
         due_date: '',
         done: 0,
       });
+
       $q?.notify({
         type: 'positive',
         message: result,
@@ -307,7 +312,7 @@
     } catch (e) {
       $q?.notify({
         type: 'negative',
-        message: 'Error while creating task',
+        message: $t('TASK.ERROR.CREATE'),
       });
     }
   }

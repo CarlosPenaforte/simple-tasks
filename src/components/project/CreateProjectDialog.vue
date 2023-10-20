@@ -9,7 +9,7 @@
 			counter
 			clearable
 			maxlength="20"
-			label="Project name"
+			:label="$t('PROJECT.FORM.NAME')"
 			color="primary-main"
 			class="q-mb-md"
 		>
@@ -23,7 +23,7 @@
 			counter
 			clearable
 			maxlength="50"
-			label="Description"
+			:label="$t('PROJECT.FORM.DESCRIPTION')"
 			color="primary-main"
 			class="q-mb-md"
 		>
@@ -45,6 +45,7 @@
   import { useUserStore } from 'src/stores/userStore';
   import { CreateProjectToSend } from 'src/models/apiModels';
   import { useRouter } from 'vue-router';
+  import { useI18n } from 'vue-i18n';
   import BigDialog from '../BigDialog.vue';
 
   export default defineComponent({
@@ -69,6 +70,8 @@
 
   // BASICS
 
+  const $t = useI18n().t;
+
   const $q = inject<QVueGlobals>('quasar');
 
   const router = useRouter();
@@ -88,7 +91,7 @@
 
   // MODELS
 
-  const newProject = reactive<CreateProjectToSend>({
+  let newProject = reactive<CreateProjectToSend>({
     user_id: userId as number,
     name: '',
     description: '',
@@ -109,7 +112,7 @@
     if (projectStore.$state.projects?.some((project) => project.name === newProject.name)) {
       $q?.notify({
         type: 'negative',
-        message: 'Project with this name already exists',
+        message: $t('PROJECT.ERROR.NAME_ALREADY_EXISTS', { name: newProject.name }),
       });
 
       return;
@@ -128,6 +131,13 @@
       }
 
       isCreateProjectOpen.value = false;
+
+      newProject = reactive<CreateProjectToSend>({
+        user_id: userId as number,
+        name: '',
+        description: '',
+      });
+
       $q?.notify({
         type: 'positive',
         message: result,
@@ -135,7 +145,7 @@
     } catch (e) {
       $q?.notify({
         type: 'negative',
-        message: 'Error while creating project',
+        message: $t('PROJECT.ERROR.CREATE'),
       });
     }
   }

@@ -22,7 +22,7 @@
 						:options="projects"
 						borderless
 						behavior="menu"
-						label="Project"
+						:label="$t('PROJECT.LABEL')"
 						label-color="whity"
 						color="primary-main"
 						class="q-ml-lg q-px-sm w-200"
@@ -56,7 +56,7 @@
 						class="q-ml-xs items-center fs-14 lh-10"
 						@click="openCreateProjectDialog"
 					>
-						{{ projectStore.hasProjects? '' : 'Click here to create a project' }}
+						{{ projectStore.hasProjects? '' : $t('PROJECT.CLICK_TO_CREATE') }}
 					</q-btn>
 				</template>
 			</q-toolbar>
@@ -150,7 +150,9 @@
 			<q-space />
 			<span
 				class="no-margin full-width text-right q-pr-md q-pb-sm text-dark fs-11 lh-12"
-			>Simple Tasks</span>
+			>
+				{{ $t('BRAND.NAME') }}
+			</span>
 		</q-drawer>
 
 		<q-page-container>
@@ -183,7 +185,7 @@
 						<div
 							class="fs-12 lh-20 fw-regular text-secondary"
 						>
-							Sort
+							{{ $t('TASK.SORT') }}
 						</div>
 					</div>
 				</q-btn>
@@ -201,9 +203,9 @@
 							color="primary-main"
 						/>
 						<div
-							class="fs-14 lh-20 fw-medium text-primary-lighter"
+							class="fs-14 lh-20 fw-medium text-primary-main"
 						>
-							Create Task
+							{{ $t('TASK.CREATE') }}
 						</div>
 					</div>
 				</q-btn>
@@ -222,7 +224,7 @@
 						<div
 							class="fs-12 lh-20 fw-regular text-secondary"
 						>
-							Search
+							{{ $t('TASK.SEARCH') }}
 						</div>
 					</div>
 				</q-btn>
@@ -247,7 +249,7 @@
 						<div
 							class="fs-14 lh-20 fw-medium text-primary-lighter"
 						>
-							Create Project
+							{{ $t('PROJECT.CREATE') }}
 						</div>
 					</div>
 				</q-btn>
@@ -275,7 +277,7 @@
 			v-if="targettedTask"
 			v-model="isDeleteTaskOpen"
 			:done-function="deleteTask"
-			:confirmQuestion="`Do you really want to delete ${targettedTask.taskTitle}?`"
+			:confirmQuestion="$t('TASK.CONFIRM_DELETE', {title: targettedTask.taskTitle})"
 		/>
 
 		<search-dialog
@@ -304,6 +306,7 @@
   } from 'vue-router';
   import { useState } from 'src/utils/composables';
   import { QVueGlobals } from 'quasar';
+  import { useI18n } from 'vue-i18n';
   import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
   import TaskDialog from '../components/tasks/TaskDialog.vue';
   import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
@@ -355,6 +358,7 @@
 
 <script setup lang="ts">
   // BASICS
+  const $t = useI18n().t;
   const $q = inject<QVueGlobals>('quasar');
 
   const router = useRouter();
@@ -397,7 +401,7 @@
     } catch (e) {
       $q?.notify({
         type: 'negative',
-        message: 'Error while getting projects',
+        message: $t('PROJECT.ERROR.GET_PROJECTS'),
       });
     }
   });
@@ -456,6 +460,15 @@
   }
 
   function openCreateTaskDialog(): void {
+    if (!currentProject.value) {
+      $q?.notify({
+        type: 'negative',
+        message: $t('PROJECT.ERROR.CREATE_OR_SELECT_FIRST'),
+      });
+
+      return;
+    }
+
     isCreateTaskOpen.value = true;
   }
 
@@ -482,7 +495,7 @@
     if (!targettedTask.value?.taskId) {
       $q?.notify({
         type: 'negative',
-        message: 'Task not found',
+        message: $t('TASK.ERROR.NOT_FOUND'),
       });
 
       return;
@@ -505,7 +518,7 @@
     } catch (e) {
       $q?.notify({
         type: 'negative',
-        message: 'Error while deleting task',
+        message: $t('TASK.ERROR.DELETE'),
       });
     }
   }
@@ -540,19 +553,19 @@
   const drawerOptions = [
     {
       isBelow: false,
-      title: 'Your Tasks',
+      title: $t('TASK.YOUR_TASKS'),
       icon: 'checklist',
       path: '/',
     },
     {
       isBelow: false,
-      title: 'Projects',
+      title: $t('PROJECT.TITLE'),
       icon: 'emoji_events',
       path: '/projects',
     },
     {
       isBelow: true,
-      title: 'Logout',
+      title: $t('COMMON.LOGOUT'),
       icon: 'logout',
       action: logout,
     },

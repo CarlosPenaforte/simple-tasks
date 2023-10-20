@@ -10,7 +10,7 @@
 			counter
 			clearable
 			maxlength="20"
-			label="Search by name"
+			:label="$t('SEARCH.TITLE')"
 			color="primary-main"
 			class="q-mb-md"
 		>
@@ -19,19 +19,21 @@
 			</template>
 		</q-input>
 
-		<span class="q-mt-xs q-mb-xs text-secondary fs-12 lh-16">Search by urgency</span>
+		<span class="q-mt-xs q-mb-xs text-secondary fs-12 lh-16">
+			{{ $t('SEARCH.URGENCY') }}
+		</span>
 		<div class="q-px-none text-capitalize fs-12 lh-14 text-dark full-width">
 			<q-radio
 				v-model="searchFields.urgency"
 				:val="Urgency.URGENT"
-				:label="Urgency.URGENT"
+				:label="urgencyToTranslation($t, Urgency.URGENT)"
 				dense
 				color="negative"
 			/>
 			<q-radio
 				v-model="searchFields.urgency"
 				:val="Urgency.IMPORTANT"
-				:label="Urgency.IMPORTANT"
+				:label="urgencyToTranslation($t, Urgency.IMPORTANT)"
 				dense
 				color="warning"
 				class="q-px-sm"
@@ -39,20 +41,22 @@
 			<q-radio
 				v-model="searchFields.urgency"
 				:val="Urgency.COMMON"
-				:label="Urgency.COMMON"
+				:label="urgencyToTranslation($t, Urgency.COMMON)"
 				dense
 				color="positive"
 			/>
 		</div>
 
-		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">Search by due date</span>
+		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">
+			{{ $t('SEARCH.DUE_DATE') }}
+		</span>
 		<q-input
 			:modelValue="formattedDueDate"
 			@update:modelValue="setDueDate"
 			name="dueDate"
 			:mask="localeMask"
 			:placeholder="localeFormat"
-			:rules="[val => val.length == 10 || 'Invalid date']"
+			:rules="[val => val.length == 10 || $t('TASK.ERROR.INVALID_DUE_DATE')]"
 			lazy-rules
 			color="primary-main"
 			class="q-mb-md"
@@ -65,8 +69,8 @@
 						<q-date
 							:mask="qDateMask"
 							color="primary-main"
-							title="Due date"
-							subtitle="Select a due date to the new task"
+							:title="$t('TASK.FORM.DUE_DATE')"
+							:subtitle="$t('TASK.FORM.DUE_DATE_SUBTITLE')"
 							:modelValue="formattedDueDate"
 							@update:modelValue="setDueDate"
 						>
@@ -94,9 +98,10 @@
   } from 'src/models/mainModels';
   import { useTaskStore } from 'src/stores/taskStore';
   import {
-    dateStrToDate, formatDateToLocale, getLocaleFormat, getLocaleMask,
+    dateStrToDate, urgencyToTranslation, formatDateToLocale, getLocaleFormat, getLocaleMask,
   } from 'src/utils/commonFunctions';
   import { QVueGlobals } from 'quasar';
+  import { useI18n } from 'vue-i18n';
   import MidDialog from '../MidDialog.vue';
 
   export default defineComponent({
@@ -119,6 +124,8 @@
   const emit = defineEmits([ 'update:modelValue' ]);
 
   // BASICS
+
+  const $t = useI18n().t;
 
   const $q = inject<QVueGlobals>('quasar');
 
@@ -182,7 +189,7 @@
     if (!success) {
       $q?.notify({
         type: 'negative',
-        message: 'Nothing found',
+        message: $t('SEARCH.NOTHING_FOUND'),
       });
 
       return;
