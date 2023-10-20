@@ -5,14 +5,13 @@
 		>
 			<q-card-section class="text-center q-mb-sm">
 				<q-input
-					ref="username"
-					v-model="form.username"
+					ref="email"
+					v-model="form.email"
 					type="text"
-					name="username"
-					:label="$t('REGISTER.USERNAME.NAME')"
-					:rules="[val => !!val || $t('REGISTER.USERNAME.VALIDATE.EMPTY')]"
+					name="email"
+					:label="$t('AUTH.EMAIL.NAME')"
+					:rules="[val => !!val || $t('AUTH.EMAIL.VALIDATE.EMPTY'), isValidEmail]"
 					lazy-rules
-					autofocus
 					color="primary-main"
 					class="full-width text-dark q-mb-xs"
 				/>
@@ -23,17 +22,6 @@
 					name="full_name"
 					:label="$t('REGISTER.FULL_NAME.NAME')"
 					:rules="[val => !!val || $t('REGISTER.FULL_NAME.VALIDATE.EMPTY')]"
-					lazy-rules
-					color="primary-main"
-					class="full-width text-dark q-mb-xs"
-				/>
-				<q-input
-					ref="email"
-					v-model="form.email"
-					type="text"
-					name="email"
-					:label="$t('AUTH.EMAIL.NAME')"
-					:rules="[val => !!val || $t('AUTH.EMAIL.VALIDATE.EMPTY'), isValidEmail]"
 					lazy-rules
 					color="primary-main"
 					class="full-width text-dark q-mb-xs"
@@ -217,7 +205,6 @@
 
   const form: UnwrapNestedRefs<CreateUserToSend> = reactive(
     {
-      username: '',
       user_password: '',
       full_name: '',
       email: '',
@@ -274,7 +261,6 @@
     return emailPattern.test(val) || $t('AUTH.EMAIL.VALIDATE.INVALID');
   };
 
-  const username = ref<QInput|null>(null);
   const fullName = ref<QInput|null>(null);
   const email = ref<QInput|null>(null);
   const sex = ref<QSelect|null>(null);
@@ -286,7 +272,6 @@
 
   const hasErrors = () => {
     const errorsCheckList = [
-      username.value?.hasError,
       fullName.value?.hasError,
       email.value?.hasError,
       sex.value?.hasError,

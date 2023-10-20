@@ -32,10 +32,10 @@
 			</q-btn>
 		</template>
 		<p v-else
-			class="fs-20 lh-16 fit flex jusitfy-center items-center text-center text-primary-darker"
-			style="flex: 1;"
+			class="fs-20 lh-16 flex jusitfy-center items-center text-center text-primary-darker"
+			style="flex: 1 0 auto;"
 		>
-			There is no project created, click in the button above to create a new one
+			There is no project created, click the button above to create a new one
 		</p>
 	</q-page>
 </template>

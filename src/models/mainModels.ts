@@ -35,7 +35,6 @@ export type SearchFields = {
 
 export type User = {
   readonly userId: number;
-  username: string;
   fullName: string;
   email: string;
   sex: Gender;

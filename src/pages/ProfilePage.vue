@@ -48,6 +48,7 @@
   import { useUserStore } from 'src/stores/userStore';
   import { genderToFullString } from 'src/utils/commonFunctions';
   import UpdateProfileDialog from 'src/components/profile/UpdateProfileDialog.vue';
+  import { useI18n } from 'vue-i18n';
 
   export default {
     name: 'ProfilePage',
@@ -60,14 +61,13 @@
 <script setup lang="ts">
   // BASICS
 
+  const $t = useI18n().t;
+
   const userStore = useUserStore();
   const user = computed(() => userStore.$state.user);
 
   // MODELS
   const profileInfo = computed(() => [
-    {
-      key: 'Username', text: user.value?.username,
-    },
     {
       key: 'Full Name', text: user.value?.fullName,
     },
@@ -75,7 +75,7 @@
       key: 'Email', text: user.value?.email,
     },
     {
-      key: 'Sex', text: genderToFullString(user.value?.sex || ''),
+      key: 'Sex', text: genderToFullString($t, user.value?.sex || ''),
     },
     {
       key: 'Birthday', text: user.value?.birthday.toLocaleDateString(navigator.language, { timeZone: 'UTC' }),

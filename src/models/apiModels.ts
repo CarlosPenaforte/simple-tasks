@@ -1,6 +1,5 @@
 // USER
 export type CreateUserToSend = {
-    username: string;
     user_password: string;
     full_name: string;
     email: string;
@@ -10,7 +9,6 @@ export type CreateUserToSend = {
 }
 
 export type UpdateUserToSend = {
-    username: string;
     full_name: string;
     email: string;
     sex: string;
@@ -19,7 +17,6 @@ export type UpdateUserToSend = {
 
 export type ReceivedUser = {
     readonly user_id: number;
-    username: string;
     full_name: string;
     email: string;
     sex: string;

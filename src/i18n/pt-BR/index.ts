@@ -25,12 +25,6 @@ export default {
 	},
 	REGISTER: {
 		SUCCESS: 'Usuário cadastrado com sucesso',
-		USERNAME: {
-			VALIDATE: {
-				EMPTY: 'O campo nome de usuário é obrigatório',
-			},
-			NAME: 'Nome de usuário',
-		},
 		FULL_NAME: {
 			VALIDATE: {
 				EMPTY: 'O campo nome completo é obrigatório',

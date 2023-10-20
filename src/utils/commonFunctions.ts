@@ -75,7 +75,6 @@ export const parseUser = (receivedUser : ReceivedUser): User => {
 
 	return {
 		userId: receivedUser.user_id,
-		username: receivedUser.username,
 		fullName: receivedUser.full_name,
 		email: receivedUser.email,
 		sex: parsedSex,

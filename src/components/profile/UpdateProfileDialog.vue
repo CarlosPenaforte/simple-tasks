@@ -8,23 +8,17 @@
 		</h1>
 
 		<q-input
-			ref="username"
-			v-model="newProfile.username"
-			autofocus
+			ref="email"
+			v-model="newProfile.email"
 			bottom-slots
 			clearable
-			maxlength="20"
-			name="username"
-			label="Username"
-			:rules="[val => !!val || 'Username is missing']"
+			name="email"
+			label="Email"
+			:rules="[val => !!val || 'Email is missing', isValidEmail]"
 			lazy-rules
 			color="primary-main"
 			class="q-mb-md text-dark"
-		>
-			<template v-slot:hint>
-				Max of 20 characters
-			</template>
-		</q-input>
+		/>
 
 		<q-input
 			ref="fullName"
@@ -44,19 +38,6 @@
 			</template>
 		</q-input>
 
-		<q-input
-			ref="email"
-			v-model="newProfile.email"
-			bottom-slots
-			clearable
-			name="email"
-			label="Email"
-			:rules="[val => !!val || 'Email is missing', isValidEmail]"
-			lazy-rules
-			color="primary-main"
-			class="q-mb-md text-dark"
-		/>
-
 		<q-select
 			ref="sex"
 			v-model="newProfile.sex"
@@ -73,13 +54,13 @@
 				<div
 					class="text-dark fw-medium text-capitalize"
 				>
-					{{ genderToFullString(newProfile.sex) }}
+					{{ genderToFullString($t, newProfile.sex) }}
 				</div>
 			</template>
 			<template v-slot:option="scope">
 				<q-item v-bind="scope.itemProps">
 					<q-item-section>
-						<span>{{ genderToFullString(scope.opt) }}</span>
+						<span>{{ genderToFullString($t, scope.opt) }}</span>
 					</q-item-section>
 				</q-item>
 			</template>
@@ -187,13 +168,11 @@
   // MODELS
 
   const newProfile = reactive<UpdateUserToSend>({
-    username: user.value?.username || '',
     full_name: user.value?.fullName || '',
     email: user.value?.email || '',
     sex: user.value?.sex || '',
     birthday: formatDateToLocale(user.value?.birthday, locale),
   });
-  const username = ref<QInput|null>(null);
   const fullName = ref<QInput|null>(null);
   const email = ref<QInput|null>(null);
   const sex = ref<QSelect|null>(null);
@@ -247,7 +226,6 @@
 
   const hasErrors = () => {
     const errorsCheckList = [
-      username.value?.hasError,
       fullName.value?.hasError,
       email.value?.hasError,
       sex.value?.hasError,
