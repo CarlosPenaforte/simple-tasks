@@ -1,3 +1,4 @@
+import { ComposerTranslation } from 'vue-i18n';
 /* eslint-disable no-console */
 import {
 	ReceivedUser, CreateUserToSend, UpdateUserToSend,
@@ -38,7 +39,11 @@ export const useUserStore = defineStore('user', {
 
 			return [ true, response.data.answer ];
 		},
-		async updateUser(userId: number, userToSend: UpdateUserToSend): Promise<[boolean, string | ReceivedUser]> {
+		async updateUser(
+			$t: ComposerTranslation,
+			userId: number,
+			userToSend: UpdateUserToSend,
+		): Promise<[boolean, string | ReceivedUser]> {
 			const localeFormat = getLocaleFormat(navigator.language);
 			const parsedDate = DateTime.fromFormat(userToSend.birthday, localeFormat).setZone('utc').toJSDate();
 
@@ -53,7 +58,7 @@ export const useUserStore = defineStore('user', {
 				return [ false, response.data?.answer || '' ];
 			}
 
-			if (!response.data?.user) return [ false, 'Internal error' ];
+			if (!response.data?.user) return [ false, $t('COMMON.INTERNAL_ERROR') ];
 
 			this.user = parseUser(response.data.user);
 
@@ -75,7 +80,7 @@ export const useUserStore = defineStore('user', {
 		setUser(user: User) {
 			this.user = user;
 		},
-		async login(email: string, password: string): Promise<[boolean, string]> {
+		async login($t: ComposerTranslation, email: string, password: string): Promise<[boolean, string]> {
 			const response = await login(email, password);
 
 			if (response.data.token) {
@@ -88,7 +93,7 @@ export const useUserStore = defineStore('user', {
 				this.user = parseUser(response.data.user);
 				window.sessionStorage.setItem('simple-tasks/user_id', `${this.user.userId}`);
 
-				return [ true, 'You are logged in' ];
+				return [ true, $t('AUTH.SUCCESS') ];
 			}
 
 			if (response.status === 403 && response.data.auth === false) {
@@ -113,7 +118,7 @@ export const useUserStore = defineStore('user', {
 
 			this.user = undefined;
 
-			return [ true, 'You are logged out' ];
+			return [ true, 'Logout' ];
 		},
 	},
 });

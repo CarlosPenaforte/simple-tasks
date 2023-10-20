@@ -24,18 +24,17 @@
 				flat
 				icon-right="close"
 				rounded
-				class="btn floating-button bg-primary-main text-white text-xs font-semibold text-capitalize"
+				class="btn floating-button bg-primary-main text-white fs-12 lh-14 font-semibold text-capitalize"
 				@click.stop.prevent="clearSearch"
 			>
-				Showing search<br>
-				Click here to dismiss
+				{{ $t('SEARCH.DISMISS') }}
 			</q-btn>
 		</template>
 		<p v-else
 			class="fs-20 lh-16 flex jusitfy-center items-center text-center text-primary-darker"
 			style="flex: 1 0 auto;"
 		>
-			There is no project created, click the button above to create a new one
+			{{ $t('PROJECT.NOTHING') }}
 		</p>
 	</q-page>
 </template>
@@ -55,6 +54,7 @@
   import { useRouter } from 'vue-router';
   import { QVueGlobals } from 'quasar';
   import { useProjectStore } from 'src/stores/projectStore';
+  import { useI18n } from 'vue-i18n';
 
   export default {
     name: 'SelfTasks',
@@ -66,6 +66,8 @@
 
 <script setup lang="ts">
   // BASICS
+
+  const $t = useI18n().t;
 
   const $q = inject<QVueGlobals>('quasar');
 
@@ -88,7 +90,7 @@
     }
 
     try {
-      const [ success, result ] = await taskStore.getTasks(userId as number);
+      const [ success, result ] = await taskStore.getTasks($t, userId as number);
 
       if (!success) {
         $q?.notify({
@@ -99,7 +101,7 @@
     } catch (e) {
       $q?.notify({
         type: 'negative',
-        message: 'Error while getting tasks',
+        message: $t('TASK.ERROR.GET_TASKS'),
       });
     }
   });

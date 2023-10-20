@@ -1,7 +1,7 @@
 {
   "name": "simple-tasks-app",
   "version": "0.0.1",
-  "description": "A easy-to-use app individual and/or team tasks management",
+  "description": "Task management for people who like it simple.",
   "productName": "Simple Tasks",
   "author": "Carlos Penaforte <dannhl08@gmail.com>",
   "private": true,

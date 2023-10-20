@@ -119,7 +119,7 @@
     }
 
     try {
-      const [ success, result ] = await projectStore.createProject(userId as number, newProject);
+      const [ success, result ] = await projectStore.createProject($t, userId as number, newProject);
 
       if (!success) {
         $q?.notify({

@@ -281,9 +281,9 @@
           return;
         }
 
-        [ success, result ] = await taskStore.updateTask(userId as number, taskId, taskToSend);
+        [ success, result ] = await taskStore.updateTask($t, userId as number, taskId, taskToSend);
       } else {
-        [ success, result ] = await taskStore.createTask(userId as number, taskToSend);
+        [ success, result ] = await taskStore.createTask($t, userId as number, taskToSend);
       }
 
       if (!success) {

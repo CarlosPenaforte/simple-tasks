@@ -7,7 +7,7 @@
 			:square="shouldFillScreen"
 			:flat="shouldFillScreen"
 			class="bg-gray-100 q-py-lg q-px-md"
-			:class="shouldFillScreen ? 'fit q-ma-none' : 'w-300 q-ma-md'"
+			:class="shouldFillScreen ? 'fit q-ma-none' : 'w-400 q-ma-md'"
 		>
 			<q-card-section class="text-center q-mb-sm">
 				<q-form
@@ -44,7 +44,7 @@
 					</q-input>
 				</q-form>
 			</q-card-section>
-			<q-card-actions class="row">
+			<q-card-actions class="row gap-3">
 				<q-btn
 					:label="$t('FORM.BUTTONS.REGISTER')"
 					outline
@@ -72,6 +72,7 @@
     computed,
     defineComponent, inject, ref, Ref,
   } from 'vue';
+  import { useWindowSize } from '@vueuse/core';
   import { useState } from 'src/utils/composables';
   import { storeToRefs } from 'pinia';
   import { useUserStore } from 'src/stores/userStore';
@@ -97,8 +98,9 @@
 
   const router = useRouter();
 
-  const windowWidth = computed(() => (window.innerWidth));
-  const shouldFillScreen = windowWidth.value < 600;
+  const { width: windowWidth } = useWindowSize();
+
+  const shouldFillScreen = computed(() => windowWidth.value < 550);
 
   // MODELS
 
@@ -131,7 +133,7 @@
     }
 
     try {
-      const [ logged, message ] = await userStore.login(email.value, password.value);
+      const [ logged, message ] = await userStore.login($t, email.value, password.value);
 
       if (logged && user && window.sessionStorage.getItem('simple-tasks/token')) {
         $q?.notify(message);

@@ -5,7 +5,7 @@
 			:square="shouldFillScreen"
 			:flat="shouldFillScreen"
 			class="bg-white q-py-lg q-px-md"
-			:class="shouldFillScreen ? 'fit q-ma-none' : 'w-300 q-ma-md'"
+			:class="shouldFillScreen ? 'fit q-ma-none' : 'w-400 q-ma-md'"
 		>
 			<q-card-section class="text-center q-mb-sm">
 				<q-input
@@ -190,6 +190,7 @@
     QInput, QSelect, QVueGlobals,
   } from 'quasar';
   import { useI18n } from 'vue-i18n';
+  import { useWindowSize } from '@vueuse/core';
   import { useState } from '../utils/composables';
 
   export default defineComponent({
@@ -231,8 +232,8 @@
 
   const localeMask = getLocaleMask(locale);
 
-  const windowWidth = computed(() => (window.innerWidth));
-  const shouldFillScreen = windowWidth.value < 600;
+  const { width: windowWidth } = useWindowSize();
+  const shouldFillScreen = computed(() => windowWidth.value < 550);
 
   // BIRTHDAY SETTER AND GETTER
 

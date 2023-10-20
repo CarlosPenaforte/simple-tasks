@@ -390,7 +390,7 @@
     }
 
     try {
-      const [ success, result ] = await projectStore.getProjects(userId as number);
+      const [ success, result ] = await projectStore.getProjects($t, userId as number);
 
       if (!success) {
         $q?.notify({
@@ -502,7 +502,7 @@
     }
 
     try {
-      const [ success, message ] = await taskStore.deleteTask(userId, targettedTask.value.taskId);
+      const [ success, message ] = await taskStore.deleteTask($t, userId, targettedTask.value.taskId);
 
       if (!success) {
         $q?.notify({

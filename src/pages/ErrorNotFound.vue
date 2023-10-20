@@ -1,5 +1,5 @@
 <template>
-	<div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
+	<div class="fullscreen bg-primary-main text-white text-center q-pa-md flex flex-center">
 		<div>
 			<div style="font-size: 30vh">
 				404
@@ -8,16 +8,16 @@
 			<div class="text-h2"
 				style="opacity:.4"
 			>
-				Oops. Nothing here...
+				{{ $t('NOT_FOUND_PAGE.SUBTITLE') }}
 			</div>
 
 			<q-btn
 				class="q-mt-xl"
 				color="white"
-				text-color="blue"
+				text-color="primary-main"
 				unelevated
 				to="/"
-				label="Go Home"
+				:label="$t('NOT_FOUND_PAGE.GO_HOME')"
 				no-caps
 			/>
 		</div>

@@ -29,7 +29,7 @@
 						class="q-ma-none"
 						@click.stop.prevent="openUpdateProfileDialog"
 					>
-						Update Profile
+						{{ $t('USER.PROFILE.UPDATE') }}
 					</q-btn>
 				</q-item-section>
 			</q-item>
@@ -69,16 +69,16 @@
   // MODELS
   const profileInfo = computed(() => [
     {
-      key: 'Full Name', text: user.value?.fullName,
+      key: $t('REGISTER.FULL_NAME.NAME'), text: user.value?.fullName,
     },
     {
-      key: 'Email', text: user.value?.email,
+      key: $t('AUTH.EMAIL.NAME'), text: user.value?.email,
     },
     {
-      key: 'Sex', text: genderToFullString($t, user.value?.sex || ''),
+      key: $t('REGISTER.GENDER.NAME'), text: genderToFullString($t, user.value?.sex || ''),
     },
     {
-      key: 'Birthday', text: user.value?.birthday.toLocaleDateString(navigator.language, { timeZone: 'UTC' }),
+      key: $t('REGISTER.BIRTHDAY.NAME'), text: user.value?.birthday.toLocaleDateString(navigator.language, { timeZone: 'UTC' }),
     },
   ]);
 

@@ -1,5 +1,5 @@
 <template>
-	<q-page class="column justify-start fit">
+	<q-page class="column items-center justify-start fit">
 		<q-list
 			v-if="projects.length > 0"
 			dense
@@ -23,6 +23,7 @@
 							>
 								<q-item v-for="(keyValueArrays, key) in keyValueProject(project)"
 									:key="key"
+									style="gap: 8px;"
 								>
 									<q-item-section>
 										<q-item-label class="text-weight-medium">
@@ -42,9 +43,10 @@
 											dense
 											icon="delete"
 											color="negative"
+											class="fs-12 lh-14 text-capitalize"
 											@click.stop.prevent="openDeleteProjectDialog(project.projectId, project.name)"
 										>
-											Delete Project
+											{{ $t('PROJECT.DELETE') }}
 										</q-btn>
 									</q-item-section>
 								</q-item>
@@ -58,13 +60,13 @@
 			class="fs-20 lh-16 flex jusitfy-center items-center text-center text-primary-darker"
 			style="flex: 1 0 auto;"
 		>
-			There is no project created, click the button below to create a new one
+			{{ $t('PROJECT.NOTHING') }}
 		</p>
 
 		<confirm-dialog
 			v-model="isDeleteProjectOpen"
 			:done-function="deleteProject"
-			:confirmQuestion="`Do you really want to delete ${projectToDelete.name}?`"
+			:confirmQuestion="$t('PROJECT.CONFIRM_DELETE', {name: projectToDelete.name})"
 		/>
 	</q-page>
 </template>
@@ -79,6 +81,7 @@
   import { useUserStore } from 'src/stores/userStore';
   import { storeToRefs } from 'pinia';
   import { useRouter } from 'vue-router';
+  import { useI18n } from 'vue-i18n';
   import ConfirmDialog from '../components/ConfirmDialog.vue';
 
   export default {
@@ -92,6 +95,8 @@
 <script setup lang="ts">
   // BASICS
 
+  const $t = useI18n().t;
+
   const $q = inject<QVueGlobals>('quasar');
 
   const router = useRouter();
@@ -104,7 +109,7 @@
 
   // MODELS
   const keyValueProject = (project: Project) => [ {
-    key: 'Description', text: project.description,
+    key: $t('PROJECT.FORM.DESCRIPTION_SHORT'), text: project.description,
   } ];
 
   const isDeleteProjectOpen = ref<boolean>(false);
@@ -135,14 +140,14 @@
     if (projectToDelete.value.id < 1) {
       $q?.notify({
         type: 'negative',
-        message: 'Project not found',
+        message: $t('PROJECT.ERROR.NOT_FOUND'),
       });
 
       return;
     }
 
     try {
-      const [ success, message ] = await projectStore.deleteProject(userId, projectToDelete.value.id);
+      const [ success, message ] = await projectStore.deleteProject($t, userId, projectToDelete.value.id);
 
       if (!success) {
         $q?.notify({
@@ -158,7 +163,7 @@
     } catch (e) {
       $q?.notify({
         type: 'negative',
-        message: 'Error while deleting project',
+        message: $t('PROJECT.ERROR.DELETE'),
       });
     }
   }

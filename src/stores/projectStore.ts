@@ -1,3 +1,4 @@
+import { ComposerTranslation } from 'vue-i18n';
 import {
 	create, deleteById, getAll,
 } from 'src/services/projectService';
@@ -13,45 +14,49 @@ export const useProjectStore = defineStore('project', {
 		currentProject: undefined as Project | undefined,
 	}),
 	actions: {
-		async getProjects(userId: number): Promise<[boolean, string]> {
+		async getProjects($t:ComposerTranslation, userId: number): Promise<[boolean, string]> {
 			const response = await getAll(userId);
 
 			if (response.data.hasError) {
 				if (!response.data.message) {
-					return [ false, 'Error while getting projects' ];
+					return [ false, $t('PROJECT.ERROR.GET_PROJECTS') ];
 				}
 				return [ false, response.data.message ];
 			}
 
 			if (response.data.projects === undefined) {
-				return [ false, 'No projects found' ];
+				return [ false, $t('PROJECT.ERROR.NOTHING_FOUND') ];
 			}
 
 			this.projects = response.data.projects.map(parseProject);
 
 			this.projects = this.projects.sort((a, b) => a.projectId - b.projectId);
 
-			return [ true, 'Success getting projects' ];
+			return [ true, $t('PROJECT.SUCCESS.GET') ];
 		},
-		async createProject(userId: number, projectToSend: CreateProjectToSend): Promise<[boolean, string]> {
+		async createProject(
+			$t: ComposerTranslation,
+			userId: number,
+			projectToSend: CreateProjectToSend,
+		): Promise<[boolean, string]> {
 			const response = await create(userId, projectToSend);
 
 			if (response.data.hasError) {
 				if (!response.data?.message) {
-					return [ false, 'Error while creating project' ];
+					return [ false, $t('PROJECT.ERROR.CREATE') ];
 				}
 				return [ false, response.data.message ];
 			}
 
 			if (response.data.projects === undefined) {
-				return [ false, 'No projects found' ];
+				return [ false, $t('PROJECT.ERROR.NOTHING_FOUND') ];
 			}
 
 			this.projects = response.data.projects.map(parseProject);
 
 			this.projects = this.projects.sort((a, b) => a.projectId - b.projectId);
 
-			return [ true, 'Success creating project' ];
+			return [ true, $t('PROJECT.SUCCESS.CREATE') ];
 		},
 		updateProject(newProject : Project) {
 			this.projects = this.projects.map((project) => {
@@ -64,20 +69,20 @@ export const useProjectStore = defineStore('project', {
 		setProjects(projects: Project[]) {
 			this.projects = projects;
 		},
-		async deleteProject(userId: number, projectId: number): Promise<[boolean, string]> {
+		async deleteProject($t: ComposerTranslation, userId: number, projectId: number): Promise<[boolean, string]> {
 			const taskStore = useTaskStore();
 
 			await taskStore.$state.tasks.reduce(async(promise, task) => {
 				await promise;
 				if (task.projectId === projectId) {
-					await taskStore.deleteTask(userId, task.taskId);
+					await taskStore.deleteTask($t, userId, task.taskId);
 				}
 			}, Promise.resolve());
 
 			const { data } = await deleteById(userId, projectId);
 
 			if (data.hasError) {
-				if (!data.message) return [ false, 'Error while deleting project' ];
+				if (!data.message) return [ false, $t('PROJECT.ERROR.DELETE') ];
 
 				return [ false, data.message ];
 			}

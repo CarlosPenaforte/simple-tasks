@@ -261,7 +261,7 @@
       return;
     }
 
-    const [ updated, messageOrUser ] = await userStore.updateUser(user.value.userId, newProfile);
+    const [ updated, messageOrUser ] = await userStore.updateUser($t, user.value.userId, newProfile);
 
     if (updated && typeof messageOrUser !== 'string') {
       $q?.notify($t('USER.PROFILE.UPDATE_SUCCESS'));

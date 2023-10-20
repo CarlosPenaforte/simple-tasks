@@ -161,6 +161,7 @@
     }
 
     const [ success, message ] = await taskStore.checkTask(
+      $t,
       userId,
       task.taskId,
       done,

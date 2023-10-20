@@ -1,3 +1,4 @@
+import { ComposerTranslation } from 'vue-i18n';
 import { defineStore } from 'pinia';
 import {
 	Orientation,
@@ -21,56 +22,65 @@ export const useTaskStore = defineStore('task', {
 		searchedTasks: [] as Task[],
 	}),
 	actions: {
-		async getTasks(userId: number): Promise<[boolean, string]> {
+		async getTasks($t: ComposerTranslation, userId: number): Promise<[boolean, string]> {
 			const response = await getAll(userId);
 
 			if (response.data.hasError) {
 				if (!response.data.message) {
-					return [ false, 'Error while getting tasks' ];
+					return [ false, $t('TASK.ERROR.GET_TASKS') ];
 				}
 				return [ false, response.data.message ];
 			}
 
 			if (response.data.tasks === undefined) {
-				return [ false, 'No tasks found' ];
+				return [ false, $t('TASK.ERROR.NOTHING_FOUND') ];
 			}
 
 			this.tasks = response.data.tasks.map(parseTask);
 
-			return [ true, 'Success getting tasks' ];
+			return [ true, $t('TASK.SUCCESS.GET') ];
 		},
-		async createTask(userId: number, taskToSend: CreateTaskToSend): Promise<[boolean, string]> {
+		async createTask(
+			$t: ComposerTranslation,
+			userId: number,
+			taskToSend: CreateTaskToSend,
+		): Promise<[boolean, string]> {
 			const response = await create(userId, taskToSend);
 
 			if (response.data.hasError) {
 				if (!response.data?.message) {
-					return [ false, 'Error while creating task' ];
+					return [ false, $t('TASK.ERROR.CREATE') ];
 				}
 				return [ false, response.data.message ];
 			}
 
 			if (response.data.tasks === undefined) {
-				return [ false, 'No tasks found' ];
+				return [ false, $t('TASK.ERROR.NOTHING_FOUND') ];
 			}
 
 			this.tasks = response.data.tasks.map(parseTask);
 
 			this.tasks = this.tasks.sort((a, b) => a.taskId - b.taskId);
 
-			return [ true, 'Success creating task' ];
+			return [ true, $t('TASK.SUCCESS.CREATE') ];
 		},
-		async updateTask(userId: number, taskId: number, taskToSend: CreateTaskToSend): Promise<[boolean, string]> {
+		async updateTask(
+			$t: ComposerTranslation,
+			userId: number,
+			taskId: number,
+			taskToSend: CreateTaskToSend,
+		): Promise<[boolean, string]> {
 			const response = await update(userId, taskId, taskToSend);
 
 			if (response.data.hasError) {
 				if (!response.data?.message) {
-					return [ false, 'Error while updating task' ];
+					return [ false, $t('TASK.ERROR.UPDATE') ];
 				}
 				return [ false, response.data.message ];
 			}
 
 			if (response.data.task === undefined) {
-				return [ false, 'No tasks found' ];
+				return [ false, $t('TASK.ERROR.NOTHING_FOUND') ];
 			}
 
 			this.tasks = this.tasks.map((task) => {
@@ -83,13 +93,18 @@ export const useTaskStore = defineStore('task', {
 
 			this.tasks = this.tasks.sort((a, b) => a.taskId - b.taskId);
 
-			return [ true, 'Success updating task' ];
+			return [ true, $t('TASK.SUCCESS.UPDATE') ];
 		},
-		async checkTask(userId: number, taskId: number, checked: boolean): Promise<[boolean, string]> {
+		async checkTask(
+			$t: ComposerTranslation,
+			userId: number,
+			taskId: number,
+			checked: boolean,
+		): Promise<[boolean, string]> {
 			const foundTask = this.tasks.find((task) => task.taskId === taskId);
 
 			if (!foundTask) {
-				return [ false, 'Task not found' ];
+				return [ false, $t('TASK.ERROR.NOT_FOUND') ];
 			}
 
 			foundTask.done = checked;
@@ -98,13 +113,13 @@ export const useTaskStore = defineStore('task', {
 
 			if (response.data.hasError) {
 				if (!response.data?.message) {
-					return [ false, 'Error while checking task' ];
+					return [ false, $t('TASK.ERROR.CHECK') ];
 				}
 				return [ false, response.data.message ];
 			}
 
 			if (response.data.task === undefined) {
-				return [ false, 'No tasks found' ];
+				return [ false, $t('TASK.ERROR.NOTHING_FOUND') ];
 			}
 
 			this.tasks = this.tasks.map((task) => {
@@ -117,7 +132,7 @@ export const useTaskStore = defineStore('task', {
 
 			this.tasks = this.tasks.sort((a, b) => a.taskId - b.taskId);
 
-			return [ true, 'Success checking task' ];
+			return [ true, $t('TASK.SUCCESS.CHECK') ];
 		},
 		setTasks(tasks: Task[]) {
 			this.tasks = tasks;
@@ -170,12 +185,12 @@ export const useTaskStore = defineStore('task', {
 		clearSearchedTasks() {
 			this.searchedTasks = [];
 		},
-		async deleteTask(userId: number, taskId: number): Promise<[boolean, string]> {
+		async deleteTask($t: ComposerTranslation, userId: number, taskId: number): Promise<[boolean, string]> {
 			const response = await deleteById(userId, taskId);
 
 			if (response.data.hasError) {
 				if (!response.data.message) {
-					return [ false, 'Error while deleting task' ];
+					return [ false, $t('TASK.ERROR.DELETE') ];
 				}
 				return [ false, response.data.message ];
 			}

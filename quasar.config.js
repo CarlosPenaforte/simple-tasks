@@ -173,7 +173,7 @@ module.exports = configure((/* ctx */) => ({
 		manifest: {
 			name: 'Simple Tasks',
 			short_name: 'Simple Tasks',
-			description: '',
+			description: 'Task management for people who like it simple.',
 			display: 'standalone',
 			orientation: 'portrait',
 			background_color: '#ffffff',
