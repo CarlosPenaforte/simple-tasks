@@ -1,7 +1,13 @@
 <template>
-	<q-page class="row justify-center items-center bg-primary-darker">
-		<q-card bordered
-			class="w-300 q-ma-md bg-white q-py-lg q-px-md"
+	<q-page
+		class="row justify-center items-center rolling-bg"
+	>
+		<q-card
+			:bordered="!shouldFillScreen"
+			:square="shouldFillScreen"
+			:flat="shouldFillScreen"
+			class="bg-gray-100 q-py-lg q-px-md"
+			:class="shouldFillScreen ? 'fit q-ma-none' : 'w-300 q-ma-md'"
 		>
 			<q-card-section class="text-center q-mb-sm">
 				<q-form
@@ -63,6 +69,7 @@
 <script lang="ts">
   import { useRouter } from 'vue-router';
   import {
+    computed,
     defineComponent, inject, ref, Ref,
   } from 'vue';
   import { useState } from 'src/utils/composables';
@@ -80,10 +87,20 @@
 </script>
 
 <script setup lang="ts">
+  // BASICS
+
   const $t = useI18n().t;
   const $q = inject<QVueGlobals>('quasar');
+
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);
+
+  const router = useRouter();
+
+  const windowWidth = computed(() => (window.innerWidth));
+  const shouldFillScreen = windowWidth.value < 600;
+
+  // MODELS
 
   const loginForm = ref<QForm|null>(null);
 
@@ -96,7 +113,7 @@
     return emailPattern.test(val) || $t('AUTH.EMAIL.VALIDATE.INVALID');
   };
 
-  const router = useRouter();
+  // ACTIONS
 
   const pushToUrl = (path: string) => {
     router.push(path);

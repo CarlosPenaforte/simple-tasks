@@ -1,4 +1,5 @@
 // app global css in SCSS form
+@use "sass:map";
 
 @each $font-size in $font-sizes {
   .fs-#{$font-size} {
@@ -89,4 +90,22 @@
 
 .hover-cursor-pointer :hover {
   cursor: pointer;
+}
+
+.rolling-bg {
+  background: linear-gradient(-45deg, map.get($colors, "positive"), map.get($colors, "primary-main"), map.get($colors, "negative"));
+  background-size: 400% 400%;
+  animation: backgroundTransition 8s ease-in-out infinite ;
+}
+
+@keyframes backgroundTransition {
+  0%{
+      background-position: 0% 70%;
+  }
+  50%{
+      background-position: 70% 100%;
+  }
+  100%{
+      background-position: 0% 70%;
+  }
 }

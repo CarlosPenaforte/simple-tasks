@@ -1,7 +1,11 @@
 <template>
-	<q-page class="row justify-center items-center bg-primary-darker">
-		<q-card bordered
-			class="w-300 q-ma-md bg-white q-py-lg q-px-md"
+	<q-page class="row justify-center items-center rolling-bg">
+		<q-card
+			:bordered="!shouldFillScreen"
+			:square="shouldFillScreen"
+			:flat="shouldFillScreen"
+			class="bg-white q-py-lg q-px-md"
+			:class="shouldFillScreen ? 'fit q-ma-none' : 'w-300 q-ma-md'"
 		>
 			<q-card-section class="text-center q-mb-sm">
 				<q-input
@@ -166,7 +170,7 @@
   import { useRouter } from 'vue-router';
   import {
     UnwrapNestedRefs,
-    defineComponent, reactive, watch, ref, inject,
+    defineComponent, reactive, watch, ref, inject, computed,
   } from 'vue';
   import { useUserStore } from 'src/stores/userStore';
   import { CreateUserToSend } from 'src/models/apiModels';
@@ -222,6 +226,9 @@
   const qDateMask = localeFormat.toUpperCase();
 
   const localeMask = getLocaleMask(locale);
+
+  const windowWidth = computed(() => (window.innerWidth));
+  const shouldFillScreen = windowWidth.value < 600;
 
   // BIRTHDAY SETTER AND GETTER
 
