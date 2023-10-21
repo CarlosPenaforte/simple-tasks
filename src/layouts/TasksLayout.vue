@@ -103,7 +103,7 @@
 								flat
 								square
 								style="text-transform: none;"
-								class="flex row justify-start items-center q-px-sm q-py-md q-pt-none no-wrap"
+								class="flex row justify-start items-start full-width q-px-sm q-py-md q-pt-none no-wrap"
 								@click.stop.prevent="goToProfilePage"
 							>
 								<q-icon
@@ -255,7 +255,7 @@
 							color="primary-main"
 						/>
 						<div
-							class="fs-14 lh-20 fw-medium text-primary-lighter"
+							class="fs-14 lh-20 fw-medium text-primary-main"
 						>
 							{{ $t('PROJECT.CREATE') }}
 						</div>

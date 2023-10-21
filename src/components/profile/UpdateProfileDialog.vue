@@ -8,19 +8,6 @@
 		</h1>
 
 		<q-input
-			ref="email"
-			v-model="newProfile.email"
-			bottom-slots
-			clearable
-			name="email"
-			:label="$t('AUTH.EMAIL.NAME')"
-			:rules="[val => !!val || 'Email is missing', isValidEmail]"
-			lazy-rules
-			color="primary-main"
-			class="q-mb-md text-dark"
-		/>
-
-		<q-input
 			ref="fullName"
 			v-model="newProfile.full_name"
 			bottom-slots
@@ -174,12 +161,10 @@
 
   const newProfile = reactive<UpdateUserToSend>({
     full_name: user.value?.fullName || '',
-    email: user.value?.email || '',
     sex: user.value?.sex || '',
     birthday: formatDateToLocale(user.value?.birthday, locale),
   });
   const fullName = ref<QInput|null>(null);
-  const email = ref<QInput|null>(null);
   const sex = ref<QSelect|null>(null);
   const birthday = ref<QInput|null>(null);
 
@@ -220,19 +205,11 @@
     formattedBirthday.value = formatDateToLocale(dateStrToDate(newValue, localeFormat), locale);
   });
 
-  // VALIDATION
-
-  const isValidEmail = (val: string) => {
-    const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-    return emailPattern.test(val) || $t('REGISTER.EMAIL.VALIDATE.INVALID');
-  };
-
   // ERROR CHECK
 
   const hasErrors = () => {
     const errorsCheckList = [
       fullName.value?.hasError,
-      email.value?.hasError,
       sex.value?.hasError,
       birthday.value?.hasError,
     ];

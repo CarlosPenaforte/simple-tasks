@@ -25,7 +25,7 @@
 			<q-item>
 				<q-item-section>
 					<q-btn
-						flat
+						unelevated
 						color="primary"
 						icon="update"
 						class="q-ma-none"

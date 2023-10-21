@@ -34,7 +34,6 @@
     "strictBindCallApply": true,
     "paths": { "@/*":["./src/*"] },
     "sourceMap": false,
-    "isolatedModules": true,
     "moduleDetection": "force"
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "cypress/**/*.ts"],

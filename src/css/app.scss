@@ -32,6 +32,9 @@
   .bg-#{$color-name} {
     background-color: #{$color} !important;
   }
+  .border-#{$color-name} {
+    border:1px solid #{$color} !important;
+  }
   .hover-text-#{$color-name} :hover {
     color: #{$color} !important;
   }
@@ -90,6 +93,10 @@
 
 .hover-cursor-pointer :hover {
   cursor: pointer;
+}
+
+.no-shadow {
+  box-shadow: none !important;
 }
 
 .rolling-bg {

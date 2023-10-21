@@ -10,7 +10,6 @@ export type CreateUserToSend = {
 
 export type UpdateUserToSend = {
     full_name: string;
-    email: string;
     sex: string;
     birthday: string;
 }

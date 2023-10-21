@@ -14,8 +14,10 @@
 					<q-item-section>
 						<q-btn-dropdown
 							:label="`${index + 1} - ${project.name}`"
-							color="primary-lighter"
+							color="primary-main"
+							unelevated
 							align="between"
+							content-class="border-primary-main no-shadow q-pb-sm"
 							transition-show="fade"
 							transition-hide="fade"
 						>
@@ -38,22 +40,26 @@
 										</q-item-label>
 									</q-item-section>
 								</q-item>
-								<q-item class="row justify-around align-center">
+								<q-item class="row justify-around align-center q-mt-sm">
 									<q-item-section class="col-5">
 										<q-btn
-											flat
+											unelevated
 											dense
 											icon="update"
 											color="primary"
 											class="fs-12 lh-14 text-capitalize"
-											@click.stop.prevent="openUpdateProjectDialog(project.projectId, project.name, project.description)"
+											@click.stop.prevent="openUpdateProjectDialog(
+												project.projectId,
+												project.name,
+												project.description
+											)"
 										>
 											{{ $t('PROJECT.UPDATE') }}
 										</q-btn>
 									</q-item-section>
 									<q-item-section class="col-5">
 										<q-btn
-											flat
+											unelevated
 											dense
 											icon="delete"
 											color="negative"
