@@ -1,5 +1,7 @@
 <template>
-	<q-layout view="lHh Lpr lFf">
+	<q-layout id="el-main-layout"
+		view="lHh Lpr lFf"
+	>
 		<q-header
 			id="el-tasks-layout-header"
 			reveal

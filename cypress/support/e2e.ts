@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-namespace */
 /// <reference types="cypress" />
 import './commands.ts';
@@ -7,12 +8,18 @@ interface CypressUser {
     password: string;
 }
 
+interface LoginBody {
+  token: string;
+  user_id: string;
+}
+
 declare global {
     namespace Cypress {
       interface Chainable {
         login(user?: CypressUser): void;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        getLoginToken(user: CypressUser): string | Chainable<any>;
+        getLoginBody(user: CypressUser): LoginBody | Chainable<LoginBody>;
+        logout(): void;
       }
     }
   }
@@ -28,3 +35,7 @@ Cypress.Screenshot.defaults({
 //
 // move here all the setup for running the tests
 // global hook that run after running all the tests
+
+after(() => {
+	cy.logout();
+});

@@ -5,6 +5,6 @@ describe('Auth', () => {
 	});
 
 	it('should login', () => {
-		cy.get('#btn-login-action').should('be.visible');
+		cy.get('#el-main-layout').should('be.visible');
 	});
 });

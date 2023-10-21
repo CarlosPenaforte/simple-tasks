@@ -1,8 +1,9 @@
 const apiUrl = Cypress.env('apiUrl');
 
-Cypress.Commands.add('getLoginToken', (user = Cypress.env('user')) => {
+Cypress.Commands.add('getLoginBody', (user = Cypress.env('user')) => {
 	const token = sessionStorage.getItem('simple-tasks/token');
-	if (!token) {
+	const userId = sessionStorage.getItem('simple-tasks/user_id');
+	if (!token || !userId) {
 		return cy
 			.request({
 				method: 'POST',
@@ -20,28 +21,33 @@ Cypress.Commands.add('getLoginToken', (user = Cypress.env('user')) => {
 				const { body } = receivedToken;
 				sessionStorage.setItem(
 					'simple-tasks/token',
-					JSON.stringify(body.token),
+					body.token,
 				);
 				sessionStorage.setItem(
 					'simple-tasks/user_id',
-					JSON.stringify(body.user.user_id),
+					String(body.user.user_id),
 				);
 				return receivedToken;
 			})
-			.its('body.token')
+			.its('body')
 			.should('exist');
 	}
-	return token;
+
+	return {
+		token, user_id: userId,
+	};
 });
 
 Cypress.Commands.add('login', (user = Cypress.env('user')) => {
 	if (!sessionStorage.getItem('simple-tasks/token')) {
-		if (typeof cy.getLoginToken(user) === 'string') {
-			sessionStorage.setItem('simple-tasks/token', JSON.stringify(cy.getLoginToken(user)));
-			return;
-		}
-		(cy.getLoginToken(user) as Cypress.Chainable).then((token) => {
-			sessionStorage.setItem('simple-tasks/token', JSON.stringify(token));
+		(cy.getLoginBody(user) as Cypress.Chainable).then((body) => {
+			sessionStorage.setItem('simple-tasks/token', body.token);
+			sessionStorage.setItem('simple-tasks/user_id', String(body.user.user_id));
 		});
 	}
+});
+
+Cypress.Commands.add('logout', () => {
+	sessionStorage.removeItem('simple-tasks/token');
+	sessionStorage.removeItem('simple-tasks/user_id');
 });
