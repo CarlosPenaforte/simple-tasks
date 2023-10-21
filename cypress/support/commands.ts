@@ -51,3 +51,39 @@ Cypress.Commands.add('logout', () => {
 	sessionStorage.removeItem('simple-tasks/token');
 	sessionStorage.removeItem('simple-tasks/user_id');
 });
+
+Cypress.Commands.add('createProject', (project = Cypress.env('sampleProject')) => {
+	cy.intercept('POST', `${apiUrl}/api/v1/users/*/projects`).as('createProject');
+
+	cy.get('#btn-create-project').click();
+
+	cy.get('#npt-project-name').type(project.name);
+	cy.get('#npt-project-description').type(project.description);
+
+	cy.get('#btn-project-submit').click();
+
+	cy.wait('@createProject', { timeout: 10000 });
+});
+
+Cypress.Commands.add('deleteProject', (project = Cypress.env('sampleProject')) => {
+	cy.intercept('DELETE', `${apiUrl}/api/v1/users/*/projects/*`).as('deleteProject');
+
+	cy.get('#btn-route-projects').then((btn) => {
+		if (btn.length) {
+			btn.trigger('click');
+		} else {
+			cy.get('#btn-toggle-drawer').click();
+			cy.get('#btn-route-projects').click();
+		}
+	});
+
+	cy.contains(project.name, { matchCase: false }).click();
+
+	cy.get('#btn-delete-project').click();
+
+	cy.get('#btn-confirm').click();
+
+	cy.wait('@deleteProject', { timeout: 10000 });
+
+	cy.contains(project.name, { matchCase: false }).should('not.exist');
+});

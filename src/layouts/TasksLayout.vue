@@ -9,6 +9,7 @@
 		>
 			<q-toolbar class="row no-padding fit">
 				<q-btn
+					id="btn-toggle-drawer"
 					flat
 					dense
 					round
@@ -131,6 +132,7 @@
 					:style="isBelow? 'position: fixed; width: 100%; bottom: 28px;' : ''"
 				>
 					<q-btn
+						:id="`btn-route-${path?.replace('/','') || icon}`"
 						flat
 						no-caps
 						:class="`full-width justify-center items-start q-pl-md ${

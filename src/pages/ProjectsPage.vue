@@ -43,6 +43,7 @@
 								<q-item class="row justify-around align-center q-mt-sm">
 									<q-item-section class="col-5">
 										<q-btn
+											id="btn-update-project"
 											unelevated
 											dense
 											icon="update"
@@ -59,6 +60,7 @@
 									</q-item-section>
 									<q-item-section class="col-5">
 										<q-btn
+											id="btn-delete-project"
 											unelevated
 											dense
 											icon="delete"

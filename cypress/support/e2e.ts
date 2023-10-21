@@ -8,6 +8,11 @@ type CypressUser = {
     password: string;
 }
 
+type SampleProject = {
+  name: string;
+  description: string;
+}
+
 type LoginBody = {
   token: string;
   user_id: string;
@@ -20,6 +25,8 @@ declare global {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         getLoginBody(user: CypressUser): LoginBody | Chainable<LoginBody>;
         logout(): void;
+        createProject(project?: SampleProject): void;
+        deleteProject(project?: SampleProject): void;
       }
     }
   }
@@ -36,6 +43,15 @@ Cypress.Screenshot.defaults({
 //
 // move here all the setup for running the tests
 // global hook that run after running all the tests
+
+Cypress.on('test:before:run', () => {
+	Cypress.automation('remote:debugger:protocol', {
+		command: 'Emulation.setLocaleOverride',
+		params: {
+			locale: 'pt-BR',
+		},
+	});
+});
 
 after(() => {
 	cy.logout();

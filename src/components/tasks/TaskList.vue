@@ -1,5 +1,6 @@
 <template>
 	<q-expansion-item
+		:id="`el-expansion-${props.urgency || 'dones'}`"
 		borderless
 		:header-class="`expansion-header-${props.urgency || 'dones'} bg-whity`"
 	>
@@ -50,16 +51,20 @@
 					>
 						<div class="row items-center">
 							<q-icon
+								:id="`btn-options-${task.taskTitle.toLowerCase().replace(/ /g, '-')}`"
 								name="more_vert"
 								size="28px"
 								color="secondary"
+								class="cursor-pointer"
 							>
 								<q-menu
 									transition-show="flip-right"
 									transition-hide="flip-left"
 								>
 									<q-list style="min-width: 100px">
-										<q-item clickable
+										<q-item
+											:id="`btn-edit-${task.taskTitle.toLowerCase().replace(/ /g, '-')}`"
+											clickable
 											@click="$emit('open-edit-task',task)"
 											v-close-popup
 										>
@@ -69,7 +74,9 @@
 												> {{ $t('COMMON.EDIT') }}</span>
 											</q-item-section>
 										</q-item>
-										<q-item clickable
+										<q-item
+											:id="`btn-delete-${task.taskTitle.toLowerCase().replace(/ /g, '-')}`"
+											clickable
 											@click="$emit('open-delete-task',task)"
 											v-close-popup
 										>

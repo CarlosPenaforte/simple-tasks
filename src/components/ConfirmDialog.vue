@@ -8,6 +8,7 @@
 		<q-card class="bg-whity text-dark q-pa-sm full-width">
 			<q-bar class="bg-transparent q-px-none q-pt-lg q-pb-xs">
 				<q-btn
+					id="btn-cancel"
 					dense
 					flat
 					icon="close"
@@ -19,6 +20,7 @@
 				<q-space />
 
 				<q-btn
+					id="btn-confirm"
 					dense
 					flat
 					:icon="doneIcon"

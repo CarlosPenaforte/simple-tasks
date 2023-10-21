@@ -8,6 +8,10 @@ export default defineConfig({
 			email: 'test@simpletasks.com.br',
 			password: '123456',
 		},
+		sampleProject: {
+			name: 'Test Project',
+			description: 'Test Description',
+		},
 	},
 	defaultCommandTimeout: 10000,
 	e2e: {

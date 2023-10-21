@@ -1,6 +1,7 @@
 <template>
 	<big-dialog
 		v-model="isCreateTaskOpen"
+		save-button-id="btn-task-submit"
 		:handle-save="saveTask"
 	>
 		<h1 class="text-secondary fs-20 lh-22 ls-1 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
@@ -13,6 +14,7 @@
 		</h1>
 
 		<q-input
+			for="npt-task-title"
 			v-model="newTask.task_title"
 			bottom-slots
 			counter
@@ -28,6 +30,7 @@
 		</q-input>
 
 		<q-input
+			for="npt-task-description"
 			v-model="newTask.task_description"
 			bottom-slots
 			counter
@@ -66,6 +69,7 @@
 
 		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">{{ $t('TASK.FORM.DUE_DATE') }}</span>
 		<q-input
+			for="npt-task-due-date"
 			:modelValue="formattedDueDate"
 			@update:modelValue="setDueDate"
 			name="dueDate"
