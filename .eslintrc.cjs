@@ -17,7 +17,6 @@ module.exports = {
 		es2021: true,
 		node: true,
 		'vue/setup-compiler-macros': true,
-		'cypress/globals': true,
 	},
 
 	// Rules order is important, please avoid shuffling them
@@ -38,6 +37,8 @@ module.exports = {
 
 		'airbnb-base',
 
+		'plugin:cypress/recommended',
+
 	],
 
 	plugins: [
@@ -47,8 +48,6 @@ module.exports = {
 		// https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-files
 		// required to lint *.vue files
 		'vue',
-
-		'cypress',
 
 	],
 

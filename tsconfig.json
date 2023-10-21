@@ -6,7 +6,7 @@
     "outDir": "build",                                   /* Specify an output folder for all emitted files. */
     "allowJs": true,                                     /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */
     "target": "ESNext",
-    "types": ["vite/client"],
+    "types": ["vite/client", "cypress"],
     "lib": ["es6", "dom"],                                      /* Specify a set of bundled library declaration files that describe the target runtime environment. */
     "module": "ESNext",                                /* Specify what module code is generated. */
     "moduleResolution": "node",
@@ -34,6 +34,7 @@
     "strictPropertyInitialization": true,
     "strictBindCallApply": true,
     "paths": { "@/*":["./src/*"] },
+    "sourceMap": false
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
 }

@@ -1,20 +1,30 @@
-// ***********************************************************
-// This example support/e2e.ts is processed and
-// loaded automatically before your test files.
-//
-// This is a great place to put global configuration and
-// behavior that modifies Cypress.
-//
-// You can change the location of this file or turn off
-// automatically serving support files with the
-// 'supportFile' configuration option.
-//
-// You can read more here:
-// https://on.cypress.io/configuration
-// ***********************************************************
+/* eslint-disable @typescript-eslint/no-namespace */
+/// <reference types="cypress" />
+import './commands.ts';
 
-// Import commands.js using ES2015 syntax:
-import './commands'
+interface CypressUser {
+    email: string;
+    password: string;
+}
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+declare global {
+    namespace Cypress {
+      interface Chainable {
+        login(user?: CypressUser): void;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getLoginToken(user: CypressUser): string | Chainable<any>;
+      }
+    }
+  }
+
+import 'cypress-terminal-report/src/installLogsCollector';
+
+Cypress.Screenshot.defaults({
+	screenshotOnRunFailure: false,
+});
+
+// follow the same testing structure as
+// https://github.com/cypress-io/cypress-example-conduit-app/tree/master/cypress
+//
+// move here all the setup for running the tests
+// global hook that run after running all the tests

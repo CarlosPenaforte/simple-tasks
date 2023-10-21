@@ -1,5 +1,6 @@
 describe('Auth', () => {
 	beforeEach(() => {
+		cy.login();
 		cy.visit('/');
 	});
 

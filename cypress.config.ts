@@ -5,7 +5,7 @@ export default defineConfig({
 	chromeWebSecurity: false,
 	env: {
 		user: {
-			login: 'test@simpletasks.com.br',
+			email: 'test@simpletasks.com.br',
 			password: '123456',
 		},
 	},
@@ -15,9 +15,9 @@ export default defineConfig({
 		// You may want to clean this up later by importing these.
 		setupNodeEvents(on, config) {
 			// eslint-disable-next-line global-require
-			return require('./test/cypress/plugins/index.js')(on, config);
+			return require('./cypress/plugins/index.js')(on, config);
 		},
 		baseUrl: 'http://localhost:9000',
-		specPattern: 'test/cypress/e2e/**/*.cy.*',
+		specPattern: 'cypress/e2e/**/*.cy.*',
 	},
 });
