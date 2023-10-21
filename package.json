@@ -9,7 +9,7 @@
     "lint": "eslint --ext .js,.ts,.vue ./",
     "start": "quasar dev",
     "build": "quasar build",
-    "test:integration": "npx cypress run --spec \"test/cypress/e2e/**/*.cy.*\" --browser electron",
+    "test:integration": "npx cypress run --spec \"cypress/e2e/**/*.cy.*\" --browser electron",
     "cypress:open": "cypress open"
   },
   "dependencies": {
