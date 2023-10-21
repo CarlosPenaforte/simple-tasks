@@ -21,6 +21,7 @@ import { usePropsAndEmit } from '../util/composables';
 				<q-space />
 
 				<q-btn
+					:id="props.saveButtonId"
 					dense
 					flat
 					icon="done"
@@ -53,6 +54,10 @@ import { usePropsAndEmit } from '../util/composables';
     modelValue: {
       type: Boolean,
       default: false,
+    },
+    saveButtonId: {
+      type: String,
+      default: 'btn-save',
     },
     handleSave: {
       type: Function,

@@ -18,6 +18,5 @@ export default defineConfig({
 			return require('./cypress/plugins/index.js')(on, config);
 		},
 		baseUrl: 'http://localhost:9000',
-		specPattern: 'cypress/e2e/**/*.cy.*',
 	},
 });

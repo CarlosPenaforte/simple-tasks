@@ -1,6 +1,7 @@
 <template>
 	<big-dialog
 		v-model="isCreateProjectOpen"
+		save-button-id="btn-project-submit"
 		:handle-save="saveProject"
 	>
 		<h1 class="text-secondary fs-20 lh-22 ls-1 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
@@ -13,6 +14,7 @@
 		</h1>
 
 		<q-input
+			for="npt-project-name"
 			v-model="newProject.name"
 			bottom-slots
 			counter
@@ -27,6 +29,7 @@
 			</template>
 		</q-input>
 		<q-input
+			for="npt-project-description"
 			v-model="newProject.description"
 			bottom-slots
 			counter

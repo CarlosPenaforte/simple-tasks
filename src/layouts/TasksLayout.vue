@@ -50,6 +50,7 @@
 					</q-select>
 
 					<q-btn
+						id="btn-create-project"
 						flat
 						dense
 						:round="projectStore.hasProjects"
@@ -196,6 +197,7 @@
 					</div>
 				</q-btn>
 				<q-btn
+					id="btn-create-task"
 					flat
 					no-caps
 					no-wrap

@@ -1,10 +1,9 @@
 {
-  "extends": "@quasar/app-vite/tsconfig-preset",
   "compilerOptions": {
-    "baseUrl": "./",
-    "rootDir": "src",                                    /* Specify the root folder within your source files. */
+    "baseUrl": "http://localhost:9000",
+    "rootDir": "./",                                    /* Specify the root folder within your source files. */
     "outDir": "build",                                   /* Specify an output folder for all emitted files. */
-    "allowJs": true,                                     /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */
+    "allowJs": false,                                     /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */
     "target": "ESNext",
     "types": ["vite/client", "cypress"],
     "lib": ["es6", "dom"],                                      /* Specify a set of bundled library declaration files that describe the target runtime environment. */
@@ -34,7 +33,12 @@
     "strictPropertyInitialization": true,
     "strictBindCallApply": true,
     "paths": { "@/*":["./src/*"] },
-    "sourceMap": false
+    "sourceMap": false,
+    "isolatedModules": true,
+    "moduleDetection": "force"
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "cypress/**/*.ts"],
+  "exclude": [
+    "node_modules"
+  ]
 }

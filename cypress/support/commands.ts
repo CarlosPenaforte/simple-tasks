@@ -1,4 +1,4 @@
-const apiUrl = Cypress.env('apiUrl');
+const apiUrl: string = Cypress.env('apiUrl');
 
 Cypress.Commands.add('getLoginBody', (user = Cypress.env('user')) => {
 	const token = sessionStorage.getItem('simple-tasks/token');

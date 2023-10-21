@@ -3,12 +3,12 @@
 /// <reference types="cypress" />
 import './commands.ts';
 
-interface CypressUser {
+type CypressUser = {
     email: string;
     password: string;
 }
 
-interface LoginBody {
+type LoginBody = {
   token: string;
   user_id: string;
 }
@@ -24,7 +24,8 @@ declare global {
     }
   }
 
-import 'cypress-terminal-report/src/installLogsCollector';
+const installLogCollector = await import('cypress-terminal-report/src/installLogsCollector');
+installLogCollector.default();
 
 Cypress.Screenshot.defaults({
 	screenshotOnRunFailure: false,
