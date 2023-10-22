@@ -45,10 +45,40 @@ describe('Task', () => {
 		cy.wait('@updateTask');
 	});
 
+	it('should show warn if due date was reached a task', () => {
+		cy.intercept('PUT', `${apiUrl}/api/v1/users/*/tasks/*`).as('updateTask');
+
+		cy.get('#el-expansion-urgent').click();
+		cy.get('#btn-options-test-task').click();
+		cy.get('#btn-edit-test-task').click();
+
+		cy.get('#npt-task-due-date').clear();
+		cy.get('#npt-task-due-date').type('20122020');
+
+		cy.get('#btn-task-submit').click();
+
+		cy.wait('@updateTask');
+
+		cy.contains('20/12/2020').should('have.class', 'text-negative');
+	});
+
+	it('should check a task', () => {
+		cy.intercept('PUT', `${apiUrl}/api/v1/users/*/tasks/*`).as('updateTask');
+
+		cy.get('#el-expansion-urgent').click();
+		cy.get('#btn-check-test-task').click();
+
+		cy.wait('@updateTask');
+
+		cy.get('#el-expansion-urgent').click();
+		cy.get('#el-expansion-done').click();
+		cy.contains('Test Task', { matchCase: false }).should('be.visible');
+	});
+
 	it('should delete a task', () => {
 		cy.intercept('DELETE', `${apiUrl}/api/v1/users/*/tasks/*`).as('deleteTask');
 
-		cy.get('#el-expansion-urgent').click();
+		cy.get('#el-expansion-done').click();
 		cy.get('#btn-options-test-task').click();
 		cy.get('#btn-delete-test-task').click();
 

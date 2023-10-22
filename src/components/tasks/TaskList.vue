@@ -1,8 +1,8 @@
 <template>
 	<q-expansion-item
-		:id="`el-expansion-${props.urgency || 'dones'}`"
+		:id="`el-expansion-${props.urgency || 'done'}`"
 		borderless
-		:header-class="`expansion-header-${props.urgency || 'dones'} bg-whity`"
+		:header-class="`expansion-header-${props.urgency || 'done'} bg-whity`"
 	>
 		<template v-slot:header>
 			<q-item-section>
@@ -89,7 +89,9 @@
 									</q-list>
 								</q-menu>
 							</q-icon>
-							<q-checkbox v-model="task.done"
+							<q-checkbox
+								:id="`btn-check-${task.taskTitle.toLowerCase().replace(/ /g, '-')}`"
+								v-model="task.done"
 								@click="checkedTask(task, task.done)"
 								color="primary-main"
 							/>
@@ -214,7 +216,7 @@
     border-left: 20px solid map.get($colors,'negative');
   }
 
-  .expansion-header-dones {
+  .expansion-header-done {
     border-left: 20px solid map.get($colors,'secondary');
   }
 

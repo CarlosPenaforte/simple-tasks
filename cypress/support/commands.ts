@@ -80,7 +80,7 @@ Cypress.Commands.add('deleteProject', (project = Cypress.env('sampleProject')) =
 
 	cy.visit('/#/projects');
 
-	cy.contains(project.name, { matchCase: false }).click();
+	cy.get('.el-project-item').contains(project.name, { matchCase: false }).click();
 
 	cy.get('#btn-delete-project').click();
 

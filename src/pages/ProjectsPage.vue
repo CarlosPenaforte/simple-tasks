@@ -10,7 +10,9 @@
 			<template v-for="(project, index) in projects"
 				:key="project.projectId"
 			>
-				<q-item>
+				<q-item
+					class="el-project-item"
+				>
 					<q-item-section>
 						<q-btn-dropdown
 							:label="`${index + 1} - ${project.name}`"
