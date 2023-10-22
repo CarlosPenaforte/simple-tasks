@@ -65,17 +65,20 @@ Cypress.Commands.add('createProject', (project = Cypress.env('sampleProject')) =
 	cy.wait('@createProject', { timeout: 10000 });
 });
 
+Cypress.Commands.add('createProjectIfNeeded', (project = Cypress.env('sampleProject')) => {
+	cy.get('body').then(($body) => {
+		if ($body.find('#el-no-project').length) {
+			cy.createProject(project);
+		} else {
+			cy.end();
+		}
+	});
+});
+
 Cypress.Commands.add('deleteProject', (project = Cypress.env('sampleProject')) => {
 	cy.intercept('DELETE', `${apiUrl}/api/v1/users/*/projects/*`).as('deleteProject');
 
-	cy.get('#btn-route-projects').then((btn) => {
-		if (btn.length) {
-			btn.trigger('click');
-		} else {
-			cy.get('#btn-toggle-drawer').click();
-			cy.get('#btn-route-projects').click();
-		}
-	});
+	cy.visit('/#/projects');
 
 	cy.contains(project.name, { matchCase: false }).click();
 
@@ -86,4 +89,14 @@ Cypress.Commands.add('deleteProject', (project = Cypress.env('sampleProject')) =
 	cy.wait('@deleteProject', { timeout: 10000 });
 
 	cy.contains(project.name, { matchCase: false }).should('not.exist');
+});
+
+Cypress.Commands.add('deleteProjectIfNeeded', (project = Cypress.env('sampleProject')) => {
+	cy.get('body').then(($body) => {
+		if (!$body.find('#el-no-project').length) {
+			cy.deleteProject(project);
+		} else {
+			cy.end();
+		}
+	});
 });

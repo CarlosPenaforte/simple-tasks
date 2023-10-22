@@ -34,6 +34,7 @@
 			</q-btn>
 		</template>
 		<p v-else
+			id="el-no-project"
 			class="fs-20 lh-16 flex jusitfy-center items-center text-center text-primary-darker"
 			style="flex: 1 0 auto;"
 		>

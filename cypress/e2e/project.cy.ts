@@ -15,16 +15,11 @@ describe('Project', () => {
 	});
 
 	it('should update a project', () => {
+		cy.intercept('GET', `${apiUrl}/api/v1/users/*/projects`).as('getProjects');
 		cy.intercept('PUT', `${apiUrl}/api/v1/users/*/projects/*`).as('updateProject');
 
-		cy.get('#btn-route-projects').then((btn) => {
-			if (btn.length) {
-				btn.trigger('click');
-			} else {
-				cy.get('#btn-toggle-drawer').click();
-				cy.get('#btn-route-projects').click();
-			}
-		});
+		cy.visit('/#/projects');
+		cy.wait('@getProjects');
 
 		cy.contains(sampleProject.name, { matchCase: false }).click();
 

@@ -2,15 +2,20 @@ const apiUrl: string = Cypress.env('apiUrl');
 
 describe('Task', () => {
 	beforeEach(() => {
+		cy.intercept('GET', `${apiUrl}/api/v1/users/*`).as('getUser');
+		cy.intercept('GET', `${apiUrl}/api/v1/users/*/projects`).as('getProjects');
+		cy.intercept('GET', `${apiUrl}/api/v1/users/*/tasks`).as('getTasks');
+
 		cy.login();
 		cy.visit('/');
-	});
-	afterEach(() => {
-		cy.logout();
+
+		cy.wait('@getUser');
+		cy.wait('@getProjects');
+		cy.wait('@getTasks');
 	});
 
 	it('should create a task', () => {
-		cy.createProject();
+		cy.createProjectIfNeeded();
 
 		cy.intercept('POST', `${apiUrl}/api/v1/users/*/tasks`).as('createTask');
 
@@ -51,6 +56,6 @@ describe('Task', () => {
 
 		cy.wait('@deleteTask');
 
-		cy.deleteProject();
+		cy.deleteProjectIfNeeded();
 	});
 });

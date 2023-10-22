@@ -26,7 +26,9 @@ declare global {
         getLoginBody(user: CypressUser): LoginBody | Chainable<LoginBody>;
         logout(): void;
         createProject(project?: SampleProject): void;
+        createProjectIfNeeded(project?: SampleProject): void;
         deleteProject(project?: SampleProject): void;
+        deleteProjectIfNeeded(project?: SampleProject): void;
       }
     }
   }
