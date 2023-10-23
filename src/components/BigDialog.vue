@@ -7,7 +7,9 @@ import { usePropsAndEmit } from '../util/composables';
 		transition-show="slide-up"
 		transition-hide="slide-down"
 	>
-		<q-card class="bg-lighter-common text-dark q-pa-sm">
+		<q-card class="bg-lighter-common text-dark q-pa-sm "
+			:style="props.extraStyle"
+		>
 			<q-bar class="bg-transparent q-px-none q-py-lg">
 				<q-btn
 					dense
@@ -62,6 +64,10 @@ import { usePropsAndEmit } from '../util/composables';
     handleSave: {
       type: Function,
       required: true,
+    },
+    extraStyle: {
+      type: String,
+      default: '',
     },
   });
 

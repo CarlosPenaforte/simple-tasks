@@ -3,6 +3,7 @@
 		v-model="isCreateProjectOpen"
 		save-button-id="btn-project-submit"
 		:handle-save="saveProject"
+		:extra-style="props.extraStyle"
 	>
 		<h1 class="text-secondary fs-20 lh-22 ls-1 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
 			<template v-if="!baseProject?.projectId">
@@ -79,6 +80,10 @@
     },
     baseProject: {
       type: Object as PropType<Project>,
+    },
+    extraStyle: {
+      type: String,
+      default: '',
     },
   });
 

@@ -3,6 +3,7 @@
 		v-model="isCreateTaskOpen"
 		save-button-id="btn-task-submit"
 		:handle-save="saveTask"
+		:extra-style="props.extraStyle"
 	>
 		<h1 class="text-secondary fs-20 lh-22 ls-1 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
 			<template v-if="isEdit">
@@ -156,6 +157,10 @@
     },
     currentTask: {
       type: Object as PropType<Task>,
+    },
+    extraStyle: {
+      type: String,
+      default: '',
     },
   });
 

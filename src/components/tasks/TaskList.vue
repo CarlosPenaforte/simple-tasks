@@ -12,7 +12,10 @@
 			</q-item-section>
 
 			<q-item-section side>
-				<span class="text-dark">{{ tasks.length }}</span>
+				<span
+					:id="`el-number-${props.urgency || 'done'}`"
+					class="text-dark"
+				>{{ tasks.length }}</span>
 			</q-item-section>
 		</template>
 

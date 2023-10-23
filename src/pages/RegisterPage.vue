@@ -10,6 +10,7 @@
 			<q-card-section class="text-center q-mb-sm">
 				<q-input
 					ref="email"
+					for="npt-register-email"
 					v-model="form.email"
 					type="text"
 					name="email"
@@ -22,6 +23,7 @@
 				/>
 				<q-input
 					ref="fullName"
+					for="npt-register-full-name"
 					v-model="form.full_name"
 					type="text"
 					name="full_name"
@@ -34,6 +36,7 @@
 				/>
 				<q-select
 					ref="sex"
+					for="npt-register-gender"
 					v-model="form.sex"
 					:options="genderOptions"
 					:label="$t('REGISTER.GENDER.NAME')"
@@ -53,7 +56,9 @@
 					</template>
 					<template v-slot:option="scope">
 						<q-item v-bind="scope.itemProps">
-							<q-item-section>
+							<q-item-section
+								:id="`el-gender-option-${scope.opt.toLowerCase().replace(/ /g, '-')}`"
+							>
 								<span>{{ genderToFullString($t,scope.opt) }}</span>
 							</q-item-section>
 						</q-item>
@@ -61,6 +66,7 @@
 				</q-select>
 				<q-input
 					ref="birthday"
+					for="npt-register-birthday"
 					:modelValue="formattedBirthday"
 					@update:modelValue="setBirthday"
 					name="birthday"
@@ -104,6 +110,7 @@
 				</q-input>
 				<q-input
 					ref="password"
+					for="npt-register-password"
 					v-model="form.user_password"
 					:type="togglePwdVisibility ? 'text' : 'password'"
 					name="password"
@@ -127,6 +134,7 @@
 				</q-input>
 				<q-input
 					ref="confirmPassword"
+					for="npt-register-confirm-password"
 					v-model="form.confirm_password"
 					:type="togglePwdVisibility ? 'text' : 'password'"
 					name="confirmPassword"

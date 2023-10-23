@@ -10,7 +10,7 @@ import {
 } from 'src/services/authService';
 import { DateTime } from 'luxon';
 import {
-	update, register, getById,
+	update, register, getById, deleteById,
 } from '../services/userService';
 import {
 	formatDateToIso, getLocaleFormat, parseUser,
@@ -34,10 +34,10 @@ export const useUserStore = defineStore('user', {
 			const response = await register(filteredUser);
 
 			if (response.data.hasError) {
-				return [ false, response.data.answer ];
+				return [ false, response.data.message ];
 			}
 
-			return [ true, response.data.answer ];
+			return [ true, response.data.message ];
 		},
 		async updateUser(
 			$t: ComposerTranslation,
@@ -55,7 +55,7 @@ export const useUserStore = defineStore('user', {
 			const response = await update(userId, filteredUser);
 
 			if (response.data.hasError) {
-				return [ false, response.data?.answer || '' ];
+				return [ false, response.data?.message || '' ];
 			}
 
 			if (!response.data?.user) return [ false, $t('COMMON.INTERNAL_ERROR') ];
@@ -79,6 +79,19 @@ export const useUserStore = defineStore('user', {
 		},
 		setUser(user: User) {
 			this.user = user;
+		},
+		async deleteUser(
+			userId: number,
+		): Promise<[boolean, string | ReceivedUser]> {
+			const response = await deleteById(userId);
+
+			if (response.data.hasError) {
+				return [ false, response.data.message || '' ];
+			}
+
+			this.user = undefined;
+
+			return [ true, response.data.message ];
 		},
 		async login($t: ComposerTranslation, email: string, password: string): Promise<[boolean, string]> {
 			const response = await login(email, password);

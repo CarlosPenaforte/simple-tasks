@@ -3,14 +3,16 @@
 		v-model="isSearchDialogOpen"
 		:done-function="searchTasks"
 		done-icon="search"
+		done-button-id="btn-apply-search"
 	>
 		<q-input
+			for="npt-search-name"
 			v-model="searchFields.name"
+			:label="$t('SEARCH.TITLE')"
 			bottom-slots
 			counter
 			clearable
 			maxlength="20"
-			:label="$t('SEARCH.TITLE')"
 			color="primary-main"
 			class="q-mb-md"
 		>
@@ -51,15 +53,16 @@
 			{{ $t('SEARCH.DUE_DATE') }}
 		</span>
 		<q-input
+			for="npt-search-due-date"
 			:modelValue="formattedDueDate"
-			@update:modelValue="setDueDate"
-			name="dueDate"
 			:mask="localeMask"
 			:placeholder="localeFormat"
 			:rules="[val => val.length == 10 || $t('TASK.ERROR.INVALID_DUE_DATE')]"
+			name="dueDate"
 			lazy-rules
 			color="primary-main"
 			class="q-mb-md"
+			@update:modelValue="setDueDate"
 		>
 			<template v-slot:append>
 				<q-icon name="event"
@@ -67,11 +70,11 @@
 				>
 					<q-popup-proxy>
 						<q-date
+							:modelValue="formattedDueDate"
 							:mask="qDateMask"
-							color="primary-main"
 							:title="$t('TASK.FORM.DUE_DATE')"
 							:subtitle="$t('TASK.FORM.DUE_DATE_SUBTITLE')"
-							:modelValue="formattedDueDate"
+							color="primary-main"
 							@update:modelValue="setDueDate"
 						>
 							<div class="row items-center justify-end">

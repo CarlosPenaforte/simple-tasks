@@ -24,6 +24,7 @@
 			</q-list>
 			<q-btn
 				v-if="hasSearchedTasks"
+				id="btn-clear-search"
 				flat
 				icon-right="close"
 				rounded

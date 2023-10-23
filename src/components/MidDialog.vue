@@ -19,6 +19,7 @@
 				<q-space />
 
 				<q-btn
+					:id="props.doneButtonId"
 					dense
 					flat
 					:icon="doneIcon"
@@ -58,6 +59,10 @@
     doneIcon: {
       type: String,
       default: 'done',
+    },
+    doneButtonId: {
+      type: String,
+      default: 'btn-done',
     },
   });
 

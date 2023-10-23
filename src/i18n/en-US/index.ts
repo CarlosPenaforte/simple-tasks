@@ -57,6 +57,7 @@ export default {
 	USER: {
 		ERROR: {
 			NOT_FOUND: 'User not found',
+			DELETE: 'Error deleting user',
 		},
 		GENDER: {
 			NOT_INFORMED: 'Not informed',
@@ -68,6 +69,8 @@ export default {
 			UPDATE: 'Update Profile',
 			UPDATE_SUCCESS: 'Profile updated successfully',
 		},
+		DELETE: 'Delete User',
+		CONFIRM_DELETE: 'Are you sure you want to delete your account?',
 	},
 	PROJECT: {
 		ERROR: {

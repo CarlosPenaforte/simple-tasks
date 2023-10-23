@@ -21,6 +21,7 @@
 				<template v-if="isMainTasksRoute">
 					<q-select
 						v-if="projectStore.hasProjects"
+						for="npt-select-project"
 						modelValue="currentProject"
 						:options="projects"
 						borderless
@@ -43,7 +44,7 @@
 
 						<template v-slot:option="scope">
 							<q-item v-bind="scope.itemProps">
-								<q-item-section>
+								<q-item-section :id="`el-project-option-${scope.opt.name.toLowerCase().replace(/ /g, '-')}`">
 									<span>{{ scope.opt.name }}</span>
 								</q-item-section>
 							</q-item>
@@ -166,6 +167,7 @@
 		<q-page-container>
 			<router-view
 				:left-drawer-open="leftDrawerOpen"
+				:style="shrinkIfNeeded"
 				@open-edit-task="openEditTaskDialog"
 				@open-delete-task="openDeleteTaskDialog"
 			/>
@@ -179,6 +181,7 @@
 				class="row no-padding fit"
 			>
 				<q-btn
+					id="btn-sort-tasks"
 					flat
 					no-caps
 					no-wrap
@@ -220,6 +223,7 @@
 					</div>
 				</q-btn>
 				<q-btn
+					id="btn-search-tasks"
 					flat
 					no-caps
 					aria-label="Search"
@@ -269,18 +273,21 @@
 
 		<create-project-dialog
 			v-model="isCreateProjectOpen"
+			:extra-style="shrinkIfNeeded"
 		/>
 
 		<task-dialog
-			:current-task="targettedTask"
 			v-model="isCreateTaskOpen"
+			:current-task="targettedTask"
+			:extra-style="shrinkIfNeeded"
 		/>
 
 		<task-dialog
 			v-if="targettedTask"
-			is-edit
-			:current-task="targettedTask"
 			v-model="isEditTaskOpen"
+			:current-task="targettedTask"
+			:extra-style="shrinkIfNeeded"
+			is-edit
 		/>
 
 		<confirm-dialog
@@ -426,6 +433,10 @@
 
   const { width: windowWidth } = useWindowSize();
   const drawerBP = computed(() => windowWidth.value > 1100);
+  const isWideScreen = computed(() => windowWidth.value > 800);
+  const shrinkIfNeeded = computed(() => (isWideScreen.value
+    ? 'width: 800px !important; margin: 0 auto;'
+    : ''));
 
   const isSearchDialogOpen = ref(false);
   const isSortDialogOpen = ref(false);

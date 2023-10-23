@@ -2,6 +2,7 @@
 	<big-dialog
 		v-model="isUpdateProfileOpen"
 		:handle-save="updateProfile"
+		save-button-id="btn-user-submit"
 	>
 		<h1 class="text-secondary fs-20 lh-22 ls-2 text-center text-uppercase fw-medium q-pa-none q-mb-sm q-mt-md">
 			{{ $t('USER.PROFILE.UPDATE') }}
@@ -9,6 +10,7 @@
 
 		<q-input
 			ref="fullName"
+			for="npt-user-full-name"
 			v-model="newProfile.full_name"
 			bottom-slots
 			clearable
@@ -27,6 +29,7 @@
 
 		<q-select
 			ref="sex"
+			for="npt-user-gender"
 			v-model="newProfile.sex"
 			:options="genderOptions"
 			:label="$t('REGISTER.GENDER.NAME')"
@@ -55,6 +58,7 @@
 
 		<q-input
 			ref="birthday"
+			for="npt-user-birthday"
 			:modelValue="formattedBirthday"
 			@update:modelValue="setBirthday"
 			name="birthday"

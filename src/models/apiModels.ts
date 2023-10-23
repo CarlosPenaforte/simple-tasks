@@ -24,19 +24,24 @@ export type ReceivedUser = {
 
 export type RegisterResponse = {
     readonly hasError: boolean;
-    answer: string;
+    message: string;
 }
 
 export type UpdateUserResponse = {
     readonly hasError: boolean;
     user?: ReceivedUser;
-    answer?: string;
+    message?: string;
 }
 
 export type GetUserResponse = {
     readonly hasError: boolean;
     user?: ReceivedUser;
     message?: string;
+}
+
+export type DeleteUserResponse = {
+    readonly hasError: boolean;
+    message: string;
 }
 
 // TASK
