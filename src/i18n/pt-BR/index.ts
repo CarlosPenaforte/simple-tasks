@@ -16,6 +16,7 @@ export default {
 		},
 		WRONG_CREDENTIALS: 'Email e/ou senha incorreto(s)',
 		SUCCESS: 'Login realizado com sucesso',
+		LOGGING: 'Entrando...',
 	},
 	FORM: {
 		INVALID_FIELDS: 'Existem campos inválidos',
@@ -53,6 +54,7 @@ export default {
 			},
 			NAME: 'Confirmar senha',
 		},
+		REGISTERING: 'Cadastrando...',
 	},
 	USER: {
 		ERROR: {

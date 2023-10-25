@@ -317,7 +317,11 @@
       return;
     }
 
+    $q?.loading.show({ message: $t('REGISTER.REGISTERING') });
+
     const [ registered, message ] = await userStore.createUser(form);
+
+    $q?.loading.hide();
 
     if (registered) {
       $q?.notify({

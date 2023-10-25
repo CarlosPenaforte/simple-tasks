@@ -53,7 +53,7 @@ jobs:
     resource_class: medium
     steps:
       - run:
-          name: Deploy API to Render
+          name: Deploy API to Vercel
           command: |
             response=$(curl -s -w "%{http_code}" -o response.txt $DEPLOY_URI)
             response_code=${response:(-3)}

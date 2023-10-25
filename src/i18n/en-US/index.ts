@@ -23,6 +23,7 @@ export default {
 		},
 		WRONG_CREDENTIALS: 'Wrong email or password',
 		SUCCESS: 'Login successful',
+		LOGGING: 'Logging in...',
 	},
 	REGISTER: {
 		SUCCESS: 'User registered successfully',
@@ -53,6 +54,7 @@ export default {
 			},
 			NAME: 'Confirm Password',
 		},
+		REGISTERING: 'Registering...',
 	},
 	USER: {
 		ERROR: {

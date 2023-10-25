@@ -135,7 +135,11 @@
     }
 
     try {
+      $q?.loading.show({ message: $t('AUTH.LOGGING') });
+
       const [ logged, message ] = await userStore.login($t, email.value, password.value);
+
+      $q?.loading.hide();
 
       if (logged && user && window.sessionStorage.getItem('simple-tasks/token')) {
         $q?.notify(message);
