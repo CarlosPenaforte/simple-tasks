@@ -8,7 +8,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "start": "quasar dev",
-    "serve": "quasar serve",
+    "serve": "quasar serve dist/spa",
     "build": "quasar build",
     "test:integration": "npx cypress run --spec \"cypress/e2e/**/*.cy.*\" --browser electron",
     "cypress:open": "cypress open"
