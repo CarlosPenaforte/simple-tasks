@@ -34,7 +34,7 @@ jobs:
           name: Run integration tests
       - run:
           command: yarn build
-          name: Run integration tests
+          name: Build application
       - run:
           command: yarn server
           name: Serve application
