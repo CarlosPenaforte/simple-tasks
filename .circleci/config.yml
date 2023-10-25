@@ -30,6 +30,10 @@ jobs:
           command: ./node_modules/.bin/cypress install --force
           name: Install cypress
       - run:
+          command: yarn start
+          name: Dev App for tests
+          background: true
+      - run:
           command: yarn test:integration
           name: Run integration tests
       - run:
