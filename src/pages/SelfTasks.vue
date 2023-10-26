@@ -131,7 +131,7 @@
     if (hasSearchedTasks.value && !taskStore.$state.searchedTasks[0]?.taskId) return undefined;
 
     return (hasSearchedTasks.value
-      ? [ taskStore.$state.searchedTasks.every((task) => task.done),
+      ? [ taskStore.$state.searchedTasks.every((task: Task) => task.done),
           taskStore.$state.searchedTasks[0]?.urgency as Urgency,
       ]
       : undefined);
@@ -150,7 +150,7 @@
   });
 
   const showDoneTasks = computed(() => (hasSearchedTasks.value
-    ? taskStore.$state.searchedTasks.some((task) => task.done)
+    ? taskStore.$state.searchedTasks.some((task: Task) => task.done)
     : true));
 
   // ACTIONS

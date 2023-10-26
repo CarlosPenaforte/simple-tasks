@@ -159,6 +159,8 @@
         });
       }
     } catch (e) {
+      setIsLogging(false);
+
       $q?.notify({
         type: 'negative',
         message: $t('AUTH.WRONG_CREDENTIALS'),

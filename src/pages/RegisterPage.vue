@@ -321,26 +321,35 @@
       return;
     }
 
-    setIsRegistering(true);
+    try {
+      setIsRegistering(true);
 
-    const [ registered, message ] = await userStore.createUser(form);
+      const [ registered, message ] = await userStore.createUser(form);
 
-    setIsRegistering(false);
+      setIsRegistering(false);
 
-    if (registered) {
+      if (registered) {
+        $q?.notify({
+          type: 'positive',
+          message: $t('REGISTER.SUCCESS'),
+        });
+
+        pushToUrl('/login');
+
+        return;
+      }
+
       $q?.notify({
-        type: 'positive',
-        message: $t('REGISTER.SUCCESS'),
+        type: 'negative',
+        message,
       });
+    } catch (e) {
+      setIsRegistering(false);
 
-      pushToUrl('/login');
-
-      return;
+      $q?.notify({
+        type: 'negative',
+        message: (e as Error)?.message || '',
+      });
     }
-
-    $q?.notify({
-      type: 'negative',
-      message,
-    });
   };
 </script>

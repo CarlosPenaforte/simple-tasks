@@ -84,12 +84,16 @@
   const [ isLoading, setIsLoading ] = useState(false);
 
   const done = async() => {
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-    await props.doneFunction();
+      await props.doneFunction();
 
-    setIsLoading(false);
+      setIsLoading(false);
 
-    isDialogOpen.value = false;
+      isDialogOpen.value = false;
+    } catch (e) {
+      setIsLoading(false);
+    }
   };
 </script>

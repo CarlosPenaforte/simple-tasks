@@ -87,12 +87,16 @@ import { usePropsAndEmit } from '../util/composables';
   const [ isLoading, setIsLoading ] = useState(false);
 
   async function save(): Promise<void> {
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-    await props.handleSave();
+      await props.handleSave();
 
-    setIsLoading(false);
+      setIsLoading(false);
 
-    isDialogOpen.value = false;
+      isDialogOpen.value = false;
+    } catch (e) {
+      setIsLoading(false);
+    }
   }
 </script>
