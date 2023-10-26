@@ -53,12 +53,13 @@
 						no-wrap
 					>
 						<div class="row items-center">
-							<q-icon
+							<q-btn
 								:id="`btn-options-${task.taskTitle.toLowerCase().replace(/ /g, '-')}`"
-								name="more_vert"
-								size="28px"
+								flat
+								dense
+								icon="more_vert"
 								color="secondary"
-								class="cursor-pointer"
+								style="width: 28px; height: 28px;"
 							>
 								<q-menu
 									transition-show="flip-right"
@@ -91,12 +92,16 @@
 										</q-item>
 									</q-list>
 								</q-menu>
-							</q-icon>
-							<q-checkbox
+							</q-btn>
+							<q-btn
 								:id="`btn-check-${task.taskTitle.toLowerCase().replace(/ /g, '-')}`"
-								v-model="task.done"
-								@click="checkedTask(task, task.done)"
+								:loading="isChecking[task.taskId]"
+								:icon="checkIcon(task.done)"
+								flat
+								dense
+								@click="checkedTask(task)"
 								color="primary-main"
+								style="width: 28px; height: 28px;"
 							/>
 						</div>
 					</q-item-section>
@@ -152,16 +157,20 @@
   let tasks: ComputedRef<Task[]>;
 
   if (props.urgency) {
-    tasks = computed(() => taskStore.undoneTasks.filter((task) => task.urgency === props.urgency));
+    tasks = computed(() => taskStore.undoneTasks.filter((task: Task) => task.urgency === props.urgency));
   } else if (props.showDoneTasks) {
     tasks = computed(() => taskStore.doneTasks);
   }
 
   const locale = ref(navigator.language);
 
+  const checkIcon = (isDone: boolean) => (isDone ? 'check' : 'check_box_outline_blank');
+
+  const isChecking = ref<Record<number, boolean>>({});
+
   // ACTIONS
 
-  const checkedTask = async(task : Task, done : boolean) => {
+  const checkedTask = async(task: Task) => {
     const userId = userStore.$state.user?.userId;
     if (!userId) {
       $q?.notify({
@@ -172,14 +181,24 @@
       return;
     }
 
+    isChecking.value = {
+      ...isChecking.value, [task.taskId]: true,
+    };
+
+    console.log(isChecking.value);
+
     const [ success, message ] = await taskStore.checkTask(
       $t,
       userId,
       task.taskId,
-      done,
+      !task.done,
     );
 
-    if (success && done) {
+    isChecking.value = {
+      ...isChecking.value, [task.taskId]: false,
+    };
+
+    if (success && !task.done) {
       $q?.notify({
         type: 'positive',
         message: $t('TASK.FINISHED', { title: task.taskTitle }),
@@ -188,7 +207,7 @@
       return;
     }
 
-    if (success && !done) {
+    if (success && task.done) {
       $q?.notify({
         type: 'positive',
         message: $t('TASK.UNDONE', { title: task.taskTitle }),

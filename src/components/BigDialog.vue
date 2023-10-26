@@ -24,6 +24,7 @@ import { usePropsAndEmit } from '../util/composables';
 
 				<q-btn
 					:id="props.saveButtonId"
+					:loading="isLoading"
 					dense
 					flat
 					icon="done"
@@ -45,6 +46,7 @@ import { usePropsAndEmit } from '../util/composables';
     defineComponent,
     computed,
   } from 'vue';
+  import { useState } from '../utils/composables';
 
   export default defineComponent({
     name: 'BigDialog',
@@ -82,8 +84,15 @@ import { usePropsAndEmit } from '../util/composables';
     },
   });
 
-  function save(): void {
-    props.handleSave();
+  const [ isLoading, setIsLoading ] = useState(false);
+
+  async function save(): Promise<void> {
+    setIsLoading(true);
+
+    await props.handleSave();
+
+    setIsLoading(false);
+
     isDialogOpen.value = false;
   }
 </script>

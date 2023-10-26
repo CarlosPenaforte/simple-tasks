@@ -558,6 +558,8 @@
   }
 
   async function logout(): Promise<void> {
+    $q?.loading.show({ message: $t('COMMON.LOGGING_OUT') });
+
     const [ loggedOut, message ] = await userStore.logout();
 
     if (loggedOut) {
@@ -571,6 +573,8 @@
 
     setDrawerOption(-1);
     toggleLeftDrawer(false);
+
+    $q?.loading.hide();
 
     router.push('/login');
   }

@@ -14,16 +14,16 @@ export default {
 			},
 			NAME: 'Senha',
 		},
+		FORM: {
+			INVALID_FIELDS: 'Existem campos inválidos',
+			BUTTONS: {
+				LOGIN: 'Login',
+				REGISTER: 'Cadastrar',
+			},
+		},
 		WRONG_CREDENTIALS: 'Email e/ou senha incorreto(s)',
 		SUCCESS: 'Login realizado com sucesso',
 		LOGGING: 'Entrando...',
-	},
-	FORM: {
-		INVALID_FIELDS: 'Existem campos inválidos',
-		BUTTONS: {
-			LOGIN: 'Login',
-			REGISTER: 'Cadastrar',
-		},
 	},
 	REGISTER: {
 		SUCCESS: 'Usuário cadastrado com sucesso',
@@ -161,6 +161,7 @@ export default {
 		DELETE: 'Excluir',
 		INTERNAL_ERROR: 'Erro interno',
 		LOGOUT: 'Sair',
+		LOGGING_OUT: 'Saindo...',
 	},
 	SEARCH: {
 		TITLE: 'Pesquisar por título',

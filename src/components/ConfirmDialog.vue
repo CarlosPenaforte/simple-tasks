@@ -21,12 +21,13 @@
 
 				<q-btn
 					id="btn-confirm"
+					:loading="isLoading"
+					:icon="doneIcon"
 					dense
 					flat
-					:icon="doneIcon"
 					size="20px"
 					color="positive"
-					@click="doneFunction()"
+					@click="done"
 				/>
 			</q-bar>
 
@@ -42,6 +43,7 @@
     defineComponent,
     computed,
   } from 'vue';
+  import { useState } from '../utils/composables';
 
   export default defineComponent({
     name: 'ConfirmDialog',
@@ -78,4 +80,16 @@
       emit('update:modelValue', newState);
     },
   });
+
+  const [ isLoading, setIsLoading ] = useState(false);
+
+  const done = async() => {
+    setIsLoading(true);
+
+    await props.doneFunction();
+
+    setIsLoading(false);
+
+    isDialogOpen.value = false;
+  };
 </script>

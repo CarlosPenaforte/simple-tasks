@@ -161,6 +161,7 @@ export default {
 		DELETE: 'Delete',
 		INTERNAL_ERROR: 'Internal error',
 		LOGOUT: 'Logout',
+		LOGGING_OUT: 'Logging out...',
 	},
 	SEARCH: {
 		TITLE: 'Search by title',

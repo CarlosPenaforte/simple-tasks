@@ -107,8 +107,6 @@ export const useTaskStore = defineStore('task', {
 				return [ false, $t('TASK.ERROR.NOT_FOUND') ];
 			}
 
-			foundTask.done = checked;
-
 			const response = await update(userId, taskId, parseTaskToSend(foundTask));
 
 			if (response.data.hasError) {
@@ -118,19 +116,7 @@ export const useTaskStore = defineStore('task', {
 				return [ false, response.data.message ];
 			}
 
-			if (response.data.task === undefined) {
-				return [ false, $t('TASK.ERROR.NOTHING_FOUND') ];
-			}
-
-			this.tasks = this.tasks.map((task) => {
-				if (task.taskId === response.data.task?.task_id) {
-					return parseTask(response.data.task);
-				}
-
-				return task;
-			});
-
-			this.tasks = this.tasks.sort((a, b) => a.taskId - b.taskId);
+			foundTask.done = checked;
 
 			return [ true, $t('TASK.SUCCESS.CHECK') ];
 		},
