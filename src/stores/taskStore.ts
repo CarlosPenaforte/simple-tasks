@@ -107,7 +107,11 @@ export const useTaskStore = defineStore('task', {
 				return [ false, $t('TASK.ERROR.NOT_FOUND') ];
 			}
 
-			const response = await update(userId, taskId, parseTaskToSend(foundTask));
+			const clonedTask = {
+				...foundTask, done: !foundTask.done,
+			};
+
+			const response = await update(userId, taskId, parseTaskToSend(clonedTask));
 
 			if (response.data.hasError) {
 				if (!response.data?.message) {
