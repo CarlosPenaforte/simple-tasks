@@ -159,7 +159,7 @@
 			<q-card-actions class="row">
 				<q-btn
 					id="btn-login-route"
-					:label="$t('FORM.BUTTONS.LOGIN')"
+					:label="$t('AUTH.FORM.BUTTONS.LOGIN')"
 					outline
 					color="negative"
 					class="col-5 no-padding no-margin text-weight-bold"
@@ -168,7 +168,7 @@
 				<q-space />
 				<q-btn
 					id="btn-register-action"
-					:label="$t('FORM.BUTTONS.REGISTER')"
+					:label="$t('AUTH.FORM.BUTTONS.REGISTER')"
 					unelevated
 					color="positive"
 					text-color="whity"
