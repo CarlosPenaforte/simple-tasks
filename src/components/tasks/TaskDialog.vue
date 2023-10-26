@@ -249,7 +249,6 @@
     }
 
     formattedDueDate.value = formatDateToLocale(dateStrToDate(newValue.due_date, localeFormat), locale);
-    console.log(formattedDueDate.value);
   }, { deep: true });
 
   // ACTIONS

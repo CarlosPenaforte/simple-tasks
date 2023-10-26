@@ -185,8 +185,6 @@
       ...isChecking.value, [task.taskId]: true,
     };
 
-    console.log(isChecking.value);
-
     const [ success, message ] = await taskStore.checkTask(
       $t,
       userId,
