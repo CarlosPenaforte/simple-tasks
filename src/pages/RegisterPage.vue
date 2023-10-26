@@ -160,6 +160,7 @@
 				<q-btn
 					id="btn-login-route"
 					:label="$t('AUTH.FORM.BUTTONS.LOGIN')"
+					:disable="isRegistering"
 					outline
 					color="negative"
 					class="col-5 no-padding no-margin text-weight-bold"
@@ -169,6 +170,7 @@
 				<q-btn
 					id="btn-register-action"
 					:label="$t('AUTH.FORM.BUTTONS.REGISTER')"
+					:loading="isRegistering"
 					unelevated
 					color="positive"
 					text-color="whity"
@@ -245,6 +247,8 @@
   const { width: windowWidth } = useWindowSize();
   const shouldFillScreen = computed(() => windowWidth.value < 550);
 
+  const [ isRegistering, setIsRegistering ] = useState(false);
+
   // BIRTHDAY SETTER AND GETTER
 
   const setBirthday = (birthday: string|number|null) => {
@@ -317,11 +321,11 @@
       return;
     }
 
-    $q?.loading.show({ message: $t('REGISTER.REGISTERING') });
+    setIsRegistering(true);
 
     const [ registered, message ] = await userStore.createUser(form);
 
-    $q?.loading.hide();
+    setIsRegistering(false);
 
     if (registered) {
       $q?.notify({

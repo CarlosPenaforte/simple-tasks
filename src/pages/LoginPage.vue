@@ -48,6 +48,7 @@
 				<q-btn
 					id="btn-register-route"
 					:label="$t('AUTH.FORM.BUTTONS.REGISTER')"
+					:disable="isLogging"
 					outline
 					color="negative"
 					class="col-5 no-padding no-margin text-weight-bold"
@@ -57,6 +58,7 @@
 				<q-btn
 					id="btn-login-action"
 					:label="$t('AUTH.FORM.BUTTONS.LOGIN')"
+					:loading="isLogging"
 					unelevated
 					color="positive"
 					text-color="whity"
@@ -117,6 +119,8 @@
     return emailPattern.test(val) || $t('AUTH.EMAIL.VALIDATE.INVALID');
   };
 
+  const [ isLogging, setIsLogging ] = useState(false);
+
   // ACTIONS
 
   const pushToUrl = (path: string) => {
@@ -135,11 +139,11 @@
     }
 
     try {
-      $q?.loading.show({ message: $t('AUTH.LOGGING') });
+      setIsLogging(true);
 
       const [ logged, message ] = await userStore.login($t, email.value, password.value);
 
-      $q?.loading.hide();
+      setIsLogging(false);
 
       if (logged && user && window.sessionStorage.getItem('simple-tasks/token')) {
         $q?.notify(message);
