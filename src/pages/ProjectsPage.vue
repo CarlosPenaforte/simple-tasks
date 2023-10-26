@@ -63,7 +63,7 @@
 									<q-item-section class="col-5">
 										<q-btn
 											id="btn-delete-project"
-											unelevated
+											outline
 											dense
 											icon="delete"
 											color="negative"
