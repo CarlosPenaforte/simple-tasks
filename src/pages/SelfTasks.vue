@@ -96,7 +96,11 @@
     }
 
     try {
+      $q?.loading.show({ message: $t('TASK.LOADING') });
+
       const [ success, result ] = await taskStore.getTasks($t, userId as number);
+
+      $q?.loading.hide();
 
       if (!success) {
         $q?.notify({

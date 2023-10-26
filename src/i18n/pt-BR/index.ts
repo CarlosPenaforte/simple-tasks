@@ -101,6 +101,7 @@ export default {
 		DELETE: 'Excluir Projeto',
 		CONFIRM_DELETE: 'Tem certeza que deseja deletar o projeto {name}?',
 		NOTHING: 'Não há nenhum projeto criado. Crie um para começar a usar o app',
+		LOADING: 'Carregando projetos...',
 		FORM: {
 			NAME: 'Nome do Projeto',
 			DESCRIPTION: 'Descrição do Projeto',
@@ -155,6 +156,7 @@ export default {
 		UNTIL: 'Até {dateStr}',
 		FINISHED: 'Tarefa {title} concluída',
 		UNDONE: 'Tarefa {title} retornou a não concluída',
+		LOADING: 'Carregando tarefas...',
 	},
 	COMMON: {
 		EDIT: 'Editar',

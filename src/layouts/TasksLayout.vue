@@ -322,7 +322,9 @@
     useRouter, useRoute,
   } from 'vue-router';
   import { useState } from 'src/utils/composables';
-  import { QVueGlobals } from 'quasar';
+  import {
+    QVueGlobals, Loading,
+  } from 'quasar';
   import { useI18n } from 'vue-i18n';
   import { useWindowSize } from '@vueuse/core';
   import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
@@ -349,13 +351,18 @@
 
       if (!userStore.$state.user?.userId && storedId && storedToken) {
         try {
+          Loading.show();
+
           const [ success ] = await userStore.getUser(Number(storedId));
 
           if (!success) {
             await userStore.logout();
 
+            Loading.hide();
+
             next('/login');
           } else {
+            Loading.hide();
             next();
           }
         } catch (e) {
@@ -408,7 +415,11 @@
     }
 
     try {
+      $q?.loading.show({ message: $t('PROJECT.LOADING') });
+
       const [ success, result ] = await projectStore.getProjects($t, userId as number);
+
+      $q?.loading.hide();
 
       if (!success) {
         $q?.notify({

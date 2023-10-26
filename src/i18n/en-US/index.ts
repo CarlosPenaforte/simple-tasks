@@ -101,6 +101,7 @@ export default {
 		DELETE: 'Delete Project',
 		CONFIRM_DELETE: 'Are you sure you want to delete the project {name}?',
 		NOTHING: 'There is no project created. Create one to start using the app',
+		LOADING: 'Loading projects...',
 		FORM: {
 			NAME: 'Project Name',
 			DESCRIPTION: 'Project Description',
@@ -155,6 +156,7 @@ export default {
 		UNTIL: 'Until {dateStr}',
 		FINISHED: 'Task {title} finished',
 		UNDONE: 'Task {title} returned to undone',
+		LOADING: 'Loading tasks...',
 	},
 	COMMON: {
 		EDIT: 'Edit',
