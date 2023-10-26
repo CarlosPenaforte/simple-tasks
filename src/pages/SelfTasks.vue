@@ -89,32 +89,35 @@
 
   onBeforeMount(async() => {
     const userId = user.value?.userId;
+
     if (!userId) {
       await userStore.logout();
 
       router.push('/login');
     }
 
-    try {
-      $q?.loading.show({ message: $t('TASK.LOADING') });
+    if (!taskStore.$state.tasks.length || taskStore.$state.tasks[0].userId !== userId) {
+      try {
+        $q?.loading.show({ message: $t('TASK.LOADING') });
 
-      const [ success, result ] = await taskStore.getTasks($t, userId as number);
+        const [ success, result ] = await taskStore.getTasks($t, userId as number);
 
-      $q?.loading.hide();
+        $q?.loading.hide();
 
-      if (!success) {
+        if (!success) {
+          $q?.notify({
+            type: 'negative',
+            message: result,
+          });
+        }
+      } catch (e) {
+        $q?.loading.hide();
+
         $q?.notify({
           type: 'negative',
-          message: result,
+          message: $t('TASK.ERROR.GET_TASKS'),
         });
       }
-    } catch (e) {
-      $q?.loading.hide();
-
-      $q?.notify({
-        type: 'negative',
-        message: $t('TASK.ERROR.GET_TASKS'),
-      });
     }
   });
 
