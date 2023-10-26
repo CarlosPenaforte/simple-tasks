@@ -196,7 +196,7 @@
       ...isChecking.value, [task.taskId]: false,
     };
 
-    if (success && !task.done) {
+    if (success && task.done) {
       $q?.notify({
         type: 'positive',
         message: $t('TASK.FINISHED', { title: task.taskTitle }),
@@ -205,7 +205,7 @@
       return;
     }
 
-    if (success && task.done) {
+    if (success && !task.done) {
       $q?.notify({
         type: 'positive',
         message: $t('TASK.UNDONE', { title: task.taskTitle }),
