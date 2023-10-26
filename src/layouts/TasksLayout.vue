@@ -363,10 +363,13 @@
             next('/login');
           } else {
             Loading.hide();
+
             next();
           }
         } catch (e) {
           await userStore.logout();
+
+          Loading.hide();
 
           next('/login');
         }
@@ -428,6 +431,8 @@
         });
       }
     } catch (e) {
+      $q?.loading.hide();
+
       $q?.notify({
         type: 'negative',
         message: $t('PROJECT.ERROR.GET_PROJECTS'),
@@ -569,25 +574,39 @@
   }
 
   async function logout(): Promise<void> {
-    $q?.loading.show({ message: $t('COMMON.LOGGING_OUT') });
+    try {
+      $q?.loading.show({ message: $t('COMMON.LOGGING_OUT') });
 
-    const [ loggedOut, message ] = await userStore.logout();
+      const [ loggedOut, message ] = await userStore.logout();
 
-    if (loggedOut) {
-      $q?.notify(message);
-    } else {
-      $q?.notify({
-        type: 'negative',
-        message,
-      });
+      if (loggedOut) {
+        $q?.notify(message);
+      } else {
+        $q?.notify({
+          type: 'negative',
+          message,
+        });
+      }
+
+      setDrawerOption(-1);
+      toggleLeftDrawer(false);
+
+      $q?.loading.hide();
+
+      router.push('/login');
+    } catch (e) {
+      window.sessionStorage.removeItem('simple-tasks/token');
+      window.sessionStorage.removeItem('simple-tasks/user_id');
+
+      setDrawerOption(-1);
+      toggleLeftDrawer(false);
+
+      userStore.$state.user = undefined;
+
+      $q?.loading.hide();
+
+      router.push('/login');
     }
-
-    setDrawerOption(-1);
-    toggleLeftDrawer(false);
-
-    $q?.loading.hide();
-
-    router.push('/login');
   }
 
   const drawerOptions = [

@@ -109,6 +109,8 @@
         });
       }
     } catch (e) {
+      $q?.loading.hide();
+
       $q?.notify({
         type: 'negative',
         message: $t('TASK.ERROR.GET_TASKS'),
