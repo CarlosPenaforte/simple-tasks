@@ -112,7 +112,7 @@
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import { useWindowSize } from '@vueuse/core';
-  import ConfirmDialog from '../components/ConfirmDialog.vue';
+  import ConfirmDialog from '../components/dialogs/ConfirmDialog.vue';
   import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
 
   export default {

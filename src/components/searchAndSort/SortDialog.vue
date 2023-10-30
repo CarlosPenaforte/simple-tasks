@@ -101,7 +101,7 @@
   } from 'src/models/mainModels';
   import { useTaskStore } from 'src/stores/taskStore';
   import { orientationToTranslation } from 'src/utils/commonFunctions';
-  import MidDialog from '../MidDialog.vue';
+  import MidDialog from '../dialogs/MidDialog.vue';
 
   export default defineComponent({
     name: 'SortDialog',

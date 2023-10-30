@@ -60,7 +60,7 @@
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import { Project } from 'src/models/mainModels';
-  import BigDialog from '../BigDialog.vue';
+  import BigDialog from '../dialogs/BigDialog.vue';
 
   export default defineComponent({
     name: 'CreateProjectDialog',

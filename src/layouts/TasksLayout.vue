@@ -331,7 +331,7 @@
   import TaskDialog from '../components/tasks/TaskDialog.vue';
   import SearchDialog from '../components/searchAndSort/SearchDialog.vue';
   import SortDialog from '../components/searchAndSort/SortDialog.vue';
-  import ConfirmDialog from '../components/ConfirmDialog.vue';
+  import ConfirmDialog from '../components/dialogs/ConfirmDialog.vue';
 
   export default defineComponent({
     name: 'MainLayout',

@@ -43,6 +43,7 @@ export default {
 			VALIDATE: {
 				EMPTY: 'O campo data de nascimento é obrigatório',
 				INVALID: 'A data de nascimento informada é inválida',
+				SHORT: 'A data de nascimento informada é muito curta',
 			},
 			NAME: 'Data de nascimento',
 			SUBTITLE: 'Selecione sua data de nascimento',
@@ -121,6 +122,7 @@ export default {
 			NO_CHANGES: 'Nenhuma alteração foi feita',
 			NOTHING_FOUND: 'Nenhuma tarefa encontrada',
 			NOT_POSSIBLE_TO_FIND_PROJECT_OR_USER: 'Não foi possível encontrar um projeto e/ou usuário',
+			SHORT_DUE_DATE: 'A data de vencimento informada é muito curta',
 			INVALID_DUE_DATE: 'A data de vencimento informada é inválida',
 			NOT_FOUND: 'Tarefa não encontrada',
 			CHECK: 'Erro ao verificar tarefa',
