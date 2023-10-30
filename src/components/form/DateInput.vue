@@ -7,7 +7,7 @@
 		:mask="localeMask"
 		:placeholder="localeFormat"
 		:label="props.title"
-		:rules="[val => val.length == 10 || props.shortMessage, isValidDate || props.invalidMessage]"
+		:rules="[val => val.length == 10 || props.shortMessage, val => isValidDate(val) || props.invalidMessage]"
 		lazy-rules
 		color="primary-main"
 		class="q-mb-md"
