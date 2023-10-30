@@ -1,16 +1,12 @@
-import { usePropsAndEmit } from '../util/composables';
 <template>
 	<q-dialog
 		v-model="isDialogOpen"
 		persistent
-		maximized
 		transition-show="slide-up"
 		transition-hide="slide-down"
 	>
-		<q-card class="bg-lighter-common text-dark q-pa-sm "
-			:style="props.extraStyle"
-		>
-			<q-bar class="bg-transparent q-px-none q-py-lg">
+		<q-card class="bg-whity text-dark q-pa-sm full-width">
+			<q-bar class="bg-transparent q-px-none q-pt-lg q-pb-xs">
 				<q-btn
 					dense
 					flat
@@ -23,18 +19,18 @@ import { usePropsAndEmit } from '../util/composables';
 				<q-space />
 
 				<q-btn
-					:id="props.saveButtonId"
+					:id="props.doneButtonId"
 					:loading="isLoading"
+					:icon="doneIcon"
 					dense
 					flat
-					icon="done"
 					size="20px"
 					color="positive"
-					@click="save"
+					@click="done"
 				/>
 			</q-bar>
 
-			<q-card-section class="bg-white q-mx-sm q-px-md q-py-sm column">
+			<q-card-section class="bg-transparent q-mx-sm q-px-xs q-py-sm column">
 				<slot />
 			</q-card-section>
 		</q-card>
@@ -46,30 +42,29 @@ import { usePropsAndEmit } from '../util/composables';
     defineComponent,
     computed,
   } from 'vue';
-  import { useState } from '../utils/composables';
+  import { useState } from '../../utils/composables';
 
   export default defineComponent({
-    name: 'BigDialog',
+    name: 'MidDialog',
   });
 </script>
-
 <script setup lang="ts">
   const props = defineProps({
     modelValue: {
       type: Boolean,
-      default: false,
+      required: true,
     },
-    saveButtonId: {
-      type: String,
-      default: 'btn-save',
-    },
-    handleSave: {
+    doneFunction: {
       type: Function,
       required: true,
     },
-    extraStyle: {
+    doneIcon: {
       type: String,
-      default: '',
+      default: 'done',
+    },
+    doneButtonId: {
+      type: String,
+      default: 'btn-done',
     },
   });
 
@@ -79,18 +74,18 @@ import { usePropsAndEmit } from '../util/composables';
     get():boolean {
       return props.modelValue;
     },
-    set(newTasks: boolean) {
-      emit('update:modelValue', newTasks);
+    set(newState: boolean) {
+      emit('update:modelValue', newState);
     },
   });
 
   const [ isLoading, setIsLoading ] = useState(false);
 
-  async function save(): Promise<void> {
+  const done = async() => {
     try {
       setIsLoading(true);
 
-      await props.handleSave();
+      await props.doneFunction();
 
       setIsLoading(false);
 
@@ -98,5 +93,5 @@ import { usePropsAndEmit } from '../util/composables';
     } catch (e) {
       setIsLoading(false);
     }
-  }
+  };
 </script>

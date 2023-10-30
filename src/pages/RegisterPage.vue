@@ -64,50 +64,14 @@
 						</q-item>
 					</template>
 				</q-select>
-				<q-input
-					ref="birthday"
-					for="npt-register-birthday"
-					:modelValue="formattedBirthday"
-					@update:modelValue="setBirthday"
-					name="birthday"
-					:label="$t('REGISTER.BIRTHDAY.NAME')"
-					:mask="localeMask"
-					:rules="[val => !!val || $t('REGISTER.BIRTHDAY.VALIDATE.EMPTY'),
-						val => val.length == 10 || $t('REGISTER.BIRTHDAY.VALIDATE.INVALID')
-					]"
-					lazy-rules
-					color="primary-main"
-					class="full-width text-dark q-mb-xs"
-				>
-					<template v-slot:append>
-						<q-icon name="event"
-							class="cursor-pointer"
-						>
-							<q-popup-proxy cover
-								transition-show="scale"
-								transition-hide="scale"
-							>
-								<q-date
-									:mask="qDateMask"
-									color="primary-main"
-									:title="$t('REGISTER.BIRTHDAY.NAME')"
-									:subtitle="$t('REGISTER.BIRTHDAY.SUBTITLE')"
-									class="text-dark"
-									:modelValue="form.birthday"
-									@update:modelValue="setBirthday"
-								>
-									<div class="row items-center justify-end">
-										<q-btn v-close-popup
-											label="Close"
-											color="primary"
-											flat
-										/>
-									</div>
-								</q-date>
-							</q-popup-proxy>
-						</q-icon>
-					</template>
-				</q-input>
+				<date-input
+					v-model="form.birthday"
+					max-date="2020-12-31"
+					:title="$t('REGISTER.BIRTHDAY.NAME')"
+					:subtitle="$t('REGISTER.BIRTHDAY.SUBTITLE')"
+					:short-message="$t('REGISTER.BIRTHDAY.VALIDATE.SHORT')"
+					:invalid-message="$t('REGISTER.BIRTHDAY.VALIDATE.INVALID')"
+				/>
 				<q-input
 					ref="password"
 					for="npt-register-password"
@@ -186,27 +150,28 @@
   import { useRouter } from 'vue-router';
   import {
     UnwrapNestedRefs,
-    defineComponent, reactive, watch, ref, inject, computed,
+    defineComponent, reactive, ref, inject, computed,
   } from 'vue';
   import { useUserStore } from 'src/stores/userStore';
   import { CreateUserToSend } from 'src/models/apiModels';
   import { Gender } from 'src/models/mainModels';
   import {
-    formatDateToLocale,
-    getLocaleMask,
-    getLocaleFormat,
     genderToFullString,
-    dateStrToDate,
   } from 'src/utils/commonFunctions';
   import {
     QInput, QSelect, QVueGlobals,
   } from 'quasar';
   import { useI18n } from 'vue-i18n';
   import { useWindowSize } from '@vueuse/core';
+  import { DateTime } from 'luxon';
   import { useState } from '../utils/composables';
+  import DateInput from '../components/form/DateInput.vue';
 
   export default defineComponent({
     name: 'RegisterPage',
+    components: {
+      DateInput,
+    },
   });
 </script>
 
@@ -224,55 +189,27 @@
 
   // FORM
 
+  const threeYearsAgo = DateTime.now().minus({ years: 3 }).toLocaleString({
+    month: '2-digit', day: '2-digit', year: 'numeric',
+  });
+
   const form: UnwrapNestedRefs<CreateUserToSend> = reactive(
     {
       user_password: '',
       full_name: '',
       email: '',
       sex: Gender.NOT_INFORMED,
-      birthday: '2020-12-31',
+      birthday: threeYearsAgo,
       confirm_password: '',
     },
   );
 
   // UTILS
 
-  const locale = navigator.language;
-
-  const localeFormat = getLocaleFormat(locale);
-  const qDateMask = localeFormat.toUpperCase();
-
-  const localeMask = getLocaleMask(locale);
-
   const { width: windowWidth } = useWindowSize();
   const shouldFillScreen = computed(() => windowWidth.value < 550);
 
   const [ isRegistering, setIsRegistering ] = useState(false);
-
-  // BIRTHDAY SETTER AND GETTER
-
-  const setBirthday = (birthday: string|number|null) => {
-    if (typeof birthday !== 'string') return;
-
-    if (birthday.length > 10) {
-      form.birthday = birthday.slice(0, 10);
-      return;
-    }
-
-    form.birthday = birthday;
-  };
-
-  const formattedBirthday = ref(formatDateToLocale(dateStrToDate(form.birthday, localeFormat), locale));
-
-  watch(() => form.birthday, (newValue) => {
-    if (newValue.length < 10) {
-      formattedBirthday.value = newValue;
-
-      return;
-    }
-
-    formattedBirthday.value = formatDateToLocale(dateStrToDate(newValue, localeFormat), locale);
-  });
 
   // INPUT INFO AND STATES
 

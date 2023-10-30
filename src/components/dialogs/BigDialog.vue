@@ -1,12 +1,16 @@
+import { usePropsAndEmit } from '../util/composables';
 <template>
 	<q-dialog
 		v-model="isDialogOpen"
 		persistent
+		maximized
 		transition-show="slide-up"
 		transition-hide="slide-down"
 	>
-		<q-card class="bg-whity text-dark q-pa-sm full-width">
-			<q-bar class="bg-transparent q-px-none q-pt-lg q-pb-xs">
+		<q-card class="bg-lighter-common text-dark q-pa-sm "
+			:style="props.extraStyle"
+		>
+			<q-bar class="bg-transparent q-px-none q-py-lg">
 				<q-btn
 					dense
 					flat
@@ -19,18 +23,18 @@
 				<q-space />
 
 				<q-btn
-					:id="props.doneButtonId"
+					:id="props.saveButtonId"
 					:loading="isLoading"
-					:icon="doneIcon"
 					dense
 					flat
+					icon="done"
 					size="20px"
 					color="positive"
-					@click="done"
+					@click="save"
 				/>
 			</q-bar>
 
-			<q-card-section class="bg-transparent q-mx-sm q-px-xs q-py-sm column">
+			<q-card-section class="bg-white q-mx-sm q-px-md q-py-sm column">
 				<slot />
 			</q-card-section>
 		</q-card>
@@ -42,29 +46,30 @@
     defineComponent,
     computed,
   } from 'vue';
-  import { useState } from '../utils/composables';
+  import { useState } from '../../utils/composables';
 
   export default defineComponent({
-    name: 'MidDialog',
+    name: 'BigDialog',
   });
 </script>
+
 <script setup lang="ts">
   const props = defineProps({
     modelValue: {
       type: Boolean,
-      required: true,
+      default: false,
     },
-    doneFunction: {
+    saveButtonId: {
+      type: String,
+      default: 'btn-save',
+    },
+    handleSave: {
       type: Function,
       required: true,
     },
-    doneIcon: {
+    extraStyle: {
       type: String,
-      default: 'done',
-    },
-    doneButtonId: {
-      type: String,
-      default: 'btn-done',
+      default: '',
     },
   });
 
@@ -74,18 +79,18 @@
     get():boolean {
       return props.modelValue;
     },
-    set(newState: boolean) {
-      emit('update:modelValue', newState);
+    set(newTasks: boolean) {
+      emit('update:modelValue', newTasks);
     },
   });
 
   const [ isLoading, setIsLoading ] = useState(false);
 
-  const done = async() => {
+  async function save(): Promise<void> {
     try {
       setIsLoading(true);
 
-      await props.doneFunction();
+      await props.handleSave();
 
       setIsLoading(false);
 
@@ -93,5 +98,5 @@
     } catch (e) {
       setIsLoading(false);
     }
-  };
+  }
 </script>

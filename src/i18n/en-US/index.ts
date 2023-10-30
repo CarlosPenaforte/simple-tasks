@@ -43,6 +43,7 @@ export default {
 			VALIDATE: {
 				EMPTY: 'The birthday field is required',
 				INVALID: 'The birthday entered is invalid',
+				SHORT: 'The birthday entered is too short',
 			},
 			NAME: 'Birthday',
 			SUBTITLE: 'Select your birthday',
@@ -121,6 +122,7 @@ export default {
 			NO_CHANGES: 'No changes were made',
 			NOTHING_FOUND: 'No tasks found',
 			NOT_POSSIBLE_TO_FIND_PROJECT_OR_USER: 'It was not possible to find a project and/or user',
+			SHORT_DUE_DATE: 'The due date entered is too short',
 			INVALID_DUE_DATE: 'The due date entered is invalid',
 			NOT_FOUND: 'Task not found',
 			CHECK: 'Error checking task',

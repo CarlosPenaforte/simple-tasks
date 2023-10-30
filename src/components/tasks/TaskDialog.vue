@@ -68,45 +68,12 @@
 			/>
 		</div>
 
-		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">{{ $t('TASK.FORM.DUE_DATE') }}</span>
-		<q-input
-			for="npt-task-due-date"
-			:modelValue="formattedDueDate"
-			@update:modelValue="setDueDate"
-			name="dueDate"
-			:mask="localeMask"
-			:placeholder="localeFormat"
-			:rules="[val => val.length == 10 || 'Invalid date']"
-			lazy-rules
-			color="primary-main"
-			class="q-mb-md"
-		>
-			<template v-slot:append>
-				<q-icon name="event"
-					class="cursor-pointer"
-				>
-					<q-popup-proxy>
-						<q-date
-							:mask="qDateMask"
-							color="primary-main"
-							:title="$t('TASK.FORM.DUE_DATE')"
-							:subtitle="$t('TASK.FORM.DUE_DATE_SUBTITLE')"
-							class="text-dark"
-							:modelValue="formattedDueDate"
-							@update:modelValue="setDueDate"
-						>
-							<div class="row items-center justify-end">
-								<q-btn v-close-popup
-									label="Close"
-									color="primary"
-									flat
-								/>
-							</div>
-						</q-date>
-					</q-popup-proxy>
-				</q-icon>
-			</template>
-		</q-input>
+		<date-input v-model="newTask.due_date"
+			:title="$t('TASK.FORM.DUE_DATE')"
+			:subtitle="$t('TASK.FORM.DUE_DATE_SUBTITLE')"
+			:short-message="$t('TASK.ERROR.SHORT_DUE_DATE')"
+			:invalid-message="$t('TASK.ERROR.INVALID_DUE_DATE')"
+		/>
 	</big-dialog>
 </template>
 
@@ -129,16 +96,17 @@
     formatDateToIso,
     formatDateToLocale,
     getLocaleFormat,
-    getLocaleMask,
     parseUrgency,
   } from 'src/utils/commonFunctions';
   import { useI18n } from 'vue-i18n';
-  import BigDialog from '../BigDialog.vue';
+  import BigDialog from '../dialogs/BigDialog.vue';
+  import DateInput from '../form/DateInput.vue';
 
   export default defineComponent({
     name: 'CreateTaskDialog',
     components: {
       BigDialog,
+      DateInput,
     },
   });
 </script>
@@ -188,8 +156,6 @@
   const locale = navigator.language;
 
   const localeFormat = getLocaleFormat(locale);
-  const qDateMask = localeFormat.toUpperCase();
-  const localeMask = getLocaleMask(locale);
 
   const newTask = ref({
     task_title: '',
@@ -225,31 +191,6 @@
       emit('update:modelValue', newState);
     },
   });
-
-  // DUE DATE SETTER AND GETTER
-
-  const setDueDate = (dueDate: string|number|null) => {
-    if (typeof dueDate !== 'string') return;
-
-    if (dueDate.length > 10) {
-      newTask.value.due_date = dueDate.slice(0, 10);
-      return;
-    }
-
-    newTask.value.due_date = dueDate;
-  };
-
-  const formattedDueDate = ref(formatDateToLocale(dateStrToDate(newTask.value.due_date, localeFormat), locale));
-
-  watch(newTask, (newValue) => {
-    if (newValue.due_date.length < 10) {
-      formattedDueDate.value = newValue.due_date;
-
-      return;
-    }
-
-    formattedDueDate.value = formatDateToLocale(dateStrToDate(newValue.due_date, localeFormat), locale);
-  }, { deep: true });
 
   // ACTIONS
 

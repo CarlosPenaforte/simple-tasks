@@ -56,57 +56,21 @@
 			</template>
 		</q-select>
 
-		<q-input
-			ref="birthday"
-			for="npt-user-birthday"
-			:modelValue="formattedBirthday"
-			@update:modelValue="setBirthday"
-			name="birthday"
-			:label="$t('REGISTER.BIRTHDAY.NAME')"
-			:mask="localeMask"
-			:rules="[val => !!val || $t('REGISTER.BIRTHDAY.VALIDATE.EMPTY'),
-				val => val.length == 10 || $t('REGISTER.BIRTHDAY.VALIDATE.INVALID')
-			]"
-			lazy-rules
-			color="primary-main"
-			class="full-width text-dark q-mb-xs"
-		>
-			<template v-slot:append>
-				<q-icon name="event"
-					class="cursor-pointer"
-				>
-					<q-popup-proxy
-						transition-show="scale"
-						transition-hide="scale"
-					>
-						<q-date
-							:mask="qDateFormat"
-							color="primary-main"
-							:title="$t('REGISTER.BIRTHDAY.NAME')"
-							:subtitle="$t('REGISTER.BIRTHDAY.SUBTITLE')"
-							class="text-dark"
-							:modelValue="newProfile.birthday"
-							@update:modelValue="setBirthday"
-						>
-							<div class="row items-center justify-end">
-								<q-btn v-close-popup
-									label="Close"
-									color="primary"
-									flat
-								/>
-							</div>
-						</q-date>
-					</q-popup-proxy>
-				</q-icon>
-			</template>
-		</q-input>
+		<date-input
+			v-model="newProfile.birthday"
+			max-date="2020-12-31"
+			:title="$t('REGISTER.BIRTHDAY.NAME')"
+			:subtitle="$t('REGISTER.BIRTHDAY.SUBTITLE')"
+			:short-message="$t('REGISTER.BIRTHDAY.VALIDATE.SHORT')"
+			:invalid-message="$t('REGISTER.BIRTHDAY.VALIDATE.INVALID')"
+		/>
 	</big-dialog>
 </template>
 
 <script lang="ts">
   import { storeToRefs } from 'pinia';
   import {
-    defineComponent, computed, ref, inject, watch, reactive,
+    defineComponent, computed, ref, inject, reactive,
   } from 'vue';
   import {
     QInput, QSelect, QVueGlobals,
@@ -119,15 +83,17 @@
   import {
     UpdateUserToSend,
   } from '../../models/apiModels';
-  import BigDialog from '../BigDialog.vue';
+  import BigDialog from '../dialogs/BigDialog.vue';
   import {
-    formatDateToLocale, genderToFullString, getLocaleFormat, getLocaleMask, dateStrToDate,
+    formatDateToLocale, genderToFullString,
   } from '../../utils/commonFunctions';
+  import DateInput from '../form/DateInput.vue';
 
   export default defineComponent({
     name: 'UpdateProfileDialog',
     components: {
       BigDialog,
+      DateInput,
     },
   });
 </script>
@@ -156,11 +122,6 @@
 
   const locale = navigator.language;
 
-  const localeFormat = getLocaleFormat(locale);
-  const qDateFormat = localeFormat.toUpperCase();
-
-  const localeMask = getLocaleMask(locale);
-
   // MODELS
 
   const newProfile = reactive<UpdateUserToSend>({
@@ -184,30 +145,6 @@
   const genderOptions: Gender[] = [
     Gender.MALE, Gender.FEMALE, Gender.NON_BINARY, Gender.NOT_INFORMED,
   ];
-
-  // BIRTHDAY
-  const setBirthday = (birthday: string|number|null) => {
-    if (typeof birthday !== 'string') return;
-
-    if (birthday.length > 10) {
-      newProfile.birthday = birthday.slice(0, 10);
-      return;
-    }
-
-    newProfile.birthday = birthday;
-  };
-
-  const formattedBirthday = ref(formatDateToLocale(dateStrToDate(newProfile.birthday, localeFormat), locale));
-
-  watch(() => newProfile.birthday, (newValue) => {
-    if (newValue.length < 10) {
-      formattedBirthday.value = newValue;
-
-      return;
-    }
-
-    formattedBirthday.value = formatDateToLocale(dateStrToDate(newValue, localeFormat), locale);
-  });
 
   // ERROR CHECK
 

@@ -77,7 +77,7 @@
   import { useRouter } from 'vue-router';
   import { QVueGlobals } from 'quasar';
   import { useState } from '../utils/composables';
-  import ConfirmDialog from '../components/ConfirmDialog.vue';
+  import ConfirmDialog from '../components/dialogs/ConfirmDialog.vue';
 
   export default {
     name: 'ProfilePage',

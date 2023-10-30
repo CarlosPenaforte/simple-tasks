@@ -32,7 +32,7 @@
 								<span
 									class="text-dark fs-14"
 								>{{ task.taskTitle }}</span>
-								<template v-if="task.dueDate && task.dueDate <= new Date()">
+								<template v-if="!task.done && task.dueDate < new Date()">
 									<q-space />
 									<span
 										class="text-negative fs-12 q-mr-xs"

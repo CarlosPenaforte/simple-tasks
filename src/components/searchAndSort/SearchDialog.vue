@@ -105,7 +105,7 @@
   } from 'src/utils/commonFunctions';
   import { QVueGlobals } from 'quasar';
   import { useI18n } from 'vue-i18n';
-  import MidDialog from '../MidDialog.vue';
+  import MidDialog from '../dialogs/MidDialog.vue';
 
   export default defineComponent({
     name: 'SearchDialog',
