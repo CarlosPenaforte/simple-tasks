@@ -22,8 +22,11 @@ export function filterTasksByUrgency(userId: number, projectId: number, tasks: T
 // DATE
 
 export const getLocaleFormat = (locale: string): string => {
-	if (locale === 'en-US') return 'MM-dd-yyyy';
-	return 'dd/MM/yyyy';
+	const localeStr = DateTime.fromISO('2020-01-30').setLocale(locale).toLocaleString();
+
+	if (localeStr === 'Invalid DateTime') return new Date('2020-01-30').toLocaleDateString(locale);
+
+	return localeStr.replace('2020', 'yyyy').replace('01', 'MM').replace('30', 'dd');
 };
 
 export const getLocaleMask = (locale: string): string => getLocaleFormat(locale).replace(/[a-z]/gi, '#');
@@ -37,7 +40,7 @@ export const formatDateToLocale = (
 ): string => {
 	if (!date) return '';
 
-	const parsedDate = DateTime.fromJSDate(date).setZone('utc').setLocale(locale).toLocaleString();
+	const parsedDate = DateTime.fromJSDate(date, { zone: 'utc' }).setLocale(locale).toLocaleString();
 
 	if (parsedDate === 'Invalid DateTime') {
 		return date.toLocaleDateString(locale, {

@@ -106,7 +106,7 @@
       return isoStrToLocale(props.modelValue, locale) || props.modelValue;
     },
     set(newState: string) {
-      emit('update:modelValue', localeStrToIso(newState, localeFormat));
+      emit('update:modelValue', localeStrToIso(newState, localeFormat) || newState);
     },
   });
 
