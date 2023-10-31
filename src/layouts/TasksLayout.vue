@@ -278,7 +278,6 @@
 
 		<task-dialog
 			v-model="isCreateTaskOpen"
-			:current-task="targettedTask"
 			:extra-style="shrinkIfNeeded"
 		/>
 

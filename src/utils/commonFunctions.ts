@@ -22,14 +22,19 @@ export function filterTasksByUrgency(userId: number, projectId: number, tasks: T
 // DATE
 
 export const getLocaleFormat = (locale: string): string => {
-	if (locale === 'en-US') return 'MM-dd-yyyy';
-	return 'dd/MM/yyyy';
+	let localeStr = DateTime.fromISO('2020-10-30').setLocale(locale).toLocaleString();
+
+	if (localeStr === 'Invalid DateTime') {
+		localeStr = new Date('2020-10-30').toLocaleDateString(locale);
+	}
+
+	return localeStr.replace('2020', 'yyyy').replace('10', 'MM').replace('30', 'dd');
 };
 
 export const getLocaleMask = (locale: string): string => getLocaleFormat(locale).replace(/[a-z]/gi, '#');
 
 export const formatDateToIso = (date: Date): string => DateTime.fromJSDate(date, { zone: 'utc' }).toISODate()
-	|| date.toUTCString().slice(0, 10);
+	|| date.toISOString().slice(0, 10);
 
 export const formatDateToLocale = (
 	date: Date | undefined,
@@ -37,18 +42,46 @@ export const formatDateToLocale = (
 ): string => {
 	if (!date) return '';
 
-	return DateTime.fromJSDate(date).setZone('utc').setLocale(locale).toLocaleString();
+	const parsedDate = DateTime.fromJSDate(date, { zone: 'utc' }).setLocale(locale).toLocaleString();
+
+	if (parsedDate === 'Invalid DateTime') {
+		return date.toLocaleDateString(locale, {
+			day: '2-digit', month: '2-digit', year: 'numeric',
+		});
+	}
+
+	return parsedDate;
 };
 
-export const dateStrToDate = (dateStr: string, localeFormat: string): Date | undefined => {
+export const localeStrToDate = (dateStr: string, localeFormat: string): Date | undefined => {
+	if (!dateStr) return undefined;
+
+	const date = DateTime.fromFormat(dateStr, localeFormat, { zone: 'utc' }).toJSDate();
+
+	return date;
+};
+
+export const isoStrToDate = (dateStr: string): Date | undefined => {
     if (!dateStr) return undefined;
 
-    if (dateStr.indexOf('/') === 4) return DateTime.fromFormat(dateStr, 'yyyy/MM/dd', { zone: 'utc' }).toJSDate();
+    return DateTime.fromISO(dateStr, { zone: 'utc' }).toJSDate();
+};
 
-    const date = DateTime.fromFormat(dateStr, localeFormat, { zone: 'utc' }).toJSDate();
+export const isoStrToLocale = (
+	dateStr: string,
+	locale: string,
+): string | undefined => {
+	const parsedStr = DateTime.fromISO(dateStr, { zone: 'utc' }).setLocale(locale).toLocaleString();
 
-    return date;
-  };
+	if (parsedStr === 'Invalid DateTime') return undefined;
+
+	return parsedStr;
+};
+
+export const localeStrToIso = (
+	dateStr: string,
+	localeFormat: string,
+): string | undefined => DateTime.fromFormat(dateStr, localeFormat, { zone: 'utc' }).toISODate() || undefined;
 
 // TYPE CHECK
 

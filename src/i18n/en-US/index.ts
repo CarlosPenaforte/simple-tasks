@@ -86,6 +86,7 @@ export default {
 			NOTHING_FOUND: 'No projects found',
 			NAME_ALREADY_EXISTS: 'A project with the name {name} already exists',
 			CREATE_OR_SELECT_FIRST: 'Create and/or select a project first',
+			EMPTY_NAME: 'The name field is required',
 		},
 		SUCCESS: {
 			CREATE: 'Project created successfully',
@@ -124,6 +125,7 @@ export default {
 			NOT_POSSIBLE_TO_FIND_PROJECT_OR_USER: 'It was not possible to find a project and/or user',
 			SHORT_DUE_DATE: 'The due date entered is too short',
 			INVALID_DUE_DATE: 'The due date entered is invalid',
+			EMPTY_TITLE: 'The title field is required',
 			NOT_FOUND: 'Task not found',
 			CHECK: 'Error checking task',
 		},
@@ -172,7 +174,7 @@ export default {
 		URGENCY: 'Search by urgency',
 		DUE_DATE: 'Search by due date',
 		NOTHING_FOUND: 'Nothing found',
-		DISMISS: 'Showing search<br>Click here to dismiss',
+		DISMISS: 'Click to dismiss',
 	},
 	SORT: {
 		ASC: 'Ascending',

@@ -189,9 +189,7 @@
 
   // FORM
 
-  const threeYearsAgo = DateTime.now().minus({ years: 3 }).toLocaleString({
-    month: '2-digit', day: '2-digit', year: 'numeric',
-  });
+  const threeYearsAgo = DateTime.now().minus({ years: 3 }).toISODate();
 
   const form: UnwrapNestedRefs<CreateUserToSend> = reactive(
     {
@@ -235,15 +233,17 @@
 
   const hasErrors = () => {
     const errorsCheckList = [
-      fullName.value?.hasError,
-      email.value?.hasError,
-      sex.value?.hasError,
-      birthday.value?.hasError,
-      password.value?.hasError,
-      confirmPassword.value?.hasError,
+      fullName.value,
+      email.value,
+      sex.value,
+      birthday.value,
+      password.value,
+      confirmPassword.value,
     ];
 
-    return errorsCheckList.some((hasError) => hasError);
+    errorsCheckList.forEach((field) => field?.validate());
+
+    return errorsCheckList.some((field) => field?.hasError);
   };
 
   // ACTIONS
@@ -252,7 +252,7 @@
     if (hasErrors()) {
       $q?.notify({
         type: 'negative',
-        message: $t('FORM.INVALID_FIELDS'),
+        message: $t('AUTH.FORM.INVALID_FIELDS'),
       });
 
       return;

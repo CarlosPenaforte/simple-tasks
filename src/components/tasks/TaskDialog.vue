@@ -15,12 +15,14 @@
 		</h1>
 
 		<q-input
+			ref="taskTitle"
 			for="npt-task-title"
 			v-model="newTask.task_title"
 			bottom-slots
 			counter
 			clearable
 			maxlength="20"
+			:rules="[val => !!val || $t('TASK.ERROR.EMPTY_TITLE')]"
 			:label="$t('TASK.FORM.TITLE')"
 			color="primary-main"
 			class="q-mb-md text-dark"
@@ -68,7 +70,9 @@
 			/>
 		</div>
 
-		<date-input v-model="newTask.due_date"
+		<date-input
+			ref="dueDateInput"
+			v-model="newTask.due_date"
 			:title="$t('TASK.FORM.DUE_DATE')"
 			:subtitle="$t('TASK.FORM.DUE_DATE_SUBTITLE')"
 			:short-message="$t('TASK.ERROR.SHORT_DUE_DATE')"
@@ -84,23 +88,23 @@
   import {
     Urgency, Task,
   } from 'src/models/mainModels';
-  import { QVueGlobals } from 'quasar';
+  import {
+    QInput, QVueGlobals,
+  } from 'quasar';
   import { DateTime } from 'luxon';
   import { useTaskStore } from 'src/stores/taskStore';
   import { CreateTaskToSend } from 'src/models/apiModels';
   import { useUserStore } from 'src/stores/userStore';
   import { useProjectStore } from 'src/stores/projectStore';
   import {
-    dateStrToDate,
     urgencyToTranslation,
     formatDateToIso,
-    formatDateToLocale,
-    getLocaleFormat,
     parseUrgency,
   } from 'src/utils/commonFunctions';
   import { useI18n } from 'vue-i18n';
   import BigDialog from '../dialogs/BigDialog.vue';
   import DateInput from '../form/DateInput.vue';
+  import { isoStrToDate } from '../../utils/commonFunctions';
 
   export default defineComponent({
     name: 'CreateTaskDialog',
@@ -153,9 +157,9 @@
   const parseDateToUTCString = (date: Date) => DateTime.fromJSDate(date, { zone: 'utc' }).toISODate() || date.toLocaleDateString('utc');
 
   // MODELS
-  const locale = navigator.language;
 
-  const localeFormat = getLocaleFormat(locale);
+  const taskTitle = ref<QInput | null>(null);
+  const dueDateInput = ref<typeof DateInput | null>(null);
 
   const newTask = ref({
     task_title: '',
@@ -174,7 +178,7 @@
         urgency: newValue.urgency,
         creation_date: parseDateToUTCString(newValue.creationDate),
         due_date: newValue.dueDate
-          ? formatDateToLocale(newValue.dueDate, locale)
+          ? formatDateToIso(newValue.dueDate)
           : '',
         done: +(newValue.done || false),
       };
@@ -195,6 +199,17 @@
   // ACTIONS
 
   async function saveTask() {
+    taskTitle.value?.validate();
+    dueDateInput.value?.validate();
+    if (taskTitle.value?.hasError || dueDateInput.value?.hasError) {
+      $q?.notify({
+        type: 'negative',
+        message: $t('AUTH.FORM.INVALID_FIELDS'),
+      });
+
+      throw new Error('Validation Error');
+    }
+
     try {
       const [ userId, projectId ] = [ user.value?.userId, currentProject.value?.projectId ];
 
@@ -206,20 +221,9 @@
         return;
       }
 
-      const parsedDueDate = dateStrToDate(newTask.value.due_date, localeFormat);
-
-      if (newTask.value.due_date && !parsedDueDate) {
-        $q?.notify({
-          type: 'negative',
-          message: $t('TASK.ERROR.INVALID_DUE_DATE'),
-        });
-
-        return;
-      }
-
       const taskToSend: CreateTaskToSend = {
         ...newTask.value,
-        due_date: parsedDueDate ? formatDateToIso(parsedDueDate) : undefined,
+        due_date: newTask.value.due_date,
         user_id: userId,
         project_id: projectId,
       };
@@ -236,6 +240,9 @@
 
           return;
         }
+
+        const parsedDueDate = isoStrToDate(newTask.value.due_date);
+
         if (taskToSend.task_title === props.currentTask.taskTitle
           && taskToSend.task_description === props.currentTask.taskDescription
           && parseUrgency(taskToSend.urgency) === props.currentTask.urgency

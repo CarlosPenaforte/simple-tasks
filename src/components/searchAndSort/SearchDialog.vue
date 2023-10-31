@@ -52,65 +52,38 @@
 		<span class="q-mt-lg q-mb-none text-secondary fs-12 lh-16">
 			{{ $t('SEARCH.DUE_DATE') }}
 		</span>
-		<q-input
-			for="npt-search-due-date"
-			:modelValue="formattedDueDate"
-			:mask="localeMask"
-			:placeholder="localeFormat"
-			:rules="[val => val.length == 10 || $t('TASK.ERROR.INVALID_DUE_DATE')]"
-			name="dueDate"
-			lazy-rules
-			color="primary-main"
-			class="q-mb-md"
-			@update:modelValue="setDueDate"
-		>
-			<template v-slot:append>
-				<q-icon name="event"
-					class="cursor-pointer"
-				>
-					<q-popup-proxy>
-						<q-date
-							:modelValue="formattedDueDate"
-							:mask="qDateMask"
-							:title="$t('TASK.FORM.DUE_DATE')"
-							:subtitle="$t('TASK.FORM.DUE_DATE_SUBTITLE')"
-							color="primary-main"
-							@update:modelValue="setDueDate"
-						>
-							<div class="row items-center justify-end">
-								<q-btn v-close-popup
-									label="Close"
-									color="primary"
-									flat
-								/>
-							</div>
-						</q-date>
-					</q-popup-proxy>
-				</q-icon>
-			</template>
-		</q-input>
+		<date-input
+			v-model="searchFields.dueDate"
+			:title="$t('TASK.FORM.DUE_DATE')"
+			:subtitle="$t('TASK.FORM.DUE_DATE_SUBTITLE')"
+			:short-message="$t('TASK.ERROR.SHORT_DUE_DATE')"
+			:invalid-message="$t('TASK.ERROR.INVALID_DUE_DATE')"
+		/>
 	</mid-dialog>
 </template>
 
 <script lang="ts">
   import {
-    defineComponent, computed, WritableComputedRef, reactive, watch, ref, inject,
+    defineComponent, computed, WritableComputedRef, reactive, inject,
   } from 'vue';
   import {
     Urgency, SearchFields,
   } from 'src/models/mainModels';
   import { useTaskStore } from 'src/stores/taskStore';
   import {
-    dateStrToDate, urgencyToTranslation, formatDateToLocale, getLocaleFormat, getLocaleMask,
+    urgencyToTranslation,
   } from 'src/utils/commonFunctions';
   import { QVueGlobals } from 'quasar';
   import { useI18n } from 'vue-i18n';
   import MidDialog from '../dialogs/MidDialog.vue';
+  import DateInput from '../form/DateInput.vue';
+  import { isoStrToDate } from '../../utils/commonFunctions';
 
   export default defineComponent({
     name: 'SearchDialog',
     components: {
       MidDialog,
+      DateInput,
     },
   });
 </script>
@@ -136,12 +109,6 @@
 
   // MODELS
 
-  const locale = navigator.language;
-
-  const localeFormat = getLocaleFormat(locale);
-  const qDateMask = localeFormat.toUpperCase();
-  const localeMask = getLocaleMask(locale);
-
   const searchFields: SearchFields = reactive({
     name: '',
     urgency: Urgency.URGENT,
@@ -157,35 +124,10 @@
     },
   });
 
-  // DUE DATE SETTER AND GETTER
-
-  const setDueDate = (dueDate: string|number|null) => {
-    if (typeof dueDate !== 'string') return;
-
-    if (dueDate.length > 10) {
-      searchFields.dueDate = dueDate.slice(0, 10);
-      return;
-    }
-
-    searchFields.dueDate = dueDate;
-  };
-
-  const formattedDueDate = ref(formatDateToLocale(dateStrToDate(searchFields.dueDate, localeFormat), locale));
-
-  watch(() => searchFields.dueDate, (newValue) => {
-    if (newValue.length < 10) {
-      formattedDueDate.value = newValue;
-
-      return;
-    }
-
-    formattedDueDate.value = formatDateToLocale(dateStrToDate(newValue, localeFormat), locale);
-  });
-
   // ACTIONS
 
   function searchTasks(): void {
-    const parsedDueDate = dateStrToDate(searchFields.dueDate, localeFormat);
+    const parsedDueDate = isoStrToDate(searchFields.dueDate);
 
     const success = taskStore.searchTasks(searchFields.name, searchFields.urgency, parsedDueDate);
 

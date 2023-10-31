@@ -8,12 +8,11 @@ import { User } from 'src/models/mainModels';
 import {
 	login, logout,
 } from 'src/services/authService';
-import { DateTime } from 'luxon';
 import {
 	update, register, getById, deleteById,
 } from '../services/userService';
 import {
-	formatDateToIso, getLocaleFormat, parseUser,
+	parseUser,
 } from '../utils/commonFunctions';
 import { api } from '../boot/axios';
 
@@ -23,15 +22,7 @@ export const useUserStore = defineStore('user', {
 	}),
 	actions: {
 		async createUser(userToSend: CreateUserToSend): Promise<[boolean, string]> {
-			const localeFormat = getLocaleFormat(navigator.language);
-			const parsedDate = DateTime.fromFormat(userToSend.birthday, localeFormat).setZone('utc').toJSDate();
-
-			const filteredUser = {
-				...userToSend,
-				birthday: formatDateToIso(parsedDate),
-			};
-
-			const response = await register(filteredUser);
+			const response = await register(userToSend);
 
 			if (response.data.hasError) {
 				return [ false, response.data.message ];
@@ -44,15 +35,7 @@ export const useUserStore = defineStore('user', {
 			userId: number,
 			userToSend: UpdateUserToSend,
 		): Promise<[boolean, string | ReceivedUser]> {
-			const localeFormat = getLocaleFormat(navigator.language);
-			const parsedDate = DateTime.fromFormat(userToSend.birthday, localeFormat).setZone('utc').toJSDate();
-
-			const filteredUser = {
-				...userToSend,
-				birthday: formatDateToIso(parsedDate),
-			};
-
-			const response = await update(userId, filteredUser);
+			const response = await update(userId, userToSend);
 
 			if (response.data.hasError) {
 				return [ false, response.data?.message || '' ];

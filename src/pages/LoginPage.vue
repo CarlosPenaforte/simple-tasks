@@ -9,7 +9,14 @@
 			class="bg-gray-100 q-py-lg q-px-md"
 			:class="shouldFillScreen ? 'fit q-ma-none' : 'w-400 q-ma-md'"
 		>
-			<q-card-section class="text-center q-mb-sm">
+			<q-card-section class="text-center q-pb-none">
+				<q-img src="full_logo.png"
+					spinner-color="primary-main"
+					height="64px"
+					fit="scale-down"
+				/>
+			</q-card-section>
+			<q-card-section class="text-center q-pt-md">
 				<q-form
 					ref="loginForm"
 					autofocus
@@ -24,7 +31,7 @@
 						lazy-rules
 						autofocus
 						color="primary-main"
-						class="full-width text-dark q-mb-md"
+						class="full-width text-dark q-mb-sm"
 					/>
 					<q-input
 						v-model="password"
@@ -132,7 +139,7 @@
     if (!isValidForm) {
       $q?.notify({
         type: 'negative',
-        message: $t('FORM.INVALID_FIELDS'),
+        message: $t('AUTH.FORM.INVALID_FIELDS'),
       });
 
       return;

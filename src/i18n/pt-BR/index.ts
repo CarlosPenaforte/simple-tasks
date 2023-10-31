@@ -86,6 +86,7 @@ export default {
 			NOTHING_FOUND: 'Nenhum projeto encontrado',
 			CREATE_OR_SELECT_FIRST: 'Crie e/ou selecione um projeto primeiro',
 			NAME_ALREADY_EXISTS: 'Já existe um projeto com o nome {name}',
+			EMPTY_NAME: 'The name field is required',
 		},
 		SUCCESS: {
 			CREATE: 'Projeto criado com sucesso',
@@ -124,6 +125,7 @@ export default {
 			NOT_POSSIBLE_TO_FIND_PROJECT_OR_USER: 'Não foi possível encontrar um projeto e/ou usuário',
 			SHORT_DUE_DATE: 'A data de vencimento informada é muito curta',
 			INVALID_DUE_DATE: 'A data de vencimento informada é inválida',
+			EMPTY_TITLE: 'O campo título é obrigatório',
 			NOT_FOUND: 'Tarefa não encontrada',
 			CHECK: 'Erro ao verificar tarefa',
 		},
@@ -172,7 +174,7 @@ export default {
 		URGENCY: 'Pesquisar por urgência',
 		DUE_DATE: 'Pesquisar por data de vencimento',
 		NOTHING_FOUND: 'Nada encontrado',
-		DISMISS: 'Mostrando pesquisa<br>Clique aqui para descartar',
+		DISMISS: 'Descartar pesquisa',
 	},
 	SORT: {
 		ASC: 'Crescente',

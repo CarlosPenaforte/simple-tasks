@@ -1,5 +1,6 @@
 <template>
 	<q-input
+		ref="dateInput"
 		for="npt-task-due-date"
 		:modelValue="inputStr"
 		@update:modelValue="setDueDate"
@@ -44,10 +45,12 @@
   import {
     defineComponent,
     computed,
+    ref,
   } from 'vue';
   import { DateTime } from 'luxon';
+  import { QInput } from 'quasar';
   import {
-    dateStrToDate, getLocaleFormat, getLocaleMask,
+    getLocaleFormat, getLocaleMask, isoStrToLocale, localeStrToIso,
   } from '../../utils/commonFunctions';
 
   export default defineComponent({
@@ -90,12 +93,20 @@
   const qDateMask = localeFormat.toUpperCase();
   const localeMask = getLocaleMask(locale);
 
+  const dateInput = ref<QInput|null>(null);
+  const hasError = computed(() => dateInput.value?.hasError);
+  const errorMessage = computed(() => dateInput.value?.errorMessage);
+  const validate = () => dateInput.value?.validate();
+  defineExpose({
+    hasError, errorMessage, validate,
+  });
+
   const inputStr = computed({
     get():string {
-      return props.modelValue;
+      return isoStrToLocale(props.modelValue, locale) || props.modelValue;
     },
     set(newState: string) {
-      emit('update:modelValue', newState);
+      emit('update:modelValue', localeStrToIso(newState, localeFormat) || newState);
     },
   });
 
@@ -111,17 +122,17 @@
   };
 
   const isValidDate = (dateStr: string): boolean => {
-    const maybeDate = dateStrToDate(dateStr, localeFormat);
+    const maybeDate = DateTime.fromFormat(dateStr, localeFormat, { zone: 'utc' });
 
     if (!maybeDate) return false;
 
     if (props.maxDate) {
-      const maxDate = DateTime.fromFormat(props.maxDate, 'yyyy-MM-dd').toJSDate();
+      const maxDate = DateTime.fromISO(props.maxDate, { zone: 'utc' });
 
-      return maybeDate.getTime() <= maxDate.getTime() && maybeDate.getFullYear() > 1920;
+      return maybeDate.diff(maxDate).toMillis() < 0 && maybeDate.year > 1920;
     }
 
-    return maybeDate.getFullYear() > new Date().getFullYear() && maybeDate.getFullYear() < 2100;
+    return maybeDate.diff(DateTime.now()).toMillis() > 0 && maybeDate.year < 2100;
   };
 
 </script>

@@ -15,12 +15,14 @@
 		</h1>
 
 		<q-input
+			ref="projectName"
 			for="npt-project-name"
 			v-model="newProject.name"
 			bottom-slots
 			counter
 			clearable
 			maxlength="20"
+			:rules="[val => !!val || $t('PROJECT.ERROR.EMPTY_NAME')]"
 			:label="$t('PROJECT.FORM.NAME')"
 			color="primary-main"
 			class="q-mb-md"
@@ -49,9 +51,10 @@
 
 <script lang="ts">
   import {
-    defineComponent, computed, reactive, inject, onBeforeMount, PropType, watch,
+    defineComponent, computed, reactive, inject, onBeforeMount, PropType, watch, ref,
   } from 'vue';
   import {
+    QInput,
     QVueGlobals,
   } from 'quasar';
   import { useProjectStore } from 'src/stores/projectStore';
@@ -112,6 +115,8 @@
 
   // MODELS
 
+  const projectName = ref<QInput | null>(null);
+
   let newProject = reactive<CreateProjectToSend>({
     user_id: userId as number,
     name: props.baseProject?.name || '',
@@ -140,8 +145,18 @@
   // ACTIONS
 
   async function saveProject() {
+    projectName.value?.validate();
+    if (projectName.value?.hasError) {
+      $q?.notify({
+        type: 'negative',
+        message: $t('AUTH.FORM.INVALID_FIELDS'),
+      });
+
+      throw new Error('Validation Error');
+    }
+
     if (!props.baseProject?.projectId
-      && projectStore.$state.projects?.some((project) => project.name === newProject.name)
+      && projectStore.$state.projects?.some((project: Project) => project.name === newProject.name)
     ) {
       $q?.notify({
         type: 'negative',
