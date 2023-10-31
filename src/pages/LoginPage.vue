@@ -9,14 +9,14 @@
 			class="bg-gray-100 q-py-lg q-px-md"
 			:class="shouldFillScreen ? 'fit q-ma-none' : 'w-400 q-ma-md'"
 		>
-			<q-card-section class="text-center q-pb-none">
+			<q-card-section class="text-center q-pb-md">
 				<q-img src="full_logo.png"
 					spinner-color="primary-main"
 					height="64px"
 					fit="scale-down"
 				/>
 			</q-card-section>
-			<q-card-section class="text-center q-pt-md">
+			<q-card-section class="text-center">
 				<q-form
 					ref="loginForm"
 					autofocus
