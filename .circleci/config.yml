@@ -15,7 +15,10 @@ jobs:
         environment:
           API_BASE_URL: https://simple-tasks-backend-vz2m.onrender.com
       - image: cimg/base
-        command: docker login --username cpenaforte --password $DOCKERHUB_PASSWORD && docker-compose -f docker/docker-compose.backend.yml up -d
+        auth:
+          username: cpenaforte
+          password: $DOCKERHUB_PASSWORD
+        command: docker-compose -f docker/docker-compose.backend.yml up -d
 
 
     # Add steps to the job
