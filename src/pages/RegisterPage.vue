@@ -190,7 +190,6 @@
   // FORM
 
   const threeYearsAgo = DateTime.now().minus({ years: 3 }).toISODate();
-  console.log(threeYearsAgo);
 
   const form: UnwrapNestedRefs<CreateUserToSend> = reactive(
     {
