@@ -14,7 +14,6 @@ jobs:
       - image: cimg/node:18.18
         environment:
           API_BASE_URL: https://simple-tasks-backend-vz2m.onrender.com
-      - image: cimg/docker
 
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
