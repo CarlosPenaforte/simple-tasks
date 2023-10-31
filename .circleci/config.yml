@@ -14,6 +14,11 @@ jobs:
       - image: cimg/node:18.18
         environment:
           API_BASE_URL: https://simple-tasks-backend-vz2m.onrender.com
+      - image: cimg/base:latest
+        auth:
+          username: cpenaforte
+          password: $DOCKERHUB_PASSWORD
+        command: docker-compose -f docker/docker-compose.backend.yml up -d && docker logs --tail 1000 -f docker-backend-1
 
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
@@ -25,14 +30,7 @@ jobs:
       - setup_remote_docker:
           version: 20.10.24
       - run:
-          name: login to dockerhub
-          command: docker login --username cpenaforte --password $DOCKERHUB_PASSWORD
-      - run:
-          name: start back-end application
-          command:  docker-compose -f docker/docker-compose.backend.yml up -d && docker logs --tail 1000 -f docker-backend-1
-          background: true
-      - run:
-          command: docker inspect docker-backend-1 && sleep 25 && curl --retry-delay 5 --retry 10 --retry-connrefused -I localhost:3000
+          command: curl --retry-delay 5 --retry 10 --retry-connrefused -I localhost:3000
           name: Verify backend server is running
       - run:
           command: sudo apt-get update && sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
