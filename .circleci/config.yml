@@ -27,7 +27,7 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - setup_remote_docker:
-          version: 20.10.23
+          version: 20.10.24
       - run:
           command: docker run -d -p 3000:3000 --name backend cpenaforte/st-back-test && docker start backend
           name: Run backend image
