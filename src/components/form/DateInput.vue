@@ -93,6 +93,8 @@
   const qDateMask = localeFormat.toUpperCase();
   const localeMask = getLocaleMask(locale);
 
+  console.log(localeFormat, qDateMask, localeMask);
+
   const dateInput = ref<QInput|null>(null);
   const hasError = computed(() => dateInput.value?.hasError);
   const errorMessage = computed(() => dateInput.value?.errorMessage);
@@ -124,15 +126,19 @@
   const isValidDate = (dateStr: string): boolean => {
     const maybeDate = DateTime.fromFormat(dateStr, localeFormat, { zone: 'utc' });
 
+    console.log('maybedate', maybeDate);
+
     if (!maybeDate) return false;
 
     if (props.maxDate) {
       const maxDate = DateTime.fromISO(props.maxDate, { zone: 'utc' });
 
-      return maybeDate.diff(maxDate, [ 'days' ]).toMillis() > 0 && maybeDate.year > 1920;
+      console.log('max', maxDate);
+
+      return maybeDate.diff(maxDate).toMillis() < 0 && maybeDate.year > 1920;
     }
 
-    return maybeDate.year > DateTime.now().year && maybeDate.year < 2100;
+    return maybeDate.diff(DateTime.now()).toMillis() > 0 && maybeDate.year < 2100;
   };
 
 </script>

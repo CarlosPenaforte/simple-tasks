@@ -148,12 +148,14 @@
 
   const hasErrors = () => {
     const errorsCheckList = [
-      fullName.value?.hasError,
-      sex.value?.hasError,
-      birthday.value?.hasError,
+      fullName.value,
+      sex.value,
+      birthday.value,
     ];
 
-    return errorsCheckList.some((hasError) => hasError);
+    errorsCheckList.forEach((field) => field?.validate());
+
+    return errorsCheckList.some((hasError) => hasError?.hasError);
   };
 
   // ACTIONS

@@ -22,11 +22,13 @@ export function filterTasksByUrgency(userId: number, projectId: number, tasks: T
 // DATE
 
 export const getLocaleFormat = (locale: string): string => {
-	const localeStr = DateTime.fromISO('2020-01-30').setLocale(locale).toLocaleString();
+	let localeStr = DateTime.fromISO('2020-10-30').setLocale(locale).toLocaleString();
 
-	if (localeStr === 'Invalid DateTime') return new Date('2020-01-30').toLocaleDateString(locale);
+	if (localeStr === 'Invalid DateTime') {
+		localeStr = new Date('2020-10-30').toLocaleDateString(locale);
+	}
 
-	return localeStr.replace('2020', 'yyyy').replace('01', 'MM').replace('30', 'dd');
+	return localeStr.replace('2020', 'yyyy').replace('10', 'MM').replace('30', 'dd');
 };
 
 export const getLocaleMask = (locale: string): string => getLocaleFormat(locale).replace(/[a-z]/gi, '#');

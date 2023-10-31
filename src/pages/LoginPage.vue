@@ -139,7 +139,7 @@
     if (!isValidForm) {
       $q?.notify({
         type: 'negative',
-        message: $t('FORM.INVALID_FIELDS'),
+        message: $t('AUTH.FORM.INVALID_FIELDS'),
       });
 
       return;
