@@ -31,7 +31,7 @@ jobs:
           command:  docker-compose -f docker/docker-compose.backend.yml up -d && docker logs --tail 1000 -f docker-backend-1
           background: true
       - run:
-          command: docker-compose ps && sleep 25 && curl --retry-delay 5 --retry 10 --retry-connrefused -I localhost:3000
+          command: sleep 25 && curl --retry-delay 5 --retry 10 --retry-connrefused -I localhost:3000
           name: Verify backend server is running
       - run:
           command: sudo apt-get update && sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
