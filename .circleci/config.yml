@@ -14,11 +14,11 @@ jobs:
       - image: cimg/node:18.18
         environment:
           API_BASE_URL: https://simple-tasks-backend-vz2m.onrender.com
-      - image: cimg/base:2023.10
+      - image: cimg/node:18.18
         auth:
           username: cpenaforte
           password: $DOCKERHUB_PASSWORD
-        command: docker-compose -f docker/docker-compose.backend.yml up -d && docker logs -f docker-backend-1
+        command: docker-compose -f docker/docker-compose.backend.yml up -d && docker logs --tail 1000 -f docker-backend-1
 
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
