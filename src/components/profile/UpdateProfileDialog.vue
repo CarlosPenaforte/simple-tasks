@@ -57,6 +57,7 @@
 		</q-select>
 
 		<date-input
+			ref="birthday"
 			v-model="newProfile.birthday"
 			max-date="2020-12-31"
 			:title="$t('REGISTER.BIRTHDAY.NAME')"
@@ -85,7 +86,8 @@
   } from '../../models/apiModels';
   import BigDialog from '../dialogs/BigDialog.vue';
   import {
-    formatDateToLocale, genderToFullString,
+    formatDateToIso,
+    genderToFullString,
   } from '../../utils/commonFunctions';
   import DateInput from '../form/DateInput.vue';
 
@@ -118,20 +120,16 @@
   const userStore = useUserStore();
   const { user } = storeToRefs(userStore);
 
-  // UTILS
-
-  const locale = navigator.language;
-
   // MODELS
 
   const newProfile = reactive<UpdateUserToSend>({
     full_name: user.value?.fullName || '',
     sex: user.value?.sex || '',
-    birthday: formatDateToLocale(user.value?.birthday, locale),
+    birthday: formatDateToIso(user.value?.birthday),
   });
   const fullName = ref<QInput|null>(null);
   const sex = ref<QSelect|null>(null);
-  const birthday = ref<QInput|null>(null);
+  const birthday = ref<typeof DateInput|null>(null);
 
   const isUpdateProfileOpen = computed({
     get():boolean {

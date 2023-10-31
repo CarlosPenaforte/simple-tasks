@@ -189,9 +189,7 @@
 
   // FORM
 
-  const threeYearsAgo = DateTime.now().minus({ years: 3 }).toLocaleString({
-    month: '2-digit', day: '2-digit', year: 'numeric',
-  });
+  const threeYearsAgo = DateTime.now().minus({ years: 3 }).toISODate();
 
   const form: UnwrapNestedRefs<CreateUserToSend> = reactive(
     {
