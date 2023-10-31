@@ -27,7 +27,6 @@ jobs:
       - run:
           name: start back-end application
           command: docker login --username cpenaforte --password $DOCKERHUB_PASSWORD && docker-compose -f docker/docker-compose.backend.yml up -d
-          background: true
       - run:
           command: sleep 30 && curl -I localhost:3000
           name: Verify backend server is running
