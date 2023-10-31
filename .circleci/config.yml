@@ -14,10 +14,6 @@ jobs:
       - image: cimg/node:18.18
         environment:
           API_BASE_URL: https://simple-tasks-backend-vz2m.onrender.com
-      - image: cpenaforte/st-back-test
-        auth:
-          username: cpenaforte  # can specify string literal values
-          password: $DOCKERHUB_PASSWORD
 
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
@@ -29,8 +25,17 @@ jobs:
       - setup_remote_docker:
           version: 20.10.24
       - run:
-          command: docker run -d -p 3000:3000 --name backend cpenaforte/st-back-test && docker start backend
-          name: Run backend image
+        name: Install Docker Compose
+        environment:
+          COMPOSE_VERSION: '2.4'
+        command: |
+          curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
+          chmod +x ~/docker-compose
+          sudo mv ~/docker-compose /usr/local/bin/docker-compose
+
+      - run:
+          name: start back-end application
+          command: docker-compose -f docker/docker-compose.backend.yml up -d
           background: true
       - run:
           command: sleep 30 && curl -I localhost:3000
