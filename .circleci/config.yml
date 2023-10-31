@@ -26,7 +26,7 @@ jobs:
           version: 20.10.24
       - run:
           name: start back-end application
-          command: docker login --username cpenaforte --password $DOCKERHUB_PASSWORD && docker-compose -f docker/docker-compose.backend.yml up -d
+          command: docker login --username cpenaforte --password-stdin $DOCKERHUB_PASSWORD && docker-compose -f docker/docker-compose.backend.yml up -d
           background: true
       - run:
           command: sleep 30 && curl -I localhost:3000
