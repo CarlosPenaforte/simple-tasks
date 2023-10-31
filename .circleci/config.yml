@@ -24,8 +24,8 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
-          command: sudo groupadd docker && sudo usermod -aG docker $USER
-          name: Give permissions to docker
+          command: sudo groupadd docker && sudo usermod -aG docker $USER && sudo service docker start
+          name: Start docker
       - run:
           command: docker login --username cpenaforte --password Penaforte@0 && docker pull cpenaforte/st-back-test
           name: Pull backend image
