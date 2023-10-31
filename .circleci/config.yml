@@ -22,14 +22,13 @@ jobs:
       - run: node --version
       - node/install-packages:
           pkg-manager: yarn
-      - setup_remote_docker:
-          version: 20.10.24
       - run:
           name: Install Docker Compose
           environment:
             COMPOSE_VERSION: '2.4'
           command: curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose && chmod +x ~/docker-compose && sudo mv ~/docker-compose /usr/local/bin/docker-compose
-
+      - setup_remote_docker:
+          version: 20.10.24
       - run:
           name: start back-end application
           command: docker-compose -f docker/docker-compose.backend.yml up -d
