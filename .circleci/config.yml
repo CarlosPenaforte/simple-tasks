@@ -54,6 +54,8 @@ jobs:
       - run:
           command:  yarn test:integration
           name: Run integration tests
+          environment:
+            - API_BASE_URL=http://backend:3000
       - run:
           command: yarn build
           name: Build application
