@@ -14,7 +14,14 @@
 const path = require('path');
 const { configure } = require('quasar/wrappers');
 
-const prodEnv = (isProd) => (isProd ? require('dotenv').config({ path: '.env.production' }).parsed : require('dotenv').config({ path: '.env.development' }).parsed);
+const isTest = process.env.NODE_ENV === 'test';
+
+const selectEnv = (isProd) => (isProd
+	? require('dotenv').config({ path: '.env.production' }).parsed
+	: (isTest
+		? require('dotenv').config({ path: '.env.test' }).parsed
+		: require('dotenv').config({ path: '.env.development' }).parsed)
+);
 
 module.exports = configure((ctx) => ({
 	eslint: {
@@ -64,7 +71,7 @@ module.exports = configure((ctx) => ({
 		},
 
 		env: {
-			...prodEnv(!ctx.dev),
+			...selectEnv(ctx.prod, !ctx.dev),
 		},
 
 		vueRouterMode: 'hash', // available values: 'hash', 'history'

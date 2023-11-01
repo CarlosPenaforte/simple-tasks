@@ -50,6 +50,8 @@ jobs:
       - run:
           command: yarn start
           name: Dev App for tests
+          environment:
+            NODE_ENV: test
           background: true
       - run:
           command:  yarn test:integration
