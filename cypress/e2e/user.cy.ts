@@ -35,7 +35,7 @@ describe('Project', () => {
 
 	it('should delete an user', () => {
 		cy.logout();
-		cy.visit('/');
+		cy.visit('/#/login');
 
 		cy.intercept('GET', `${apiUrl}/api/v1/users/*`).as('getUser');
 		cy.intercept('DELETE', `${apiUrl}/api/v1/users/*`).as('deleteUser');

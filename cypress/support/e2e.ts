@@ -55,6 +55,20 @@ Cypress.on('test:before:run', () => {
 	});
 });
 
+const apiUrl: string = Cypress.env('apiUrl');
+
+before(() => {
+	cy.intercept('GET', `${apiUrl}/api/v1/users/*`).as('getUser');
+
+	cy.login();
+
+	cy.visit('/');
+
+	cy.wait('@getUser');
+
+	cy.deleteProjectIfNeeded();
+});
+
 after(() => {
 	cy.logout();
 });
