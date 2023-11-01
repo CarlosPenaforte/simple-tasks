@@ -34,11 +34,11 @@ describe('Project', () => {
 	});
 
 	it('should delete an user', () => {
-		cy.intercept('GET', `${apiUrl}/api/v1/users/*`).as('getUser');
-		cy.intercept('DELETE', `${apiUrl}/api/v1/users/*`).as('deleteUser');
-
 		cy.logout();
 		cy.visit('/');
+
+		cy.intercept('GET', `${apiUrl}/api/v1/users/*`).as('getUser');
+		cy.intercept('DELETE', `${apiUrl}/api/v1/users/*`).as('deleteUser');
 
 		cy.login({
 			email: 'test@test.com', password: '123456',

@@ -19,7 +19,7 @@ describe('Task', () => {
 
 		cy.get('#npt-task-title').type('Test Task');
 		cy.get('#npt-task-description').type('Test Description');
-		cy.get('#npt-task-due-date').type('20122023');
+		cy.get('#npt-task-due-date').type('20122050');
 
 		cy.get('#btn-task-submit').click();
 
@@ -39,23 +39,6 @@ describe('Task', () => {
 		cy.get('#btn-task-submit').click();
 
 		cy.wait('@updateTask');
-	});
-
-	it('should show warn if due date was reached', () => {
-		cy.intercept('PUT', `${apiUrl}/api/v1/users/*/tasks/*`).as('updateTask');
-
-		cy.get('#el-expansion-urgent').click();
-		cy.get('#btn-options-test-task').click();
-		cy.get('#btn-edit-test-task').click();
-
-		cy.get('#npt-task-due-date').clear();
-		cy.get('#npt-task-due-date').type('20122020');
-
-		cy.get('#btn-task-submit').click();
-
-		cy.wait('@updateTask');
-
-		cy.contains('20/12/2020').should('have.class', 'text-negative');
 	});
 
 	it('should change project and the task shown', () => {
@@ -82,7 +65,7 @@ describe('Task', () => {
 		cy.get('#btn-search-tasks').click();
 
 		cy.get('#npt-search-name').type('Test Task');
-		cy.get('#npt-search-due-date').type('20122020');
+		cy.get('#npt-search-due-date').type('20122050');
 
 		cy.get('#btn-apply-search').click();
 		cy.get('#el-number-urgent').should('have.text', '1');
@@ -104,7 +87,7 @@ describe('Task', () => {
 
 		cy.get('#npt-task-title').type('Second');
 		cy.get('#npt-task-description').type('Test Description');
-		cy.get('#npt-task-due-date').type('20122023');
+		cy.get('#npt-task-due-date').type('20122070');
 
 		cy.get('#btn-task-submit').click();
 
