@@ -72,6 +72,7 @@
 
 		<date-input
 			ref="dueDateInput"
+			input-id="npt-task-due-date"
 			v-model="newTask.due_date"
 			:title="$t('TASK.FORM.DUE_DATE')"
 			:subtitle="$t('TASK.FORM.DUE_DATE_SUBTITLE')"

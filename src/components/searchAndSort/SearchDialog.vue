@@ -53,6 +53,7 @@
 			{{ $t('SEARCH.DUE_DATE') }}
 		</span>
 		<date-input
+			input-id="npt-search-due-date"
 			v-model="searchFields.dueDate"
 			:title="$t('TASK.FORM.DUE_DATE')"
 			:subtitle="$t('TASK.FORM.DUE_DATE_SUBTITLE')"

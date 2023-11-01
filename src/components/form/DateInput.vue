@@ -1,7 +1,7 @@
 <template>
 	<q-input
 		ref="dateInput"
-		for="npt-task-due-date"
+		:for="inputId"
 		:modelValue="inputStr"
 		@update:modelValue="setDueDate"
 		name="dueDate"
@@ -60,6 +60,10 @@
 
 <script setup lang="ts">
   const props = defineProps({
+    inputId: {
+      type: String,
+      required: true,
+    },
     modelValue: {
       type: String,
       required: true,

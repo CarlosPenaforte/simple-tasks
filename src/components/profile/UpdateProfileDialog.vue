@@ -58,6 +58,7 @@
 
 		<date-input
 			ref="birthday"
+			input-id="npt-user-birthday"
 			v-model="newProfile.birthday"
 			max-date="2020-12-31"
 			:title="$t('REGISTER.BIRTHDAY.NAME')"
@@ -164,7 +165,7 @@
     if (hasErrors()) {
       $q?.notify({
         type: 'negative',
-        message: $t('FORM.INVALID_FIELDS'),
+        message: $t('AUTH.FORM.INVALID_FIELDS'),
       });
 
       return;

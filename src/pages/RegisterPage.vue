@@ -65,6 +65,7 @@
 					</template>
 				</q-select>
 				<date-input
+					input-id="npt-register-birthday"
 					v-model="form.birthday"
 					max-date="2020-12-31"
 					:title="$t('REGISTER.BIRTHDAY.NAME')"
