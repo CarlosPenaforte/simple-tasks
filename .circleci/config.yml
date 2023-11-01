@@ -62,7 +62,7 @@ jobs:
           command: yarn build
           name: Build application
       - run:
-          command: yarn server
+          command: yarn serve
           name: Serve application
           background: true
       - run:
