@@ -12,21 +12,35 @@ jobs:
     docker:
     # Service container image
       - image: cimg/node:18.18
+      - image: postgres:15-alpine
+        name: postgres
+        environment:
+          - POSTGRES_USER=admin
+          - POSTGRES_PASSWORD=14253678
+          - POSTGRES_DB=st_db
+      - image: cpenaforte/st-back-test:latest
+        auth:
+          username: cpenaforte
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          - PORT=3000
+          - NODE_ENV=test
+          - POSTGRES_USER=admin
+          - POSTGRES_PASSWORD=14253678
+          - POSTGRES_DB=st_db
+          - HOSTNAME=postgres
+          - DB_PORT=5432
+          - SALT_ROUNDS=10
+          - TOKEN_KEY=simpleTasks
+        name: backend
 
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
       - checkout             
-      - setup_remote_docker
       - run: node --version
       - node/install-packages:
           pkg-manager: yarn
-      - run:
-          name: login to dockerhub
-          command: docker login --username cpenaforte --password $DOCKERHUB_PASSWORD
-      - run:
-          name: build backend and verify if it is running
-          command:  docker-compose -f docker/docker-compose.backend.yml up -d && sleep 25 && curl --retry-delay 5 --retry 10 --retry-connrefused -I localhost:3000 && docker-compose -f docker/docker-compose.backend.yml down
       - run:
           command: sudo apt-get update && sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
           name: Install dependencies
@@ -38,7 +52,7 @@ jobs:
           name: Dev App for tests
           background: true
       - run:
-          command: docker-compose -f docker/docker-compose.backend.yml up -d && sleep 15 && yarn test:integration && docker-compose -f docker/docker-compose.backend.yml down
+          command:  yarn test:integration
           name: Run integration tests
       - run:
           command: yarn build

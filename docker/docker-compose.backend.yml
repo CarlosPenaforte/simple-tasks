@@ -12,8 +12,6 @@ services:
 
   backend:
     image: cpenaforte/st-back-test:latest
-    volumes:
-      - .:/app
     environment:
       - PORT=3000
       - NODE_ENV=test
