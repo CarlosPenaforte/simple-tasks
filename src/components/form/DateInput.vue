@@ -107,9 +107,11 @@
 
   const inputStr = computed({
     get():string {
+      console.log('get', props.modelValue, isoStrToLocale(props.modelValue, locale));
       return isoStrToLocale(props.modelValue, locale) || props.modelValue;
     },
     set(newState: string) {
+      console.log('set', newState, localeStrToIso(newState, localeFormat));
       emit('update:modelValue', localeStrToIso(newState, localeFormat) || newState);
     },
   });
