@@ -1,7 +1,13 @@
+const apiUrl: string = Cypress.env('apiUrl');
+
 describe('Authentication', () => {
 	beforeEach(() => {
+		cy.intercept('GET', `${apiUrl}/api/v1/users/*`).as('getUser');
+
 		cy.login();
 		cy.visit('/');
+
+		cy.wait('@getUser');
 	});
 	afterEach(() => {
 		cy.logout();

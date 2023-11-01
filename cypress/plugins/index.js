@@ -1,12 +1,6 @@
-const fs = require('fs');
 const path = require('path');
 
-let envFile = '.env.test';
-try {
-	if (fs.existsSync('.env')) {
-		envFile = '.env';
-	}
-} catch (e) { /* empty */ }
+const envFile = '.env.test';
 
 require('dotenv').config({ path: path.resolve(process.cwd(), envFile) });
 /// <reference types="cypress" />
