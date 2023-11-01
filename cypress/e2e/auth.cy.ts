@@ -5,7 +5,7 @@ describe('Authentication', () => {
 		cy.intercept('GET', `${apiUrl}/api/v1/users/*`).as('getUser');
 
 		cy.login();
-		cy.visit('/');
+		cy.visitPt('/');
 
 		cy.wait('@getUser');
 	});

@@ -29,6 +29,7 @@ declare global {
         createProjectIfNeeded(project?: SampleProject): void;
         deleteProject(project?: SampleProject): void;
         deleteProjectIfNeeded(project?: SampleProject): void;
+        visitPt(path: string): void;
       }
     }
   }
@@ -62,7 +63,7 @@ before(() => {
 
 	cy.login();
 
-	cy.visit('/');
+	cy.visitPt('/');
 
 	cy.wait('@getUser');
 

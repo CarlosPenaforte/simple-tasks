@@ -4,7 +4,7 @@ const sampleProject = Cypress.env('sampleProject');
 describe('Project', () => {
 	beforeEach(() => {
 		cy.login();
-		cy.visit('/');
+		cy.visitPt('/');
 	});
 	afterEach(() => {
 		cy.logout();
@@ -18,7 +18,7 @@ describe('Project', () => {
 		cy.intercept('GET', `${apiUrl}/api/v1/users/*/projects`).as('getProjects');
 		cy.intercept('PUT', `${apiUrl}/api/v1/users/*/projects/*`).as('updateProject');
 
-		cy.visit('/#/projects');
+		cy.visitPt('/#/projects');
 		cy.wait('@getProjects');
 
 		cy.contains(sampleProject.name, { matchCase: false }).click();

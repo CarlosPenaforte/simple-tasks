@@ -5,7 +5,7 @@ describe('Project', () => {
 		cy.intercept('GET', `${apiUrl}/api/v1/users/*`).as('getUser');
 
 		cy.login();
-		cy.visit('/');
+		cy.visitPt('/');
 
 		cy.wait('@getUser');
 	});
@@ -16,7 +16,7 @@ describe('Project', () => {
 	it('should register an user', () => {
 		cy.intercept('POST', `${apiUrl}/api/v1/users`).as('registerUser');
 		cy.logout();
-		cy.visit('/#/login');
+		cy.visitPt('/#/login');
 
 		cy.get('#btn-register-route').click();
 
@@ -35,7 +35,7 @@ describe('Project', () => {
 
 	it('should delete an user', () => {
 		cy.logout();
-		cy.visit('/#/login');
+		cy.visitPt('/#/login');
 
 		cy.intercept('GET', `${apiUrl}/api/v1/users/*`).as('getUser');
 		cy.intercept('DELETE', `${apiUrl}/api/v1/users/*`).as('deleteUser');
@@ -44,10 +44,10 @@ describe('Project', () => {
 			email: 'test@test.com', password: '123456',
 		});
 
-		cy.visit('/');
+		cy.visitPt('/');
 		cy.wait('@getUser', { timeout: 10000 });
 
-		cy.visit('/#/profile');
+		cy.visitPt('/#/profile');
 
 		cy.get('.info-value').first().should('contain.text', 'Test 2');
 
@@ -60,7 +60,7 @@ describe('Project', () => {
 	it('should update the user', () => {
 		cy.intercept('PUT', `${apiUrl}/api/v1/users/*`).as('updateUser');
 
-		cy.visit('/#/profile');
+		cy.visitPt('/#/profile');
 
 		cy.get('#btn-update-profile').click();
 		cy.get('#npt-user-full-name').clear();

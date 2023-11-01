@@ -5,7 +5,7 @@ describe('Task', () => {
 		cy.intercept('GET', `${apiUrl}/api/v1/users/*/tasks`).as('getTasks');
 
 		cy.login();
-		cy.visit('/');
+		cy.visitPt('/');
 
 		cy.wait('@getTasks');
 	});
@@ -56,7 +56,7 @@ describe('Task', () => {
 		cy.deleteProject({
 			name: 'Test Project 2', description: 'Test Description',
 		});
-		cy.visit('/');
+		cy.visitPt('/');
 
 		cy.wait('@getTasks');
 	});
@@ -80,7 +80,7 @@ describe('Task', () => {
 		cy.intercept('DELETE', `${apiUrl}/api/v1/users/*/tasks/*`).as('deleteTask');
 		cy.intercept('POST', `${apiUrl}/api/v1/users/*/tasks`).as('createTask');
 
-		cy.visit('/');
+		cy.visitPt('/');
 		cy.wait('@getTasks');
 
 		cy.get('#btn-create-task').click();

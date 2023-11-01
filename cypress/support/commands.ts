@@ -78,7 +78,7 @@ Cypress.Commands.add('createProjectIfNeeded', (project = Cypress.env('sampleProj
 Cypress.Commands.add('deleteProject', (project = Cypress.env('sampleProject')) => {
 	cy.intercept('DELETE', `${apiUrl}/api/v1/users/*/projects/*`).as('deleteProject');
 
-	cy.visit('/#/projects');
+	cy.visitPt('/#/projects');
 
 	cy.get('.el-project-item').contains(project.name, { matchCase: false }).click();
 
@@ -98,5 +98,15 @@ Cypress.Commands.add('deleteProjectIfNeeded', (project = Cypress.env('sampleProj
 		} else {
 			cy.end();
 		}
+	});
+});
+
+Cypress.Commands.add('visitPt', (path: string) => {
+	cy.visit(path, {
+		onBeforeLoad(win) {
+			Object.defineProperty(win.navigator, 'language', {
+				value: 'pt-BR',
+			});
+		},
 	});
 });
