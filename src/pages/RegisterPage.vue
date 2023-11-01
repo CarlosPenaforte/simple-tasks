@@ -153,18 +153,18 @@
     UnwrapNestedRefs,
     defineComponent, reactive, ref, inject, computed,
   } from 'vue';
-  import { useUserStore } from 'src/stores/userStore';
-  import { CreateUserToSend } from 'src/models/apiModels';
-  import { Gender } from 'src/models/mainModels';
-  import {
-    genderToFullString,
-  } from 'src/utils/commonFunctions';
   import {
     QInput, QSelect, QVueGlobals,
   } from 'quasar';
   import { useI18n } from 'vue-i18n';
   import { useWindowSize } from '@vueuse/core';
   import { DateTime } from 'luxon';
+  import { useUserStore } from '../stores/userStore';
+  import { CreateUserToSend } from '../models/apiModels';
+  import { Gender } from '../models/mainModels';
+  import {
+    genderToFullString,
+  } from '../utils/commonFunctions';
   import { useState } from '../utils/composables';
   import DateInput from '../components/form/DateInput.vue';
 
@@ -198,7 +198,7 @@
       full_name: '',
       email: '',
       sex: Gender.NOT_INFORMED,
-      birthday: threeYearsAgo,
+      birthday: threeYearsAgo || '',
       confirm_password: '',
     },
   );

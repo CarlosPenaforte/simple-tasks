@@ -9,10 +9,10 @@
 			class="bg-gray-100 q-py-lg q-px-md"
 			:class="shouldFillScreen ? 'fit q-ma-none' : 'w-400 q-ma-md'"
 		>
-			<q-card-section class="text-center q-pb-md">
+			<q-card-section class="text-center q-pt-sm q-pb-md">
 				<q-img src="full_logo.png"
 					spinner-color="primary-main"
-					height="64px"
+					height="80px"
 					fit="scale-down"
 				/>
 			</q-card-section>
@@ -84,13 +84,13 @@
     defineComponent, inject, ref, Ref,
   } from 'vue';
   import { useWindowSize } from '@vueuse/core';
-  import { useState } from 'src/utils/composables';
   import { storeToRefs } from 'pinia';
-  import { useUserStore } from 'src/stores/userStore';
   import {
     QForm, QVueGlobals,
   } from 'quasar';
   import { useI18n } from 'vue-i18n';
+  import { useUserStore } from '../stores/userStore';
+  import { useState } from '../utils/composables';
 
   export default defineComponent({
     name: 'LoginPage',

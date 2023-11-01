@@ -1,10 +1,10 @@
 /* eslint-disable indent */
 import { DateTime } from 'luxon';
+import { ComposerTranslation } from 'vue-i18n';
 import {
 	ReceivedProject,
  ReceivedTask, ReceivedUser, CreateTaskToSend,
-} from 'src/models/apiModels';
-import { ComposerTranslation } from 'vue-i18n';
+} from '../models/apiModels';
 import {
 	Gender,
 	Orientation,
@@ -22,7 +22,9 @@ export function filterTasksByUrgency(userId: number, projectId: number, tasks: T
 // DATE
 
 export const getLocaleFormat = (locale: string): string => {
-	let localeStr = DateTime.fromISO('2020-10-30').setLocale(locale).toLocaleString();
+	let localeStr = DateTime.fromISO('2020-10-30').setLocale(locale).toLocaleString({
+		year: 'numeric', month: '2-digit', day: '2-digit',
+	});
 
 	if (localeStr === 'Invalid DateTime') {
 		localeStr = new Date('2020-10-30').toLocaleDateString(locale);
@@ -42,7 +44,9 @@ export const formatDateToLocale = (
 ): string => {
 	if (!date) return '';
 
-	const parsedDate = DateTime.fromJSDate(date, { zone: 'utc' }).setLocale(locale).toLocaleString();
+	const parsedDate = DateTime.fromJSDate(date, { zone: 'utc' }).setLocale(locale).toLocaleString({
+		year: 'numeric', month: '2-digit', day: '2-digit',
+	});
 
 	if (parsedDate === 'Invalid DateTime') {
 		return date.toLocaleDateString(locale, {
@@ -71,7 +75,9 @@ export const isoStrToLocale = (
 	dateStr: string,
 	locale: string,
 ): string | undefined => {
-	const parsedStr = DateTime.fromISO(dateStr, { zone: 'utc' }).setLocale(locale).toLocaleString();
+	const parsedStr = DateTime.fromISO(dateStr, { zone: 'utc' }).setLocale(locale).toLocaleString({
+		year: 'numeric', month: '2-digit', day: '2-digit',
+	});
 
 	if (parsedStr === 'Invalid DateTime') return undefined;
 
