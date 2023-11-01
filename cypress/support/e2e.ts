@@ -59,13 +59,13 @@ Cypress.on('test:before:run', () => {
 const apiUrl: string = Cypress.env('apiUrl');
 
 before(() => {
-	cy.intercept('GET', `${apiUrl}/api/v1/users/*`).as('getUser');
+	cy.intercept('GET', `${apiUrl}/api/v1/users/*/projects`).as('getProjects');
 
 	cy.login();
 
 	cy.visitPt('/');
 
-	cy.wait('@getUser');
+	cy.wait('@getProjects');
 
 	cy.deleteProjectIfNeeded();
 });
