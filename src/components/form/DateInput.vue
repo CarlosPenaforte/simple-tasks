@@ -5,6 +5,7 @@
 		:modelValue="inputStr"
 		@update:modelValue="setDueDate"
 		name="dueDate"
+		maxlength="10"
 		:mask="localeMask"
 		:placeholder="localeFormat"
 		:label="props.title"
@@ -17,7 +18,7 @@
 			<q-icon name="event"
 				class="cursor-pointer"
 			>
-				<q-popup-proxy>
+				<q-popup-proxy ref="datePopup">
 					<q-date
 						:mask="qDateMask"
 						color="primary-main"
@@ -48,7 +49,9 @@
     ref,
   } from 'vue';
   import { DateTime } from 'luxon';
-  import { QInput } from 'quasar';
+  import {
+    QInput, QPopupProxy,
+  } from 'quasar';
   import {
     getLocaleFormat, getLocaleMask, isoStrToLocale, localeStrToIso,
   } from '../../utils/commonFunctions';
@@ -59,6 +62,7 @@
 </script>
 
 <script setup lang="ts">
+  // PROPS AND EMITS
   const props = defineProps({
     inputId: {
       type: String,
@@ -91,19 +95,17 @@
 
   const emit = defineEmits([ 'update:modelValue' ]);
 
+  // UTILS
   const locale = navigator.language;
 
   const localeFormat = getLocaleFormat(locale);
   const qDateMask = localeFormat.toUpperCase();
   const localeMask = getLocaleMask(locale);
 
+  // MODELS
+
   const dateInput = ref<QInput|null>(null);
-  const hasError = computed(() => dateInput.value?.hasError);
-  const errorMessage = computed(() => dateInput.value?.errorMessage);
-  const validate = () => dateInput.value?.validate();
-  defineExpose({
-    hasError, errorMessage, validate,
-  });
+  const datePopup = ref<QPopupProxy|null>(null);
 
   const inputStr = computed({
     get():string {
@@ -114,6 +116,16 @@
     },
   });
 
+  // EXPOSE
+  const hasError = computed(() => dateInput.value?.hasError);
+  const errorMessage = computed(() => dateInput.value?.errorMessage);
+  const validate = () => dateInput.value?.validate();
+  defineExpose({
+    hasError, errorMessage, validate,
+  });
+
+  // ACTIONS
+
   const setDueDate = (dueDate: string|number|null) => {
     if (typeof dueDate !== 'string') return;
 
@@ -123,6 +135,10 @@
     }
 
     inputStr.value = dueDate;
+
+    if (dueDate.length === 10) {
+      datePopup.value?.hide();
+    }
   };
 
   const isValidDate = (dateStr: string): boolean => {

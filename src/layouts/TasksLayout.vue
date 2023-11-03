@@ -310,22 +310,22 @@
   import {
     defineComponent, ref, inject, computed, onBeforeMount, watch,
   } from 'vue';
-  import { useProjectStore } from 'src/stores/projectStore';
-  import { useTaskStore } from 'src/stores/taskStore';
-  import { useUserStore } from 'src/stores/userStore';
-  import {
-    Task,
-  } from 'src/models/mainModels';
   import { storeToRefs } from 'pinia';
   import {
     useRouter, useRoute,
   } from 'vue-router';
-  import { useState } from 'src/utils/composables';
   import {
     QVueGlobals, Loading,
   } from 'quasar';
   import { useI18n } from 'vue-i18n';
   import { useWindowSize } from '@vueuse/core';
+  import { useState } from '../utils/composables';
+  import {
+    Task,
+  } from '../models/mainModels';
+  import { useUserStore } from '../stores/userStore';
+  import { useTaskStore } from '../stores/taskStore';
+  import { useProjectStore } from '../stores/projectStore';
   import CreateProjectDialog from '../components/project/CreateProjectDialog.vue';
   import TaskDialog from '../components/tasks/TaskDialog.vue';
   import SearchDialog from '../components/searchAndSort/SearchDialog.vue';

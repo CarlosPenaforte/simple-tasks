@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import {
-    defineComponent, provide,
+    defineComponent, onBeforeMount, onMounted, provide,
   } from 'vue';
   import {
     useQuasar,
@@ -16,6 +16,15 @@
 </script>
 
 <script setup lang="ts">
+  const $q = useQuasar();
+
+  onBeforeMount(() => {
+    $q?.loading.show({ spinnerColor: 'primary-main' });
+  });
+
+  onMounted(() => {
+    $q?.loading.hide();
+  });
 
   provide('quasar', useQuasar());
 
