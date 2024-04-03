@@ -44,7 +44,7 @@
     "eslint-plugin-vue": "^9.17.0",
     "postcss": "^8.4.31",
     "typescript": "^5.2.2",
-    "vite": "2.9.16"
+    "vite": "2.9.18"
   },
   "engines": {
     "node": "^18 || ^16 || ^14.19",
